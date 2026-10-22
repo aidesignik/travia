@@ -119,6 +119,7 @@
     "asClient": "I need transport",
     "asCarrier": "I'm a carrier",
     "invalidCredentials": "Invalid email or password.",
+    "tooManyAttempts": "Too many attempts. Please try again later.",
     "invalidEmail": "Please enter a valid email address.",
     "emailInUse": "This email is already registered.",
     "taxIdInUse": "This Tax ID is already registered.",

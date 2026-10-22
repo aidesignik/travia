@@ -383,3 +383,15 @@ model Document {
   @@unique([rideId, type])
   @@index([rideId])
 }
+
+// Fixed-window rate limiting for auth endpoints (login, register, forgot
+// password). A Postgres table rather than in-memory/Redis — serverless
+// functions don't share memory across instances, and this app already has
+// Postgres with nothing else to set up.
+model RateLimitBucket {
+  key         String
+  windowStart DateTime
+  count       Int      @default(1)
+
+  @@id([key, windowStart])
+}

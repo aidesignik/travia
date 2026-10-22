@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { routing } from "@/i18n/routing";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export const authConfig: NextAuthConfig = {
   session: { strategy: "jwt" },
@@ -16,12 +17,18 @@ export const authConfig: NextAuthConfig = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials) => {
+      authorize: async (credentials, request) => {
         const email = credentials?.email;
         const password = credentials?.password;
         if (typeof email !== "string" || typeof password !== "string") {
           return null;
         }
+
+        // Generic rejection (same as wrong credentials) rather than a
+        // distinct error — don't hint to an attacker that they're being
+        // rate limited rather than just guessing wrong.
+        const { allowed } = await checkRateLimit(`login:${getClientIp(request)}`, 10, 15 * 60 * 1000);
+        if (!allowed) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: email.toLowerCase() },

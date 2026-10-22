@@ -13,14 +13,14 @@ import { NewRideShowcase } from "./NewRideShowcase";
 // height below the 60px header. Below ~900px the columns wrap: form
 // first, square panel full-width underneath.
 //
-// The panel's size is height-driven, not width-driven: the row stretches
-// both columns to the same height (the form's, since it's the taller of
-// the two), and the panel is square against THAT height (h-full +
-// aspect-square, width auto) rather than its own flex-basis width — so
-// it matches the form's height exactly instead of being its own
-// independently-sized square. Safe because both /login and
-// /register/carrier render the same AuthCredentialsForm, so there's only
-// one height to match across every entry point.
+// The panel's size is width-driven, not height-driven: it fills its own
+// column's width (capped at max-w-500) and goes square off of that
+// (aspect-square, height auto) — so it stays a fixed size for a given
+// viewport regardless of how tall the sibling content is. This matters
+// because /login, /forgot-password and /reset-password all share this
+// shell but render very different amounts of content; an earlier
+// height-driven version (h-full off the row's stretched height) made the
+// panel visibly shrink on the shorter pages.
 export async function AuthSplitScreen({ children }: { children: ReactNode }) {
   return (
     // min-h here must stay in sync with the beige container's own min-h in
@@ -35,7 +35,7 @@ export async function AuthSplitScreen({ children }: { children: ReactNode }) {
 
         <div className="flex min-w-0 flex-[1_1_340px] max-w-[500px] items-center justify-center">
           <div
-            className="aspect-square h-full max-w-full rounded-[26px]"
+            className="aspect-square w-full max-w-full rounded-[26px]"
             style={{ boxShadow: "0 16px 48px rgba(16,30,80,.18)" }}
           >
             {/* The shadow and the corner-clip live on separate elements —

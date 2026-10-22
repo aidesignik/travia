@@ -3,10 +3,23 @@ import { prisma } from "@/lib/prisma";
 import { isEmailConfigured, sendMail } from "@/lib/mail";
 import { generateResetToken, RESET_TOKEN_TTL_MS } from "@/lib/passwordReset";
 import { forgotPasswordSchema } from "@/lib/validation/auth.schema";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 // Always responds { ok: true } regardless of whether the email has an
 // account — never reveal account existence through this endpoint.
 export async function POST(request: Request) {
+  const { allowed, retryAfterSeconds } = await checkRateLimit(
+    `forgot-password:${getClientIp(request)}`,
+    5,
+    15 * 60 * 1000,
+  );
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "TOO_MANY_REQUESTS" },
+      { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } },
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = forgotPasswordSchema.safeParse(body);
   if (!parsed.success) {

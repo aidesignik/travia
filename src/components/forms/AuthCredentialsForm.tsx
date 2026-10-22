@@ -80,7 +80,9 @@ export function AuthCredentialsForm() {
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         setLoading(false);
-        if (body?.error === "EMAIL_IN_USE") {
+        if (res.status === 429) {
+          setError(t("auth.tooManyAttempts"));
+        } else if (body?.error === "EMAIL_IN_USE") {
           setAccountExists(true);
           setError(t("auth.emailInUse"));
         } else if (body?.error?.fieldErrors?.email) {

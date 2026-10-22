@@ -119,6 +119,7 @@
     "asClient": "Treba mi prevoz",
     "asCarrier": "Ja sam prevoznik",
     "invalidCredentials": "Pogrešan email ili lozinka.",
+    "tooManyAttempts": "Previše pokušaja. Pokušajte ponovo kasnije.",
     "invalidEmail": "Unesite ispravnu email adresu.",
     "emailInUse": "Ovaj email je već registrovan.",
     "taxIdInUse": "Ovaj PIB je već registrovan.",
