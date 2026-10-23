@@ -7,6 +7,8 @@ import { SidePanel } from "@/components/ui/SidePanel";
 import { AssignmentSelect } from "./AssignmentSelect";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { Stepper } from "@/components/ui/Stepper";
+import { Card } from "@/components/ui/Card";
+import { Switch } from "@/components/ui/Switch";
 import type { DatePickerHandle } from "@/components/ui/DatePicker";
 import { ClientCombobox, type ClientMatch } from "@/components/forms/ClientCombobox";
 import { EMPTY_RETURN_TRIP, returnTripPayload } from "@/components/forms/ReturnTripFields";
@@ -398,16 +400,10 @@ export function NewRideModal({
   // Ride.price is always stored as the final, VAT-inclusive total (same
   // meaning as elsewhere in the app — see CarrierRideForm's finalPrice) —
   // so a price typed excl. VAT gets the 10% applied before submit, and one
-  // typed incl. VAT goes through as-is. otherPrice is just the reverse
-  // conversion, shown as a reference line under the field.
+  // typed incl. VAT (the toggle) goes through as-is.
   const priceTyped = Number(form.price);
   const priceEntered = form.price !== "" && priceTyped > 0;
   const finalPrice = priceEntered ? (priceIncludesVat ? priceTyped : Math.round(priceTyped * 1.1 * 100) / 100) : null;
-  const otherPrice = priceEntered
-    ? priceIncludesVat
-      ? Math.round((priceTyped / 1.1) * 100) / 100
-      : Math.round(priceTyped * 1.1 * 100) / 100
-    : null;
 
   const busyCount = availableVehicles.filter((v) => v.busy).length + availableDrivers.filter((d) => d.busy).length;
   const distanceVisible = Boolean(form.pickupCity && form.destinationCity);
@@ -612,43 +608,38 @@ export function NewRideModal({
               />
 
               {distanceVisible ? (
-                <div>
-                  <label htmlFor={`${uid}-cena`} className={SHEET_LABEL_CLASS}>
+                <Card className="!p-4">
+                  <label htmlFor={`${uid}-cena`} className="mb-[10px] block text-[13.5px] font-semibold text-[#18181B]">
                     {tn("cena")}
                   </label>
-                  <div className="mt-[6px] flex items-center gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        id={`${uid}-cena`}
-                        type="number"
-                        inputMode="decimal"
-                        min={0}
-                        step="0.01"
-                        placeholder="0.00"
-                        className={`${SHEET_INPUT_CLASS} pr-14`}
-                        value={form.price}
-                        onChange={(e) => setForm({ ...form, price: e.target.value })}
-                      />
-                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--ink-muted)]">
-                        RSD
-                      </span>
+                  <div className="relative">
+                    <input
+                      id={`${uid}-cena`}
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      placeholder="0.00"
+                      className="h-12 w-full rounded-[8px] px-3 text-[20px] font-semibold text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] shadow-[inset_0_0_0_1px_var(--border-control)] transition-shadow duration-[.12s] ease-out focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)]"
+                      value={form.price}
+                      onChange={(e) => setForm({ ...form, price: e.target.value })}
+                    />
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--ink-muted)]">
+                      RSD
+                    </span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-[var(--border-hairline)] pt-4">
+                    <div>
+                      <p className="text-[14px] font-medium text-[var(--ink-primary)]">{tn("cenaUkljucujePdv")}</p>
+                      <p className="text-[12.5px] text-[var(--ink-secondary)]">{tn("pdvNaFakturi")}</p>
                     </div>
-                    <SegmentedControl
-                      options={[
-                        { value: "excl" as const, label: tn("vatExcluded") },
-                        { value: "incl" as const, label: tn("vatIncluded") },
-                      ]}
-                      value={priceIncludesVat ? "incl" : "excl"}
-                      onChange={(v) => setPriceIncludesVat(v === "incl")}
+                    <Switch
+                      checked={priceIncludesVat}
+                      onChange={setPriceIncludesVat}
+                      aria-label={tn("cenaUkljucujePdv")}
                     />
                   </div>
-                  {otherPrice !== null ? (
-                    <p className="mt-[6px] pl-2 text-[13px] text-[var(--ink-secondary)]">
-                      {priceIncludesVat ? tn("cenaBezPdv") : tn("cenaSaPdv")}:{" "}
-                      <span className="font-medium text-[var(--ink-primary)]">{otherPrice} RSD</span>
-                    </p>
-                  ) : null}
-                </div>
+                </Card>
               ) : null}
             </div>
           </section>
