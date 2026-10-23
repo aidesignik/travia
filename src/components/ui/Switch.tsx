@@ -21,10 +21,22 @@ export function Switch({
       }`}
     >
       <span
-        className={`inline-block h-[18px] w-[18px] transform rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,.15)] transition-transform duration-[.15s] ease-out ${
+        className={`flex h-[18px] w-[18px] transform items-center justify-center rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,.15)] transition-transform duration-[.15s] ease-out ${
           checked ? "translate-x-[19px]" : "translate-x-[3px]"
         }`}
-      />
+      >
+        {checked ? (
+          <svg viewBox="0 0 16 16" width={11} height={11} fill="none" aria-hidden="true">
+            <path
+              d="M3.5 8.5l2.8 2.8 6.2-6.6"
+              stroke="var(--action-bg)"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : null}
+      </span>
     </button>
   );
 }

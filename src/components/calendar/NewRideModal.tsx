@@ -629,10 +629,13 @@ export function NewRideModal({
                     </span>
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-3 border-t border-[var(--border-hairline)] pt-4">
-                    <div>
-                      <p className="text-[14px] font-medium text-[var(--ink-primary)]">{tn("cenaUkljucujePdv")}</p>
-                      <p className="text-[12.5px] text-[var(--ink-secondary)]">{tn("pdvNaFakturi")}</p>
-                    </div>
+                    <p
+                      className={`text-[14px] font-medium ${
+                        priceIncludesVat ? "text-[var(--ink-primary)]" : "text-[var(--ink-muted)]"
+                      }`}
+                    >
+                      {tn("cenaUkljucujePdv")}
+                    </p>
                     <Switch
                       checked={priceIncludesVat}
                       onChange={setPriceIncludesVat}
