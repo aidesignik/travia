@@ -14,12 +14,7 @@ import { LegCard, DateTimeRow } from "./newRide/RouteLegCard";
 import { RouteTimeline } from "./newRide/RouteTimeline";
 import { ReturnLegCard } from "./newRide/ReturnLegCard";
 import { DistanceCard } from "./newRide/DistanceCard";
-import {
-  SHEET_INPUT_CLASS,
-  SHEET_TEXTAREA_CLASS,
-  SHEET_LABEL_CLASS,
-  SHEET_TEXT_BUTTON_CLASS,
-} from "./newRide/sheetFieldClasses";
+import { SHEET_INPUT_CLASS, SHEET_TEXTAREA_CLASS, SHEET_LABEL_CLASS } from "./newRide/sheetFieldClasses";
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
 import { resolveReturnLeg } from "@/lib/rideReturnLeg";
@@ -108,15 +103,18 @@ export function NewRideModal({
     specialRequests: "",
     vehicleId: "",
     driverId: "",
-    // Manually typed by the carrier — excl. VAT, RSD. Takes priority over
-    // any future auto-suggestion; see quick/route.ts.
-    priceExclVat: "",
+    // Manually typed by the carrier, RSD — see priceIncludesVat below for
+    // whether this figure already has VAT in it. Takes priority over any
+    // future auto-suggestion; see quick/route.ts.
+    price: "",
     ...restInitialValues,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitAttempted, setSubmitAttempted] = useState(false);
-  const [showVat, setShowVat] = useState(false);
+  // Whether form.price (above) already has VAT in it — toggled by the
+  // carrier, defaults to excl. since that's how carriers usually quote.
+  const [priceIncludesVat, setPriceIncludesVat] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
   // Set when a client was picked from the combobox — lets edits to the
   // autofilled fields (a corrected email, a different phone) save back to
@@ -349,9 +347,7 @@ export function NewRideModal({
         vehicleId: form.vehicleId || undefined,
         driverId: form.driverId || undefined,
         distanceKm: distanceKm ?? undefined,
-        // priceExclVatNum > 0 (not just priceExclVat truthy) — "0" is a
-        // non-empty string, and the API rejects a non-positive price.
-        price: priceExclVatNum > 0 ? priceExclVatNum : undefined,
+        price: finalPrice ?? undefined,
       },
       (start, end) => t("carrier.calendar.availabilityWarning", { start, end }),
       confirmAvailability,
@@ -399,11 +395,19 @@ export function NewRideModal({
     setForm((prev) => ({ ...prev, driverId: id }));
   }
 
-  // VAT display is informational only (not submitted) — a 10% uplift over
-  // whatever the carrier typed as the excl.-VAT price, shown on demand
-  // rather than always on since most carriers quote excl.-VAT by default.
-  const priceExclVatNum = Number(form.priceExclVat);
-  const priceInclVat = form.priceExclVat && priceExclVatNum > 0 ? Math.round(priceExclVatNum * 1.1 * 100) / 100 : null;
+  // Ride.price is always stored as the final, VAT-inclusive total (same
+  // meaning as elsewhere in the app — see CarrierRideForm's finalPrice) —
+  // so a price typed excl. VAT gets the 10% applied before submit, and one
+  // typed incl. VAT goes through as-is. otherPrice is just the reverse
+  // conversion, shown as a reference line under the field.
+  const priceTyped = Number(form.price);
+  const priceEntered = form.price !== "" && priceTyped > 0;
+  const finalPrice = priceEntered ? (priceIncludesVat ? priceTyped : Math.round(priceTyped * 1.1 * 100) / 100) : null;
+  const otherPrice = priceEntered
+    ? priceIncludesVat
+      ? Math.round((priceTyped / 1.1) * 100) / 100
+      : Math.round(priceTyped * 1.1 * 100) / 100
+    : null;
 
   const busyCount = availableVehicles.filter((v) => v.busy).length + availableDrivers.filter((d) => d.busy).length;
   const distanceVisible = Boolean(form.pickupCity && form.destinationCity);
@@ -610,34 +614,38 @@ export function NewRideModal({
               {distanceVisible ? (
                 <div>
                   <label htmlFor={`${uid}-cena`} className={SHEET_LABEL_CLASS}>
-                    {tn("cenaBezPdv")}
+                    {tn("cena")}
                   </label>
-                  <div className="relative mt-[6px]">
-                    <input
-                      id={`${uid}-cena`}
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      step="0.01"
-                      placeholder="0.00"
-                      className={`${SHEET_INPUT_CLASS} pr-14`}
-                      value={form.priceExclVat}
-                      onChange={(e) => setForm({ ...form, priceExclVat: e.target.value })}
+                  <div className="mt-[6px] flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        id={`${uid}-cena`}
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        step="0.01"
+                        placeholder="0.00"
+                        className={`${SHEET_INPUT_CLASS} pr-14`}
+                        value={form.price}
+                        onChange={(e) => setForm({ ...form, price: e.target.value })}
+                      />
+                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--ink-muted)]">
+                        RSD
+                      </span>
+                    </div>
+                    <SegmentedControl
+                      options={[
+                        { value: "excl" as const, label: tn("vatExcluded") },
+                        { value: "incl" as const, label: tn("vatIncluded") },
+                      ]}
+                      value={priceIncludesVat ? "incl" : "excl"}
+                      onChange={(v) => setPriceIncludesVat(v === "incl")}
                     />
-                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--ink-muted)]">
-                      RSD
-                    </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowVat((v) => !v)}
-                    className={`mt-[6px] ${SHEET_TEXT_BUTTON_CLASS}`}
-                  >
-                    {tn("dodajPdv")}
-                  </button>
-                  {showVat && priceInclVat !== null ? (
-                    <p className="pl-2 text-[13px] text-[var(--ink-secondary)]">
-                      {tn("cenaSaPdv")}: <span className="font-medium text-[var(--ink-primary)]">{priceInclVat} RSD</span>
+                  {otherPrice !== null ? (
+                    <p className="mt-[6px] pl-2 text-[13px] text-[var(--ink-secondary)]">
+                      {priceIncludesVat ? tn("cenaBezPdv") : tn("cenaSaPdv")}:{" "}
+                      <span className="font-medium text-[var(--ink-primary)]">{otherPrice} RSD</span>
                     </p>
                   ) : null}
                 </div>
