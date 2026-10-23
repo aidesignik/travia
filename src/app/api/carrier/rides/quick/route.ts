@@ -110,9 +110,14 @@ export async function POST(request: Request) {
   // picked would stay CONFIRMED with a null price forever, and the
   // documents section (and its "email to client" action) would never
   // appear. Mirrors /assign's own distance/price computation.
+  //
+  // The carrier's own typed price (data.price) always wins over the
+  // auto-suggestion — it's entered up front in the form regardless of
+  // whether a vehicle/driver gets picked in this same request, unlike the
+  // suggestion below, which only runs once both are.
   let distanceKm = data.distanceKm;
-  let price: number | undefined;
-  if (data.vehicleId && data.driverId) {
+  let price: number | undefined = data.price;
+  if (price === undefined && data.vehicleId && data.driverId) {
     if (!distanceKm) {
       const outboundWaypoints = [
         { city: data.pickupCity, location: data.pickupLocation },

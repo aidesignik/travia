@@ -458,6 +458,8 @@
       "estimateLabel": "Estimate",
       "distanceUnavailable": "Distance unavailable",
       "calculating": "Calculating…",
+      "cena": "Price",
+      "cenaUkljucujePdv": "Price includes VAT",
       "detalji": "Details",
       "brojPutnika": "Passenger count",
       "posebniZahtevi": "Special requests",

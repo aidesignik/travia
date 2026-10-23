@@ -37,6 +37,10 @@ export const quickRideSchema = z
     // The form's own live distance preview (see /api/carrier/distance) —
     // stored up front so assignment doesn't need to re-estimate it later.
     distanceKm: z.coerce.number().positive().optional(),
+    // The carrier's own manually-typed price (excl. VAT) — takes priority
+    // over the ratePerKm/fixedFee auto-suggestion once price suggestions
+    // exist; for now it's the only source of a price at creation time.
+    price: z.coerce.number().positive().optional(),
     // Optional "assign now" — if the carrier already knows who's free, per
     // the availability-filtered picker on the form. Left unset, the ride
     // lands in the unassigned queue as before.

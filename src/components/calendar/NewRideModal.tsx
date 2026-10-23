@@ -7,6 +7,8 @@ import { SidePanel } from "@/components/ui/SidePanel";
 import { AssignmentSelect } from "./AssignmentSelect";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { Stepper } from "@/components/ui/Stepper";
+import { Card } from "@/components/ui/Card";
+import { Switch } from "@/components/ui/Switch";
 import type { DatePickerHandle } from "@/components/ui/DatePicker";
 import { ClientCombobox, type ClientMatch } from "@/components/forms/ClientCombobox";
 import { EMPTY_RETURN_TRIP, returnTripPayload } from "@/components/forms/ReturnTripFields";
@@ -103,11 +105,18 @@ export function NewRideModal({
     specialRequests: "",
     vehicleId: "",
     driverId: "",
+    // Manually typed by the carrier, RSD — see priceIncludesVat below for
+    // whether this figure already has VAT in it. Takes priority over any
+    // future auto-suggestion; see quick/route.ts.
+    price: "",
     ...restInitialValues,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  // Whether form.price (above) already has VAT in it — toggled by the
+  // carrier, defaults to excl. since that's how carriers usually quote.
+  const [priceIncludesVat, setPriceIncludesVat] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
   // Set when a client was picked from the combobox — lets edits to the
   // autofilled fields (a corrected email, a different phone) save back to
@@ -340,6 +349,7 @@ export function NewRideModal({
         vehicleId: form.vehicleId || undefined,
         driverId: form.driverId || undefined,
         distanceKm: distanceKm ?? undefined,
+        price: finalPrice ?? undefined,
       },
       (start, end) => t("carrier.calendar.availabilityWarning", { start, end }),
       confirmAvailability,
@@ -386,6 +396,14 @@ export function NewRideModal({
     }
     setForm((prev) => ({ ...prev, driverId: id }));
   }
+
+  // Ride.price is always stored as the final, VAT-inclusive total (same
+  // meaning as elsewhere in the app — see CarrierRideForm's finalPrice) —
+  // so a price typed excl. VAT gets the 10% applied before submit, and one
+  // typed incl. VAT (the toggle) goes through as-is.
+  const priceTyped = Number(form.price);
+  const priceEntered = form.price !== "" && priceTyped > 0;
+  const finalPrice = priceEntered ? (priceIncludesVat ? priceTyped : Math.round(priceTyped * 1.1 * 100) / 100) : null;
 
   const busyCount = availableVehicles.filter((v) => v.busy).length + availableDrivers.filter((d) => d.busy).length;
   const distanceVisible = Boolean(form.pickupCity && form.destinationCity);
@@ -588,6 +606,44 @@ export function NewRideModal({
                 failedLabel={tn("distanceUnavailable")}
                 calculatingLabel={tn("calculating")}
               />
+
+              {distanceVisible ? (
+                <Card className="!p-4">
+                  <label htmlFor={`${uid}-cena`} className="mb-[10px] block text-[13.5px] font-semibold text-[#18181B]">
+                    {tn("cena")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      id={`${uid}-cena`}
+                      type="number"
+                      inputMode="decimal"
+                      min={0}
+                      step="0.01"
+                      placeholder="0.00"
+                      className="h-12 w-full rounded-[8px] px-3 text-[20px] font-semibold text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] shadow-[inset_0_0_0_1px_var(--border-control)] transition-shadow duration-[.12s] ease-out focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)]"
+                      value={form.price}
+                      onChange={(e) => setForm({ ...form, price: e.target.value })}
+                    />
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--ink-muted)]">
+                      RSD
+                    </span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-[var(--border-hairline)] pt-4">
+                    <p
+                      className={`text-[14px] font-medium ${
+                        priceIncludesVat ? "text-[var(--ink-primary)]" : "text-[var(--ink-muted)]"
+                      }`}
+                    >
+                      {tn("cenaUkljucujePdv")}
+                    </p>
+                    <Switch
+                      checked={priceIncludesVat}
+                      onChange={setPriceIncludesVat}
+                      aria-label={tn("cenaUkljucujePdv")}
+                    />
+                  </div>
+                </Card>
+              ) : null}
             </div>
           </section>
 
