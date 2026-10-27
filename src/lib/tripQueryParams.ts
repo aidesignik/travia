@@ -1,3 +1,4 @@
+import { localDateTimeToISOString } from "./pickerDateFormat";
 import type { CityLocation } from "./location";
 
 export interface TripSearchState {
@@ -86,9 +87,12 @@ export function tripStateToRequestBody(trip: TripSearchState) {
     destinationCity: trip.destinationCity,
     destinationLocation: trip.destinationLocation,
     stops: trip.stops,
-    departureAt: trip.departureAt,
+    // See localDateTimeToISOString — converts the bare picker string
+    // (carried as-is through the URL up to this point) to a real UTC
+    // instant using the browser's own time zone, right before it's sent.
+    departureAt: localDateTimeToISOString(trip.departureAt),
     isRoundTrip: trip.isRoundTrip,
-    returnAt: trip.isRoundTrip ? trip.returnAt : undefined,
+    returnAt: trip.isRoundTrip ? localDateTimeToISOString(trip.returnAt) : undefined,
     passengerCount: trip.passengerCount,
   };
 }

@@ -11,6 +11,7 @@ import { EMPTY_RETURN_TRIP, returnTripPayload, ReturnTripFields } from "@/compon
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
 import { suggestPrice } from "@/lib/pricing";
+import { localDateTimeToISOString } from "@/lib/pickerDateFormat";
 import type { CityLocation } from "@/lib/location";
 
 const DISTANCE_CALC_DEBOUNCE_MS = 900;
@@ -138,7 +139,11 @@ export function CarrierRideForm({
         ...form,
         clientCompanyName: form.clientCompanyName || undefined,
         clientPhone: form.clientPhone || undefined,
-        returnAt: form.isRoundTrip ? form.returnAt : undefined,
+        // See localDateTimeToISOString — converts the bare picker string
+        // to a real UTC instant using the browser's own time zone, rather
+        // than letting the server (a different time zone) reinterpret it.
+        departureAt: localDateTimeToISOString(form.departureAt),
+        returnAt: form.isRoundTrip ? localDateTimeToISOString(form.returnAt) : undefined,
         ...returnTripPayload(form.isRoundTrip, form.returnTrip),
         distanceKm: form.distanceKm ? Number(form.distanceKm) : undefined,
         finalPrice: Number(form.finalPrice || suggested || 0),
