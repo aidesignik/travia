@@ -15,8 +15,12 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const weekStartParam = searchParams.get("weekStart");
+  // The client already resolves this to its own local midnight Monday and
+  // sends the exact UTC instant (see RidesCalendar's startOfWeek) — calling
+  // setHours() here would re-floor it using the *server's* local time zone
+  // instead (UTC on Vercel), silently shifting the whole week back by up to
+  // a day and cutting its last day out of the query below.
   const weekStart = weekStartParam ? new Date(weekStartParam) : new Date();
-  weekStart.setHours(0, 0, 0, 0);
   const weekEnd = new Date(weekStart.getTime() + 7 * DAY_MS);
 
   const carrier = await prisma.carrier.findUniqueOrThrow({ where: { userId: session.user.id } });
