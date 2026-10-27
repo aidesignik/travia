@@ -46,3 +46,17 @@ export function toDateOnlyString(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
+
+// A "YYYY-MM-DDTHH:mm" datetime-local value has no time zone of its own —
+// it's implicitly whoever's local time typed it in. Sending that bare
+// string to the server and letting it parse the string itself is wrong:
+// Date parsing without an offset falls back to the time zone of whatever
+// environment does the parsing, and the server (Vercel, UTC) isn't the
+// carrier's or client's time zone — the string would silently shift by
+// that offset once stored. `new Date(value)` run here, in the browser,
+// correctly resolves it against the browser's own time zone; call this
+// right before a departureAt/returnAt field leaves the browser in a
+// request body, so what the server stores is an unambiguous UTC instant.
+export function localDateTimeToISOString(value: string): string {
+  return value ? new Date(value).toISOString() : value;
+}

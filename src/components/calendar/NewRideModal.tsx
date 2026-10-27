@@ -20,7 +20,7 @@ import { SHEET_INPUT_CLASS, SHEET_TEXTAREA_CLASS, SHEET_LABEL_CLASS } from "./ne
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
 import { resolveReturnLeg } from "@/lib/rideReturnLeg";
-import { combineDateTimeLocal, splitDateTimeLocal } from "@/lib/pickerDateFormat";
+import { combineDateTimeLocal, splitDateTimeLocal, localDateTimeToISOString } from "@/lib/pickerDateFormat";
 import type { CityLocation } from "@/lib/location";
 import type { CalendarDriver, CalendarVehicle } from "./types";
 
@@ -428,7 +428,12 @@ export function NewRideModal({
       clientId: selectedClientId ?? undefined,
       clientCompanyName: form.clientCompanyName || undefined,
       clientPhone: clientPhoneNumber ? `+${clientPhoneCc}${clientPhoneNumber}` : undefined,
-      returnAt: form.isRoundTrip ? form.returnAt : undefined,
+      // Converted to a real UTC instant here (in the browser, where the
+      // actual local time zone is known) rather than sent as the bare
+      // "YYYY-MM-DDTHH:mm" the date/time pickers produce — see
+      // localDateTimeToISOString.
+      departureAt: localDateTimeToISOString(form.departureAt),
+      returnAt: form.isRoundTrip ? localDateTimeToISOString(form.returnAt) : undefined,
       ...returnTripPayload(form.isRoundTrip, form.returnTrip),
       distanceKm: distanceKm ?? undefined,
     };

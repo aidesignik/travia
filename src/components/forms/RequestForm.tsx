@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Field } from "@/components/ui/Field";
 import { CityLocationFields } from "@/components/forms/CityLocationFields";
+import { localDateTimeToISOString } from "@/lib/pickerDateFormat";
 import type { CityLocation } from "@/lib/location";
 
 const DISTANCE_CALC_DEBOUNCE_MS = 900;
@@ -125,7 +126,11 @@ export function RequestForm({ initial }: { initial?: RequestFormInitial }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...form,
-        returnAt: form.isRoundTrip ? form.returnAt : undefined,
+        // See localDateTimeToISOString — converts the bare picker string
+        // to a real UTC instant using the browser's own time zone, rather
+        // than letting the server (a different time zone) reinterpret it.
+        departureAt: localDateTimeToISOString(form.departureAt),
+        returnAt: form.isRoundTrip ? localDateTimeToISOString(form.returnAt) : undefined,
       }),
     });
 
