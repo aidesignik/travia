@@ -460,6 +460,8 @@
       "calculating": "Calculating…",
       "cena": "Price",
       "cenaUkljucujePdv": "Price includes VAT",
+      "emailBelongsToOtherRole": "That email is already used by a different account type — please use another address.",
+      "carrierNotApproved": "Your carrier account isn't approved yet, so you can't create rides.",
       "detalji": "Details",
       "brojPutnika": "Passenger count",
       "posebniZahtevi": "Special requests",

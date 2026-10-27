@@ -60,6 +60,12 @@ function isValidPhoneNumber(number: string): boolean {
   return digits.length === 0 || /^\d{4,12}$/.test(digits);
 }
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+const MAX_PASSENGERS = 200;
+
 export function NewRideModal({
   onClose,
   onCreated,
@@ -318,7 +324,7 @@ export function NewRideModal({
 
     const invalid =
       !form.clientName ||
-      !form.clientEmail ||
+      !isValidEmail(form.clientEmail) ||
       !isValidPhoneNumber(form.clientPhoneNumber) ||
       !form.pickupCity ||
       !form.pickupLocation ||
@@ -371,7 +377,16 @@ export function NewRideModal({
     if (!res.ok) {
       // Declining the warning isn't a real failure — no error, just stay
       // on the form so the dispatcher can adjust and retry.
-      if (!declinedAvailability) setError(t("common.saveFailed"));
+      if (!declinedAvailability) {
+        const body = await res.json().catch(() => null);
+        if (body?.error === "EMAIL_BELONGS_TO_OTHER_ROLE") {
+          setError(tn("emailBelongsToOtherRole"));
+        } else if (body?.error === "CARRIER_NOT_APPROVED") {
+          setError(tn("carrierNotApproved"));
+        } else {
+          setError(t("common.saveFailed"));
+        }
+      }
       return;
     }
 
@@ -523,6 +538,8 @@ export function NewRideModal({
                 />
                 {submitAttempted && !form.clientEmail ? (
                   <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                ) : submitAttempted && !isValidEmail(form.clientEmail) ? (
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{t("auth.invalidEmail")}</p>
                 ) : null}
               </div>
             </div>
@@ -671,6 +688,7 @@ export function NewRideModal({
                     value={Number(form.passengerCount) || 1}
                     onChange={(n) => setForm({ ...form, passengerCount: String(n) })}
                     min={1}
+                    max={MAX_PASSENGERS}
                     aria-label={tn("brojPutnika")}
                   />
                 </div>
