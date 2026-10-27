@@ -4,9 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Bus, UserRound } from "lucide-react";
-import { ResourceTimelineGrid, type DragOverTarget } from "./ResourceTimelineGrid";
+import { ResourceTimelineGrid, type DragOverTarget, type CellRideDraft } from "./ResourceTimelineGrid";
 import { UnassignedQueue } from "./UnassignedQueue";
-import { NewRideModal } from "./NewRideModal";
+import { NewRideModal, type NewRideInitialValues } from "./NewRideModal";
 import { RideDetailDrawer } from "./RideDetailDrawer";
 import { useNewRide } from "./NewRideContext";
 import { MultiSelectFilter, type MultiSelectOption } from "@/components/carrier/MultiSelectFilter";
@@ -32,6 +32,15 @@ function startOfWeek(date: Date) {
   d.setDate(d.getDate() + diff);
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+function cellRideDraftInitialValues(draft: CellRideDraft, grouping: ResourceGrouping): NewRideInitialValues {
+  return {
+    departureAt: draft.departureAt,
+    isRoundTrip: draft.isRoundTrip,
+    returnAt: draft.returnAt,
+    ...(grouping === "vehicle" ? { vehicleId: draft.resourceId } : { driverId: draft.resourceId }),
+  };
 }
 
 function rideWindow(ride: Pick<CalendarRide, "departureAt" | "returnAt">) {
@@ -77,6 +86,10 @@ export function RidesCalendar() {
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null);
   const [draggingRideId, setDraggingRideId] = useState<string | null>(null);
   const [dragOverTarget, setDragOverTarget] = useState<DragOverTarget | null>(null);
+  // Set by clicking (or click-dragging across) an empty calendar cell —
+  // opens the same "+ New Ride" form, prefilled with that date range and
+  // resource. See ResourceTimelineGrid's onCreateRide.
+  const [cellRideDraft, setCellRideDraft] = useState<CellRideDraft | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -313,6 +326,7 @@ export function RidesCalendar() {
           onDragLeave={() => setDragOverTarget(null)}
           draggingRideId={draggingRideId}
           onResourceAdded={load}
+          onCreateRide={setCellRideDraft}
         />
         {data.unassigned.length > 0 ? (
           <UnassignedQueue
@@ -335,6 +349,17 @@ export function RidesCalendar() {
             load();
           }}
           onDepartureDateChange={(date) => setWeekStart(startOfWeek(date))}
+        />
+      ) : null}
+
+      {cellRideDraft ? (
+        <NewRideModal
+          initialValues={cellRideDraftInitialValues(cellRideDraft, grouping)}
+          onClose={() => setCellRideDraft(null)}
+          onCreated={() => {
+            setCellRideDraft(null);
+            load();
+          }}
         />
       ) : null}
 

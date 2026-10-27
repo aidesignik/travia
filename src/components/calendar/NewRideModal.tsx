@@ -39,6 +39,16 @@ export interface NewRideInitialValues {
   stops?: CityLocation[];
   passengerCount?: string;
   specialRequests?: string;
+  // Prefilled by clicking (or clicking and dragging across) a calendar
+  // cell — see ResourceTimelineGrid's onCreateRide. departureAt/returnAt
+  // are "YYYY-MM-DDTHH:mm", same shape the form's own date/time pickers
+  // produce; vehicleId/driverId seed the Assignment section with whichever
+  // resource row the carrier clicked.
+  departureAt?: string;
+  isRoundTrip?: boolean;
+  returnAt?: string;
+  vehicleId?: string;
+  driverId?: string;
 }
 
 // "Edit ride" — unlike duplicating (NewRideInitialValues above, a partial

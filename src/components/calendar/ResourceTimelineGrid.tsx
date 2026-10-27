@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Wrench, Plus } from "lucide-react";
 import { RideBlockCard } from "./RideBlockCard";
@@ -9,7 +9,22 @@ import { formatPlate } from "@/lib/plateDisplay";
 import { AddVehiclePanel } from "@/components/forms/AddVehiclePanel";
 import { AddDriverPanel } from "@/components/forms/AddDriverPanel";
 import { CALENDAR_GRID_TEMPLATE } from "@/lib/tableLayout";
+import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import type { CalendarBlock, CalendarDriver, CalendarRide, CalendarVehicle, ResourceGrouping } from "./types";
+
+// Defaults for a ride created by clicking/dragging an empty calendar cell —
+// there's no time-of-day granularity in a day cell to derive these from, so
+// a plain business-hours guess stands in until the carrier edits it in the
+// form that opens right after.
+const CELL_CREATE_DEPARTURE_TIME = "09:00";
+const CELL_CREATE_RETURN_TIME = "18:00";
+
+export interface CellRideDraft {
+  resourceId: string;
+  departureAt: string;
+  isRoundTrip: boolean;
+  returnAt?: string;
+}
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const GRID_TEMPLATE_COLUMNS = CALENDAR_GRID_TEMPLATE;
@@ -75,6 +90,7 @@ export function ResourceTimelineGrid({
   onDragLeave,
   draggingRideId,
   onResourceAdded,
+  onCreateRide,
 }: {
   weekStart: Date;
   grouping: ResourceGrouping;
@@ -89,11 +105,47 @@ export function ResourceTimelineGrid({
   onDragLeave: () => void;
   draggingRideId: string | null;
   onResourceAdded: () => void;
+  // Clicking (or clicking and dragging across) a resource row's empty day
+  // cells starts a new ride for that resource on that date (or date range,
+  // for a drag) — see cellSelection below for the gesture itself.
+  onCreateRide: (draft: CellRideDraft) => void;
 }) {
   const t = useTranslations("carrier.calendar");
   const tCarrier = useTranslations("carrier");
   const tType = useTranslations("vehicleType");
   const locale = useLocale();
+  // The in-progress cell click/drag — set on mousedown over an empty cell,
+  // extended on mouseenter while the button stays down (same resource row
+  // only), and resolved into an onCreateRide call on mouseup anywhere.
+  // Window-level mouseup (not a per-cell handler) so releasing outside any
+  // cell — or outside the grid entirely — still ends the gesture cleanly.
+  const [cellSelection, setCellSelection] = useState<{ resourceId: string; startIdx: number; endIdx: number } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!cellSelection) return;
+    function finish() {
+      if (!cellSelection) return;
+      const startIdx = Math.min(cellSelection.startIdx, cellSelection.endIdx);
+      const endIdx = Math.max(cellSelection.startIdx, cellSelection.endIdx);
+      const departureDay = new Date(weekStart.getTime() + startIdx * DAY_MS);
+      const isRoundTrip = endIdx > startIdx;
+      const draft: CellRideDraft = {
+        resourceId: cellSelection.resourceId,
+        departureAt: `${toDateOnlyString(departureDay)}T${CELL_CREATE_DEPARTURE_TIME}`,
+        isRoundTrip,
+      };
+      if (isRoundTrip) {
+        const returnDay = new Date(weekStart.getTime() + endIdx * DAY_MS);
+        draft.returnAt = `${toDateOnlyString(returnDay)}T${CELL_CREATE_RETURN_TIME}`;
+      }
+      onCreateRide(draft);
+      setCellSelection(null);
+    }
+    window.addEventListener("mouseup", finish);
+    return () => window.removeEventListener("mouseup", finish);
+  }, [cellSelection, weekStart, onCreateRide]);
   // sr's default Intl formatting is Cyrillic; the rest of this app's
   // Serbian copy is Latin, so map to the Latin variant like the DatePicker
   // already does (see src/lib/pickerDateFormat.ts).
@@ -244,17 +296,39 @@ export function ResourceTimelineGrid({
                   >
                     {days.map((day, i) => {
                       const isToday = day.getTime() === today.getTime();
+                      const inSelection =
+                        cellSelection?.resourceId === resource.id &&
+                        i >= Math.min(cellSelection.startIdx, cellSelection.endIdx) &&
+                        i <= Math.max(cellSelection.startIdx, cellSelection.endIdx);
                       return (
                         <div
                           key={i}
-                          className={`border-r last:border-r-0 ${
-                            isDragTarget
-                              ? dragOverTarget?.conflict
-                                ? "bg-[var(--chip-critical)]/30"
-                                : "bg-[var(--chip-positive)]/30"
-                              : isToday
-                                ? "bg-[var(--bg-today)]"
-                                : "bg-white"
+                          title={t("createRideOnDay")}
+                          onMouseDown={(e) => {
+                            // Left click only, and only on the empty cell
+                            // itself — a ride/block sitting in a different
+                            // lane on this same day still leaves the rest
+                            // of the cell clickable underneath it.
+                            if (e.button !== 0) return;
+                            e.preventDefault();
+                            setCellSelection({ resourceId: resource.id, startIdx: i, endIdx: i });
+                          }}
+                          onMouseEnter={() => {
+                            // Dragging only extends within the row it
+                            // started on — entering a different resource's
+                            // cells while the button is held is ignored.
+                            setCellSelection((prev) => (prev && prev.resourceId === resource.id ? { ...prev, endIdx: i } : prev));
+                          }}
+                          className={`cursor-pointer select-none border-r transition-colors duration-[.1s] ease-out last:border-r-0 ${
+                            inSelection
+                              ? "bg-[var(--action-100)]"
+                              : isDragTarget
+                                ? dragOverTarget?.conflict
+                                  ? "bg-[var(--chip-critical)]/30"
+                                  : "bg-[var(--chip-positive)]/30"
+                                : isToday
+                                  ? "bg-[var(--bg-today)] hover:bg-[var(--action-100)]/60"
+                                  : "bg-white hover:bg-[var(--action-100)]/40"
                           }`}
                           style={{ gridRow: "1 / -1", gridColumn: i + 1, borderRightColor: "#F1F1EE" }}
                         />
