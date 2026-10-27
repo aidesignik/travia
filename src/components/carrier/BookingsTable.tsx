@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { MoreVertical } from "lucide-react";
@@ -19,17 +20,72 @@ import type { CalendarDriver, CalendarRide, CalendarVehicle } from "@/components
 
 const HEADER_CLASS = "text-[12px] font-semibold text-[#8E8E93]";
 
-// A single "open" item — bookings don't support outright deletion (a ride
-// is cancelled, never destroyed), so this isn't RowActionsMenu's
-// edit/delete pair, just a kebab that matches its look and opens the same
-// detail drawer a row click does.
-function BookingRowActionsMenu({ onOpen }: { onOpen: () => void }) {
+const MENU_WIDTH = 144; // w-36
+
+// Bookings don't support outright deletion (a ride is cancelled, never
+// destroyed), so this isn't RowActionsMenu's edit/delete pair verbatim —
+// same shape though: edit and the one destructive action that actually
+// applies to a ride, cancel. A cancelled/completed booking has neither, so
+// it falls back to a single "Open" item instead. Positioned the same way
+// RowActionsMenu is (a portal into document.body, fixed from the trigger's
+// own rect) since this table sits in the same rounded, overflow-hidden
+// container that would otherwise clip an absolute-positioned menu.
+function BookingRowActionsMenu({
+  editable,
+  onOpen,
+  onEdit,
+  onCancel,
+}: {
+  editable: boolean;
+  onOpen: () => void;
+  onEdit: () => void;
+  onCancel: () => void;
+}) {
   const t = useTranslations("common");
+  const tCalendar = useTranslations("carrier.calendar");
   const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    function reposition() {
+      const rect = triggerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setPosition({ top: rect.bottom + 4, left: rect.right - MENU_WIDTH });
+    }
+    reposition();
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
+    return () => {
+      window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", reposition, true);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onClickOutside(event: MouseEvent) {
+      const target = event.target as Node;
+      if (triggerRef.current?.contains(target) || menuRef.current?.contains(target)) return;
+      setOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   return (
     <div className="relative inline-block text-left">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="rounded-[9px] p-2 text-[#A9A9B2] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
@@ -37,23 +93,56 @@ function BookingRowActionsMenu({ onOpen }: { onOpen: () => void }) {
       >
         <MoreVertical size={16} strokeWidth={1.9} />
       </button>
-      {open ? (
-        <>
-          <div className="fixed inset-0 z-[55]" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 z-[60] mt-1 w-36 rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]">
-            <button
-              type="button"
-              onClick={() => {
-                setOpen(false);
-                onOpen();
-              }}
-              className="block h-9 w-full px-3 text-left text-[14px] leading-9 text-[var(--ink-2)] hover:bg-[var(--border-soft)]"
+      {open && position
+        ? createPortal(
+            <div
+              ref={menuRef}
+              role="menu"
+              style={{ top: position.top, left: position.left, width: MENU_WIDTH }}
+              className="fixed z-[70] rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]"
             >
-              {t("open")}
-            </button>
-          </div>
-        </>
-      ) : null}
+              {editable ? (
+                <>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setOpen(false);
+                      onEdit();
+                    }}
+                    className="block h-9 w-full px-3 text-left text-[14px] leading-9 text-[var(--ink-2)] hover:bg-[var(--border-soft)]"
+                  >
+                    {t("edit")}
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setOpen(false);
+                      onCancel();
+                    }}
+                    className="block h-9 w-full px-3 text-left text-[14px] leading-9 text-[var(--ink-destructive)] hover:bg-[var(--border-soft)]"
+                  >
+                    {tCalendar("cancelRide")}
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setOpen(false);
+                    onOpen();
+                  }}
+                  className="block h-9 w-full px-3 text-left text-[14px] leading-9 text-[var(--ink-2)] hover:bg-[var(--border-soft)]"
+                >
+                  {t("open")}
+                </button>
+              )}
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }
@@ -78,6 +167,10 @@ export function BookingsTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
+  // Set alongside selectedId by the row's action menu (Edit/Cancel), so the
+  // drawer that opens can skip straight to that action — null for a plain
+  // row click or "Open", which just shows the normal detail view.
+  const [pendingAction, setPendingAction] = useState<"edit" | "cancel" | null>(null);
   const selected = bookings.find((b) => b.id === selectedId) ?? null;
 
   useEffect(() => {
@@ -96,6 +189,7 @@ export function BookingsTable({
 
   function onChanged() {
     setSelectedId(null);
+    setPendingAction(null);
     router.refresh();
   }
 
@@ -134,12 +228,16 @@ export function BookingsTable({
           const capacityPct = seats ? Math.min(100, Math.round((booking.passengerCount / seats) * 100)) : 0;
 
           const status = displayRideStatus(booking);
+          const editable = status !== "CANCELLED" && status !== "COMPLETED";
           const isLast = i === bookings.length - 1;
 
           return (
             <ClickableRow
               key={booking.id}
-              onClick={() => setSelectedId(booking.id)}
+              onClick={() => {
+                setPendingAction(null);
+                setSelectedId(booking.id);
+              }}
               className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[#FAFAFA] ${
                 isLast ? "" : "border-b border-[#F3F3F3]"
               }`}
@@ -252,7 +350,21 @@ export function BookingsTable({
               </div>
 
               <StopClickPropagation className="flex items-center justify-center">
-                <BookingRowActionsMenu onOpen={() => setSelectedId(booking.id)} />
+                <BookingRowActionsMenu
+                  editable={editable}
+                  onOpen={() => {
+                    setPendingAction(null);
+                    setSelectedId(booking.id);
+                  }}
+                  onEdit={() => {
+                    setPendingAction("edit");
+                    setSelectedId(booking.id);
+                  }}
+                  onCancel={() => {
+                    setPendingAction("cancel");
+                    setSelectedId(booking.id);
+                  }}
+                />
               </StopClickPropagation>
             </ClickableRow>
           );
@@ -261,11 +373,16 @@ export function BookingsTable({
 
       {selected ? (
         <RideDetailDrawer
+          key={selected.id}
           ride={selected}
           vehicles={vehicles}
           drivers={drivers}
-          onClose={() => setSelectedId(null)}
+          onClose={() => {
+            setSelectedId(null);
+            setPendingAction(null);
+          }}
           onChanged={onChanged}
+          initialAction={pendingAction ?? undefined}
         />
       ) : null}
     </div>
