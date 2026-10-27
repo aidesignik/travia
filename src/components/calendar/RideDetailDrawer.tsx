@@ -150,12 +150,17 @@ export function RideDetailDrawer({
   drivers,
   onClose,
   onChanged,
+  // Set by a row's action menu (e.g. BookingsTable) to skip straight past
+  // the detail view into editing or the cancel confirmation, instead of
+  // opening the drawer and making the carrier click again.
+  initialAction,
 }: {
   ride: CalendarRide;
   vehicles: CalendarVehicle[];
   drivers: CalendarDriver[];
   onClose: () => void;
   onChanged: () => void;
+  initialAction?: "edit" | "cancel";
 }) {
   const t = useTranslations();
   const tType = useTranslations("vehicleType");
@@ -184,10 +189,10 @@ export function RideDetailDrawer({
   // "Edit ride" opens the full NewRideModal (same form as "+ New Ride"),
   // prefilled via buildEditValues — see there for the trip-detail/client/
   // price/assignment editing this used to do inline.
-  const [editingRide, setEditingRide] = useState(false);
+  const [editingRide, setEditingRide] = useState(initialAction === "edit");
 
   const [duplicating, setDuplicating] = useState(false);
-  const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [confirmingCancel, setConfirmingCancel] = useState(initialAction === "cancel");
   const [confirmingRemove, setConfirmingRemove] = useState(false);
 
   // Quick standalone override for the Trip section's computed total — lets
