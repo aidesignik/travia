@@ -432,6 +432,8 @@
     },
     "newRide": {
       "title": "New ride",
+      "editTitle": "Edit ride",
+      "saveChanges": "Save changes",
       "klijent": "Client",
       "firma": "Company",
       "firmaPlaceholder": "Search client",

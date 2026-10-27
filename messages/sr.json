@@ -432,6 +432,8 @@
     },
     "newRide": {
       "title": "Nova vožnja",
+      "editTitle": "Izmeni vožnju",
+      "saveChanges": "Sačuvaj izmene",
       "klijent": "Klijent",
       "firma": "Firma",
       "firmaPlaceholder": "Pretraži klijenta",
