@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/Card";
 import { Switch } from "@/components/ui/Switch";
 import type { DatePickerHandle } from "@/components/ui/DatePicker";
 import { ClientCombobox, type ClientMatch } from "@/components/forms/ClientCombobox";
-import { EMPTY_RETURN_TRIP, returnTripPayload } from "@/components/forms/ReturnTripFields";
+import { EMPTY_RETURN_TRIP, returnTripPayload, type ReturnTripValues } from "@/components/forms/ReturnTripFields";
 import { LegCard, DateTimeRow } from "./newRide/RouteLegCard";
 import { RouteTimeline } from "./newRide/RouteTimeline";
 import { ReturnLegCard } from "./newRide/ReturnLegCard";
@@ -41,6 +41,34 @@ export interface NewRideInitialValues {
   specialRequests?: string;
 }
 
+// "Edit ride" — unlike duplicating (NewRideInitialValues above, a partial
+// starting point the carrier fills in further), this is the ride's actual
+// current state, fields the carrier can change and then save back. Built by
+// RideDetailDrawer from a CalendarRide.
+export interface NewRideEditValues {
+  rideId: string;
+  clientId: string | null;
+  clientCompanyName: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  pickupCity: string;
+  pickupLocation: string;
+  destinationCity: string;
+  destinationLocation: string;
+  stops: CityLocation[];
+  departureAt: string;
+  isRoundTrip: boolean;
+  returnAt: string;
+  returnTrip: ReturnTripValues;
+  passengerCount: string;
+  specialRequests: string;
+  vehicleId: string;
+  driverId: string;
+  price: string;
+  distanceKm: number | null;
+}
+
 const DEFAULT_PHONE_CC = "381";
 
 // Country code is just a starting guess, not a lock — a client's number
@@ -66,31 +94,37 @@ function isValidEmail(email: string): boolean {
 
 const MAX_PASSENGERS = 200;
 
-export function NewRideModal({
-  onClose,
-  onCreated,
-  onDepartureDateChange,
-  initialValues,
-}: {
-  onClose: () => void;
-  onCreated: () => void;
-  // Lets the calendar underneath jump to the picked date's week as the
-  // dispatcher fills in the form, for live context — optional so this
-  // component doesn't need a caller that wires it up.
-  onDepartureDateChange?: (date: Date) => void;
-  // Prefills the trip fields (used by "Duplicate" on an existing ride) —
-  // deliberately leaves date/vehicle/driver blank so the dispatcher picks
-  // fresh availability rather than silently reusing a stale assignment.
-  initialValues?: NewRideInitialValues;
-}) {
-  const t = useTranslations();
-  const tn = useTranslations("carrier.newRide");
-  const { confirm: confirmAvailability, dialog: availabilityDialog } = useAvailabilityConfirmDialog();
-  const uid = useId();
-  const tType = useTranslations("vehicleType");
+// The form's own state shape, filled from whichever starting point applies:
+// edit (the ride's real current values), duplicate (a partial head start),
+// or a blank create.
+function initialFormState(editValues?: NewRideEditValues, initialValues?: NewRideInitialValues) {
+  if (editValues) {
+    const phone = splitPhone(editValues.clientPhone);
+    return {
+      clientCompanyName: editValues.clientCompanyName,
+      clientName: editValues.clientName,
+      clientEmail: editValues.clientEmail,
+      clientPhoneCc: phone.cc,
+      clientPhoneNumber: phone.number,
+      pickupCity: editValues.pickupCity,
+      pickupLocation: editValues.pickupLocation,
+      destinationCity: editValues.destinationCity,
+      destinationLocation: editValues.destinationLocation,
+      stops: editValues.stops,
+      departureAt: editValues.departureAt,
+      isRoundTrip: editValues.isRoundTrip,
+      returnAt: editValues.returnAt,
+      returnTrip: editValues.returnTrip,
+      passengerCount: editValues.passengerCount,
+      specialRequests: editValues.specialRequests,
+      vehicleId: editValues.vehicleId,
+      driverId: editValues.driverId,
+      price: editValues.price,
+    };
+  }
   const { clientPhone: initialClientPhone, ...restInitialValues } = initialValues ?? {};
   const initialPhone = splitPhone(initialClientPhone ?? "");
-  const [form, setForm] = useState({
+  return {
     clientCompanyName: "",
     clientName: "",
     clientEmail: "",
@@ -116,20 +150,53 @@ export function NewRideModal({
     // future auto-suggestion; see quick/route.ts.
     price: "",
     ...restInitialValues,
-  });
+  };
+}
+
+export function NewRideModal({
+  onClose,
+  onCreated,
+  onDepartureDateChange,
+  initialValues,
+  editValues,
+}: {
+  onClose: () => void;
+  onCreated: () => void;
+  // Lets the calendar underneath jump to the picked date's week as the
+  // dispatcher fills in the form, for live context — optional so this
+  // component doesn't need a caller that wires it up.
+  onDepartureDateChange?: (date: Date) => void;
+  // Prefills the trip fields (used by "Duplicate" on an existing ride) —
+  // deliberately leaves date/vehicle/driver blank so the dispatcher picks
+  // fresh availability rather than silently reusing a stale assignment.
+  initialValues?: NewRideInitialValues;
+  // Set instead of initialValues for "Edit ride" (RideDetailDrawer) — same
+  // form, fully prefilled from the ride's current state, PATCHes it instead
+  // of creating a new one, and swaps the submit button/title accordingly.
+  editValues?: NewRideEditValues;
+}) {
+  const t = useTranslations();
+  const tn = useTranslations("carrier.newRide");
+  const { confirm: confirmAvailability, dialog: availabilityDialog } = useAvailabilityConfirmDialog();
+  const uid = useId();
+  const tType = useTranslations("vehicleType");
+  const [form, setForm] = useState(() => initialFormState(editValues, initialValues));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   // Whether form.price (above) already has VAT in it — toggled by the
-  // carrier, defaults to excl. since that's how carriers usually quote.
-  const [priceIncludesVat, setPriceIncludesVat] = useState(false);
+  // carrier. Defaults to excl. for a new ride (how carriers usually quote);
+  // when editing, Ride.price is always stored VAT-inclusive (see finalPrice
+  // below), so this starts true to match what's actually on screen.
+  const [priceIncludesVat, setPriceIncludesVat] = useState(Boolean(editValues));
   const [phoneTouched, setPhoneTouched] = useState(false);
   // Set when a client was picked from the combobox — lets edits to the
   // autofilled fields (a corrected email, a different phone) save back to
   // that same client record instead of being discarded on submit. Cleared
   // if the carrier changes the company name themselves, since that's the
-  // clearest sign they now mean a different client.
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  // clearest sign they now mean a different client. Seeded from the ride's
+  // own client when editing.
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(editValues?.clientId ?? null);
 
   const [availableVehicles, setAvailableVehicles] = useState<CalendarVehicle[]>([]);
   const [availableDrivers, setAvailableDrivers] = useState<CalendarDriver[]>([]);
@@ -140,7 +207,7 @@ export function NewRideModal({
   const [confirmedVehicleId, setConfirmedVehicleId] = useState<string | null>(null);
   const [confirmedDriverId, setConfirmedDriverId] = useState<string | null>(null);
 
-  const [distanceKm, setDistanceKm] = useState<number | null>(null);
+  const [distanceKm, setDistanceKm] = useState<number | null>(editValues?.distanceKm ?? null);
   const [outboundKm, setOutboundKm] = useState<number | null>(null);
   const [returnKm, setReturnKm] = useState<number | null>(null);
   const [calculatingDistance, setCalculatingDistance] = useState(false);
@@ -244,6 +311,11 @@ export function NewRideModal({
         params.set("returnAt", new Date(form.returnAt).toISOString());
       }
     }
+    // Editing: exclude this ride's own current booking from the conflict
+    // check, so its already-assigned vehicle/driver don't show up busy
+    // against themselves (same param the "Change" picker in
+    // RideDetailDrawer uses).
+    if (editValues?.rideId) params.set("excludeRideId", editValues.rideId);
     fetch(`/api/carrier/availability/resources?${params}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
@@ -265,7 +337,7 @@ export function NewRideModal({
     return () => {
       cancelled = true;
     };
-  }, [form.departureAt, form.isRoundTrip, form.returnAt]);
+  }, [form.departureAt, form.isRoundTrip, form.returnAt, editValues?.rideId]);
 
   useEffect(() => {
     if (!onDepartureDateChange || !form.departureAt) return;
@@ -351,21 +423,30 @@ export function NewRideModal({
     setError(null);
 
     const { clientPhoneCc, clientPhoneNumber, ...formRest } = form;
+    const basePayload = {
+      ...formRest,
+      clientId: selectedClientId ?? undefined,
+      clientCompanyName: form.clientCompanyName || undefined,
+      clientPhone: clientPhoneNumber ? `+${clientPhoneCc}${clientPhoneNumber}` : undefined,
+      returnAt: form.isRoundTrip ? form.returnAt : undefined,
+      ...returnTripPayload(form.isRoundTrip, form.returnTrip),
+      distanceKm: distanceKm ?? undefined,
+    };
+    // Editing always resubmits the form's whole current state, so
+    // vehicleId/driverId/price are sent as null (not omitted) when cleared —
+    // see editRide.schema's comment on why that distinction matters there.
+    const payload = editValues
+      ? { ...basePayload, vehicleId: form.vehicleId || null, driverId: form.driverId || null, price: finalPrice }
+      : {
+          ...basePayload,
+          vehicleId: form.vehicleId || undefined,
+          driverId: form.driverId || undefined,
+          price: finalPrice ?? undefined,
+        };
     const { response: res, declinedAvailability } = await fetchWithAvailabilityConfirm(
-      "/api/carrier/rides/quick",
-      "POST",
-      {
-        ...formRest,
-        clientId: selectedClientId ?? undefined,
-        clientCompanyName: form.clientCompanyName || undefined,
-        clientPhone: clientPhoneNumber ? `+${clientPhoneCc}${clientPhoneNumber}` : undefined,
-        returnAt: form.isRoundTrip ? form.returnAt : undefined,
-        ...returnTripPayload(form.isRoundTrip, form.returnTrip),
-        vehicleId: form.vehicleId || undefined,
-        driverId: form.driverId || undefined,
-        distanceKm: distanceKm ?? undefined,
-        price: finalPrice ?? undefined,
-      },
+      editValues ? `/api/carrier/rides/${editValues.rideId}` : "/api/carrier/rides/quick",
+      editValues ? "PATCH" : "POST",
+      payload,
       (start, end) => t("carrier.calendar.availabilityWarning", { start, end }),
       confirmAvailability,
       (form.vehicleId !== "" && form.vehicleId === confirmedVehicleId) ||
@@ -436,12 +517,13 @@ export function NewRideModal({
       ? tn("distanceBreakdown", { out: Math.round(outboundKm), ret: Math.round(returnKm) })
       : tn("distanceTotal");
   const legKm = (km: number | null) => (calculatingDistance || distanceError || km === null ? "—" : `${Math.round(km)} km`);
+  const panelTitle = editValues ? tn("editTitle") : tn("title");
 
   return (
     <>
-    <SidePanel onClose={onClose} label={tn("title")}>
+    <SidePanel onClose={onClose} label={panelTitle}>
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#F0F0F2] py-0 pl-6 pr-5">
-        <h2 className="text-[18px] font-semibold tracking-[-0.015em] text-[#18181B]">{tn("title")}</h2>
+        <h2 className="text-[18px] font-semibold tracking-[-0.015em] text-[#18181B]">{panelTitle}</h2>
         <button
           type="button"
           onClick={onClose}
@@ -788,7 +870,7 @@ export function NewRideModal({
             disabled={loading}
             className="flex h-9 shrink-0 items-center whitespace-nowrap rounded-[9px] bg-[#2563EB] px-4 text-[13.5px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,.14),0_1px_2px_rgba(37,99,235,.3)] transition-colors duration-[.12s] ease-out hover:bg-[#1D4ED8] disabled:opacity-50"
           >
-            {loading ? t("common.loading") : tn("kreirajVoznju")}
+            {loading ? t("common.loading") : editValues ? tn("saveChanges") : tn("kreirajVoznju")}
           </button>
         </div>
       </form>

@@ -1,20 +1,17 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Pencil, X, CircleAlert, Bus, ArrowRight, ArrowLeft, Copy, Ban, Trash2, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Field } from "@/components/ui/Field";
 import { SidePanel } from "@/components/ui/SidePanel";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { DriverAvatar } from "@/components/ui/DriverAvatar";
 import { formatPlate } from "@/lib/plateDisplay";
-import { CityLocationFields } from "@/components/forms/CityLocationFields";
-import { EMPTY_RETURN_TRIP, returnTripPayload, ReturnTripFields } from "@/components/forms/ReturnTripFields";
+import { EMPTY_RETURN_TRIP } from "@/components/forms/ReturnTripFields";
 import { RideDocumentsSection } from "./RideDocumentsSection";
-import { NewRideModal, type NewRideInitialValues } from "./NewRideModal";
+import { NewRideModal, type NewRideInitialValues, type NewRideEditValues } from "./NewRideModal";
 import { RIDE_STATUS_ACCENT } from "./statusStyles";
 import { RingMarker, PinMarker, DotConnector } from "./newRide/timelineMarkers";
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
@@ -76,9 +73,18 @@ function toDateTimeInputValue(iso: string): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-function buildEditForm(ride: CalendarRide) {
+// "Edit ride" opens the exact same form as "+ New Ride" (NewRideModal),
+// prefilled with the ride's current state — this builds that prefill from
+// a CalendarRide.
+function buildEditValues(ride: CalendarRide): NewRideEditValues {
   const hasReturnOverride = Boolean(ride.returnPickupCity || ride.returnDestinationCity);
   return {
+    rideId: ride.id,
+    clientId: ride.clientId,
+    clientCompanyName: ride.client.companyName ?? "",
+    clientName: ride.client.name ?? "",
+    clientEmail: ride.client.email,
+    clientPhone: ride.client.phone ?? "",
     pickupCity: ride.pickupCity,
     pickupLocation: ride.pickupLocation,
     destinationCity: ride.destinationCity,
@@ -99,6 +105,10 @@ function buildEditForm(ride: CalendarRide) {
       : EMPTY_RETURN_TRIP,
     passengerCount: String(ride.passengerCount),
     specialRequests: ride.specialRequests ?? "",
+    vehicleId: ride.vehicleId ?? "",
+    driverId: ride.driverId ?? "",
+    price: ride.price ?? "",
+    distanceKm: ride.estimatedDistanceKm,
   };
 }
 
@@ -171,12 +181,10 @@ export function RideDetailDrawer({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState(() => buildEditForm(ride));
-  const [editError, setEditError] = useState<string | null>(null);
-  const [editDistanceKm, setEditDistanceKm] = useState<number | null>(ride.estimatedDistanceKm ?? null);
-  const [calculatingDistance, setCalculatingDistance] = useState(false);
-  const [distanceError, setDistanceError] = useState(false);
+  // "Edit ride" opens the full NewRideModal (same form as "+ New Ride"),
+  // prefilled via buildEditValues — see there for the trip-detail/client/
+  // price/assignment editing this used to do inline.
+  const [editingRide, setEditingRide] = useState(false);
 
   const [duplicating, setDuplicating] = useState(false);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
@@ -184,72 +192,10 @@ export function RideDetailDrawer({
 
   // Quick standalone override for the Trip section's computed total — lets
   // a carrier who disagrees with the maps estimate correct it on its own,
-  // without opening the full "Edit ride" trip-detail form.
+  // without opening the full "Edit ride" form.
   const [editingDistanceOnly, setEditingDistanceOnly] = useState(false);
   const [distanceOverrideInput, setDistanceOverrideInput] = useState("");
   const [savingDistanceOverride, setSavingDistanceOverride] = useState(false);
-
-  // Live distance preview while editing trip details — recalculates as
-  // pickup/destination/stops (and, for a round trip, the return leg)
-  // change, same pattern as NewRideModal/CarrierRideForm. Seeded from the
-  // ride's already-stored estimate, not recalculated until something
-  // actually changes.
-  useEffect(() => {
-    if (!editing) return;
-    const { pickupCity, pickupLocation, destinationCity, destinationLocation, stops, isRoundTrip, returnTrip } = editForm;
-    // Only the city is required to attempt a distance estimate — see the
-    // same comment in NewRideModal.
-    if (!pickupCity || !destinationCity) return;
-    if (stops.some((s) => !s.city)) return;
-    if (isRoundTrip && returnTrip.returnStops.some((s) => !s.city)) return;
-
-    // See the same guard (and the reasoning) in NewRideModal — an older,
-    // slower-to-resolve request can still land after a newer one and
-    // overwrite its correct result with a stale/wrong number.
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      setCalculatingDistance(true);
-      setDistanceError(false);
-      const res = await fetch("/api/carrier/distance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pickupCity,
-          pickupLocation,
-          destinationCity,
-          destinationLocation,
-          stops,
-          isRoundTrip,
-          ...returnTripPayload(isRoundTrip, returnTrip),
-        }),
-      }).catch(() => null);
-      if (cancelled) return;
-      setCalculatingDistance(false);
-      if (!res?.ok) {
-        setDistanceError(true);
-        return;
-      }
-      const body = await res.json().catch(() => null);
-      if (cancelled) return;
-      if (typeof body?.distanceKm === "number") setEditDistanceKm(body.distanceKm);
-      else setDistanceError(true);
-    }, 900);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    editing,
-    editForm.pickupCity,
-    editForm.pickupLocation,
-    editForm.destinationCity,
-    editForm.destinationLocation,
-    editForm.stops,
-    editForm.isRoundTrip,
-    editForm.returnTrip,
-  ]);
 
   // Trip details freeze, and Cancel disappears, once a ride is cancelled
   // or has effectively completed (past its date) — including the
@@ -353,46 +299,6 @@ export function RideDetailDrawer({
   const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const dayCount = returnAt ? Math.round((startOfDay(returnAt).getTime() - startOfDay(departure).getTime()) / DAY_MS) + 1 : null;
   const multiDay = dayCount !== null && dayCount > 1;
-
-  function addStop() {
-    if (editForm.stops.length >= 5) return;
-    setEditForm({ ...editForm, stops: [...editForm.stops, { city: "", location: "" }] });
-  }
-  function removeStop(index: number) {
-    setEditForm({ ...editForm, stops: editForm.stops.filter((_, i) => i !== index) });
-  }
-  function updateStop(index: number, patch: Partial<CityLocation>) {
-    setEditForm({
-      ...editForm,
-      stops: editForm.stops.map((s, i) => (i === index ? { ...s, ...patch } : s)),
-    });
-  }
-
-  async function saveEdit() {
-    setBusy("edit");
-    setEditError(null);
-    const { response: res, declinedAvailability } = await fetchWithAvailabilityConfirm(
-      `/api/carrier/rides/${ride.id}`,
-      "PATCH",
-      {
-        ...editForm,
-        returnAt: editForm.isRoundTrip ? editForm.returnAt : undefined,
-        ...returnTripPayload(editForm.isRoundTrip, editForm.returnTrip),
-        passengerCount: Number(editForm.passengerCount),
-        specialRequests: editForm.specialRequests || undefined,
-        distanceKm: editDistanceKm ?? undefined,
-      },
-      (start, end) => t("carrier.calendar.availabilityWarning", { start, end }),
-      confirmAvailability,
-    );
-    setBusy(null);
-    if (!res.ok) {
-      if (!declinedAvailability) setEditError(t("common.saveFailed"));
-      return;
-    }
-    setEditing(false);
-    onChanged();
-  }
 
   function startChanging(field: "vehicle" | "driver") {
     setChangingField(field);
@@ -570,7 +476,7 @@ export function RideDetailDrawer({
           <div className="border-b border-[var(--border-hairline)] px-6 py-5">
             <div className="mb-3 flex items-baseline justify-between gap-2">
               <h3 className="text-[13.5px] font-semibold text-[var(--ink-primary)]">{tDetail("trip")}</h3>
-              {!editable || !editing ? null : !editingDistanceOnly ? (
+              {!editable ? null : !editingDistanceOnly ? (
                 <button
                   type="button"
                   onClick={() => {
@@ -611,8 +517,7 @@ export function RideDetailDrawer({
                 </div>
               )}
             </div>
-            {!editing ? (
-              <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5">
                 {legs.map((leg) => (
                   <div key={leg.key}>
                     <div className="flex items-center gap-[10px]">
@@ -668,137 +573,7 @@ export function RideDetailDrawer({
                     </div>
                   </div>
                 ))}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <CityLocationFields
-                  cityLabel={t("client.requestForm.pickupCity")}
-                  locationLabel={t("client.requestForm.pickupLocation")}
-                  city={editForm.pickupCity}
-                  location={editForm.pickupLocation}
-                  onCityChange={(v) => setEditForm({ ...editForm, pickupCity: v })}
-                  onLocationChange={(v) => setEditForm({ ...editForm, pickupLocation: v })}
-                />
-
-                {editForm.stops.map((stop, index) => (
-                  <div key={index} className="space-y-2 rounded-[10px] border-[1.5px] border-dashed border-[var(--border-strong)] p-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[12.5px] font-semibold text-[var(--ink-muted)]">
-                        {t("client.requestForm.stop")} {index + 1}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => removeStop(index)}
-                        className="text-[12.5px] font-semibold text-[var(--ink-destructive)] hover:underline"
-                      >
-                        {t("client.requestForm.removeStop")}
-                      </button>
-                    </div>
-                    <CityLocationFields
-                      cityLabel={t("client.requestForm.stopCity")}
-                      locationLabel={t("client.requestForm.stopAddress")}
-                      city={stop.city}
-                      location={stop.location}
-                      onCityChange={(v) => updateStop(index, { city: v })}
-                      onLocationChange={(v) => updateStop(index, { location: v })}
-                    />
-                  </div>
-                ))}
-                {editForm.stops.length < 5 ? (
-                  <button type="button" onClick={addStop} className="text-[14px] font-semibold text-[var(--action-bg)] hover:underline">
-                    + {t("client.requestForm.addStop")}
-                  </button>
-                ) : null}
-
-                <CityLocationFields
-                  cityLabel={t("client.requestForm.destinationCity")}
-                  locationLabel={t("client.requestForm.destinationLocation")}
-                  city={editForm.destinationCity}
-                  location={editForm.destinationLocation}
-                  onCityChange={(v) => setEditForm({ ...editForm, destinationCity: v })}
-                  onLocationChange={(v) => setEditForm({ ...editForm, destinationLocation: v })}
-                />
-
-                <Field label={t("client.requestForm.departureAt")}>
-                  <Input
-                    type="datetime-local"
-                    required
-                    value={editForm.departureAt}
-                    onChange={(e) => setEditForm({ ...editForm, departureAt: e.target.value })}
-                  />
-                </Field>
-
-                <label className="flex items-center gap-2 text-[14px] text-[var(--ink-2)]">
-                  <input
-                    type="checkbox"
-                    checked={editForm.isRoundTrip}
-                    onChange={(e) => setEditForm({ ...editForm, isRoundTrip: e.target.checked })}
-                  />
-                  {t("client.requestForm.isRoundTrip")}
-                </label>
-
-                {editForm.isRoundTrip ? (
-                  <>
-                    <Field label={t("client.requestForm.returnAt")}>
-                      <Input
-                        type="datetime-local"
-                        required
-                        min={editForm.departureAt || undefined}
-                        value={editForm.returnAt}
-                        onChange={(e) => setEditForm({ ...editForm, returnAt: e.target.value })}
-                      />
-                    </Field>
-                    <ReturnTripFields
-                      value={editForm.returnTrip}
-                      onChange={(returnTrip) => setEditForm({ ...editForm, returnTrip })}
-                      outboundPickupCity={editForm.pickupCity}
-                      outboundPickupLocation={editForm.pickupLocation}
-                      outboundDestinationCity={editForm.destinationCity}
-                      outboundDestinationLocation={editForm.destinationLocation}
-                      outboundStops={editForm.stops}
-                    />
-                  </>
-                ) : null}
-
-                {calculatingDistance ? (
-                  <p className="text-[13px] text-[var(--ink-muted)]">{t("carrier.rideForm.calculatingDistance")}</p>
-                ) : editDistanceKm !== null ? (
-                  <p className="text-[13px] text-[var(--ink-muted)]">
-                    {t("carrier.rideForm.estimatedDistance", { km: Math.round(editDistanceKm) })}
-                  </p>
-                ) : distanceError ? (
-                  <p className="text-[13px] text-[var(--ink-destructive)]">{t("carrier.rideForm.distanceUnavailableShort")}</p>
-                ) : null}
-
-                <Field label={t("client.requestForm.passengerCount")}>
-                  <Input
-                    type="number"
-                    min={1}
-                    required
-                    value={editForm.passengerCount}
-                    onChange={(e) => setEditForm({ ...editForm, passengerCount: e.target.value })}
-                  />
-                </Field>
-
-                <Field label={t("client.requestForm.specialRequests")}>
-                  <Input
-                    value={editForm.specialRequests}
-                    onChange={(e) => setEditForm({ ...editForm, specialRequests: e.target.value })}
-                  />
-                </Field>
-
-                {editError ? <p className="text-[13.5px] text-[var(--ink-destructive)]">{editError}</p> : null}
-
-                <div className="flex gap-2">
-                  <Button type="button" disabled={busy === "edit"} onClick={saveEdit}>
-                    {busy === "edit" ? t("common.loading") : t("common.save")}
-                  </Button>
-                  <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
-                    {t("common.cancel")}
-                  </Button>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
 
           <div className="border-b border-[var(--border-hairline)] px-6 py-5">
@@ -1011,17 +786,8 @@ export function RideDetailDrawer({
             ) : null}
           </div>
           <div className="flex items-center gap-2">
-            {editable && !editing ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditForm(buildEditForm(ride));
-                  setEditError(null);
-                  setEditDistanceKm(ride.estimatedDistanceKm ?? null);
-                  setEditing(true);
-                }}
-                className={FOOTER_EDIT_BTN_CLASS}
-              >
+            {editable ? (
+              <button type="button" onClick={() => setEditingRide(true)} className={FOOTER_EDIT_BTN_CLASS}>
                 <Pencil size={16} strokeWidth={1.9} />
                 {tDetail("editRide")}
               </button>
@@ -1060,6 +826,17 @@ export function RideDetailDrawer({
           onClose={() => setDuplicating(false)}
           onCreated={() => {
             setDuplicating(false);
+            onChanged();
+          }}
+        />
+      ) : null}
+
+      {editingRide ? (
+        <NewRideModal
+          editValues={buildEditValues(ride)}
+          onClose={() => setEditingRide(false)}
+          onCreated={() => {
+            setEditingRide(false);
             onChanged();
           }}
         />
