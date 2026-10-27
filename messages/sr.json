@@ -394,6 +394,7 @@
       "removeConfirmBody": "Biće trajno obrisana iz baze podataka, kao da se nikada nije desila. Ova radnja se ne može poništiti.",
       "conflictWith": "Već zauzeto ({client})",
       "conflictBlocked": "Ovaj resurs je blokiran u tom periodu",
+      "createRideOnDay": "Kliknite, ili kliknite i prevucite, da kreirate vožnju",
       "legend": {
         "PENDING": "Na čekanju",
         "CONFIRMED": "Potvrđeno",

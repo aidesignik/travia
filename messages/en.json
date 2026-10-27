@@ -394,6 +394,7 @@
       "removeConfirmBody": "It will be permanently deleted from the database, as if it never happened. This can't be undone.",
       "conflictWith": "Already booked ({client})",
       "conflictBlocked": "This resource is blocked at that time",
+      "createRideOnDay": "Click, or click and drag, to create a ride",
       "legend": {
         "PENDING": "Pending",
         "CONFIRMED": "Confirmed",
