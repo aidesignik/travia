@@ -60,6 +60,12 @@ function isValidPhoneNumber(number: string): boolean {
   return digits.length === 0 || /^\d{4,12}$/.test(digits);
 }
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+const MAX_PASSENGERS = 200;
+
 export function NewRideModal({
   onClose,
   onCreated,
@@ -318,7 +324,7 @@ export function NewRideModal({
 
     const invalid =
       !form.clientName ||
-      !form.clientEmail ||
+      !isValidEmail(form.clientEmail) ||
       !isValidPhoneNumber(form.clientPhoneNumber) ||
       !form.pickupCity ||
       !form.pickupLocation ||
@@ -328,7 +334,16 @@ export function NewRideModal({
       (form.isRoundTrip && (!form.returnAt || Boolean(returnAfterOutboundError))) ||
       !form.passengerCount;
     if (invalid) {
-      bodyRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      // Scroll/highlight only takes effect once React has rendered the
+      // field-error text this same setSubmitAttempted(true) just turned
+      // on — a single rAF lands before paint but not necessarily after
+      // React's commit, so two are used to reliably wait for both.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const firstError = bodyRef.current?.querySelector<HTMLElement>(".field-error");
+          firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
       return;
     }
 
@@ -362,7 +377,16 @@ export function NewRideModal({
     if (!res.ok) {
       // Declining the warning isn't a real failure — no error, just stay
       // on the form so the dispatcher can adjust and retry.
-      if (!declinedAvailability) setError(t("common.saveFailed"));
+      if (!declinedAvailability) {
+        const body = await res.json().catch(() => null);
+        if (body?.error === "EMAIL_BELONGS_TO_OTHER_ROLE") {
+          setError(tn("emailBelongsToOtherRole"));
+        } else if (body?.error === "CARRIER_NOT_APPROVED") {
+          setError(tn("carrierNotApproved"));
+        } else {
+          setError(t("common.saveFailed"));
+        }
+      }
       return;
     }
 
@@ -470,7 +494,7 @@ export function NewRideModal({
                   onChange={(e) => setForm({ ...form, clientName: e.target.value })}
                 />
                 {submitAttempted && !form.clientName ? (
-                  <p className="mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </div>
               <div>
@@ -499,8 +523,8 @@ export function NewRideModal({
                     onBlur={() => setPhoneTouched(true)}
                   />
                 </div>
-                {phoneTouched && form.clientPhoneNumber && !isValidPhoneNumber(form.clientPhoneNumber) ? (
-                  <p className="mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("invalidPhone")}</p>
+                {(phoneTouched || submitAttempted) && form.clientPhoneNumber && !isValidPhoneNumber(form.clientPhoneNumber) ? (
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("invalidPhone")}</p>
                 ) : null}
               </div>
               <div>
@@ -513,7 +537,9 @@ export function NewRideModal({
                   onChange={(e) => setForm({ ...form, clientEmail: e.target.value })}
                 />
                 {submitAttempted && !form.clientEmail ? (
-                  <p className="mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                ) : submitAttempted && !isValidEmail(form.clientEmail) ? (
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{t("auth.invalidEmail")}</p>
                 ) : null}
               </div>
             </div>
@@ -555,6 +581,9 @@ export function NewRideModal({
                   locationPlaceholder={tn("locationPlaceholder")}
                   addStopLabel={tn("addStop")}
                   removeStopLabel={tn("removeStop")}
+                  originError={submitAttempted && (!form.pickupCity || !form.pickupLocation)}
+                  destinationError={submitAttempted && (!form.destinationCity || !form.destinationLocation)}
+                  requiredLabel={tn("required")}
                 />
                 <DateTimeRow
                   dateValue={departureDate}
@@ -566,7 +595,7 @@ export function NewRideModal({
                   dateError={submitAttempted && !form.departureAt}
                 />
                 {submitAttempted && !form.departureAt ? (
-                  <p className="pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </LegCard>
 
@@ -659,6 +688,7 @@ export function NewRideModal({
                     value={Number(form.passengerCount) || 1}
                     onChange={(n) => setForm({ ...form, passengerCount: String(n) })}
                     min={1}
+                    max={MAX_PASSENGERS}
                     aria-label={tn("brojPutnika")}
                   />
                 </div>

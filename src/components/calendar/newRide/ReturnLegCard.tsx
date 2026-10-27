@@ -266,7 +266,9 @@ export function ReturnLegCard({
         timePlaceholder={timePlaceholder}
         dateError={Boolean(returnDateError)}
       />
-      {returnDateError ? <p className="pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{returnDateError}</p> : null}
+      {returnDateError ? (
+        <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{returnDateError}</p>
+      ) : null}
 
       <div className="flex items-center gap-1">
         <button type="button" onClick={mode === "mirror" ? goToStopsMode : addCustomStop} className={SHEET_TEXT_BUTTON_CLASS}>

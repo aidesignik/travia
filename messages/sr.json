@@ -460,6 +460,8 @@
       "calculating": "Računam…",
       "cena": "Cena",
       "cenaUkljucujePdv": "Cena uključuje PDV",
+      "emailBelongsToOtherRole": "Ta email adresa je već u upotrebi za drugi tip naloga — koristite drugu adresu.",
+      "carrierNotApproved": "Vaš prevoznički nalog još nije odobren, tako da ne možete kreirati vožnje.",
       "detalji": "Detalji",
       "brojPutnika": "Broj putnika",
       "posebniZahtevi": "Posebni zahtevi",
