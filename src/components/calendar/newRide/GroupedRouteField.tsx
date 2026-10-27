@@ -18,6 +18,7 @@ export function GroupedRouteField({
   removable,
   onRemove,
   removeLabel,
+  error,
 }: {
   cityValue: string;
   onCityChange: (value: string) => void;
@@ -29,12 +30,17 @@ export function GroupedRouteField({
   removable?: boolean;
   onRemove?: () => void;
   removeLabel?: string;
+  error?: boolean;
 }) {
   return (
     // No overflow-hidden here — the divider border doesn't need clipping,
     // and this container also hosts the city combobox's suggestion
     // dropdown, which must be able to render outside these bounds.
-    <div className="flex h-10 min-w-0 flex-1 items-stretch rounded-[8px] border border-[var(--border-control)] transition-shadow duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[0_0_0_3px_var(--action-100)]">
+    <div
+      className={`flex h-10 min-w-0 flex-1 items-stretch rounded-[8px] border transition-shadow duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[0_0_0_3px_var(--action-100)] ${
+        error ? "border-[var(--ink-destructive-ring)]" : "border-[var(--border-control)]"
+      }`}
+    >
       <CityCombobox
         ref={cityRef}
         variant="grouped"

@@ -30,6 +30,9 @@ export function RouteTimeline({
   addStopLabel,
   removeStopLabel,
   maxStops = 5,
+  originError,
+  destinationError,
+  requiredLabel,
 }: {
   originCity: string;
   originLocation: string;
@@ -50,6 +53,12 @@ export function RouteTimeline({
   addStopLabel: string;
   removeStopLabel: string;
   maxStops?: number;
+  // Shown (red border + a "Required" line below) only after a failed
+  // submit — see NewRideModal's onSubmit. Stops are never required, so
+  // only origin/destination get this.
+  originError?: boolean;
+  destinationError?: boolean;
+  requiredLabel?: string;
 }) {
   const stopRefs = useRef<Array<CityComboboxHandle | null>>([]);
   const prevStopCount = useRef(stops.length);
@@ -76,8 +85,12 @@ export function RouteTimeline({
             locationValue={originLocation}
             onLocationChange={onOriginLocationChange}
             locationPlaceholder={locationPlaceholder}
+            error={originError}
           />
         </div>
+        {originError ? (
+          <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{requiredLabel}</p>
+        ) : null}
 
         {stops.map((stop, index) => (
           <div key={index} className="contents">
@@ -126,8 +139,12 @@ export function RouteTimeline({
             locationValue={destinationLocation}
             onLocationChange={onDestinationLocationChange}
             locationPlaceholder={locationPlaceholder}
+            error={destinationError}
           />
         </div>
+        {destinationError ? (
+          <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{requiredLabel}</p>
+        ) : null}
       </div>
 
       {stops.length < maxStops ? (

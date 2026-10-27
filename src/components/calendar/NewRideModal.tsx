@@ -328,7 +328,16 @@ export function NewRideModal({
       (form.isRoundTrip && (!form.returnAt || Boolean(returnAfterOutboundError))) ||
       !form.passengerCount;
     if (invalid) {
-      bodyRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      // Scroll/highlight only takes effect once React has rendered the
+      // field-error text this same setSubmitAttempted(true) just turned
+      // on — a single rAF lands before paint but not necessarily after
+      // React's commit, so two are used to reliably wait for both.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const firstError = bodyRef.current?.querySelector<HTMLElement>(".field-error");
+          firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
       return;
     }
 
@@ -470,7 +479,7 @@ export function NewRideModal({
                   onChange={(e) => setForm({ ...form, clientName: e.target.value })}
                 />
                 {submitAttempted && !form.clientName ? (
-                  <p className="mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </div>
               <div>
@@ -499,8 +508,8 @@ export function NewRideModal({
                     onBlur={() => setPhoneTouched(true)}
                   />
                 </div>
-                {phoneTouched && form.clientPhoneNumber && !isValidPhoneNumber(form.clientPhoneNumber) ? (
-                  <p className="mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("invalidPhone")}</p>
+                {(phoneTouched || submitAttempted) && form.clientPhoneNumber && !isValidPhoneNumber(form.clientPhoneNumber) ? (
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("invalidPhone")}</p>
                 ) : null}
               </div>
               <div>
@@ -513,7 +522,7 @@ export function NewRideModal({
                   onChange={(e) => setForm({ ...form, clientEmail: e.target.value })}
                 />
                 {submitAttempted && !form.clientEmail ? (
-                  <p className="mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </div>
             </div>
@@ -555,6 +564,9 @@ export function NewRideModal({
                   locationPlaceholder={tn("locationPlaceholder")}
                   addStopLabel={tn("addStop")}
                   removeStopLabel={tn("removeStop")}
+                  originError={submitAttempted && (!form.pickupCity || !form.pickupLocation)}
+                  destinationError={submitAttempted && (!form.destinationCity || !form.destinationLocation)}
+                  requiredLabel={tn("required")}
                 />
                 <DateTimeRow
                   dateValue={departureDate}
@@ -566,7 +578,7 @@ export function NewRideModal({
                   dateError={submitAttempted && !form.departureAt}
                 />
                 {submitAttempted && !form.departureAt ? (
-                  <p className="pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </LegCard>
 
