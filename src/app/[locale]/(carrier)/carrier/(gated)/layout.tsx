@@ -107,7 +107,7 @@ export default async function CarrierGatedLayout({
   });
 
   return (
-    <div className="surface-app grid h-dvh grid-cols-[252px_1fr] overflow-hidden">
+    <div className="app-scale surface-app grid h-dvh grid-cols-[252px_1fr] overflow-hidden">
       <CarrierSidebar
         requestCount={requestCount}
         bookingCount={bookingCount}

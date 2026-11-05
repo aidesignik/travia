@@ -237,6 +237,22 @@ h3 {
 /* Surface depth pass — background-image gradients have too many commas
    for Tailwind's arbitrary-value class syntax, so the two gradient
    surfaces get plain classes referencing the tokens above instead. */
+/* Laptop-size screens (e.g. a 14" laptop at 150% Windows scaling leaves
+   about 1280×650 CSS px for the page) render the carrier app at 90%, so
+   more of the calendar fits without changing any proportions. Large
+   monitors and phones are untouched. `zoom` scales viewport units too, so
+   the full-height shell compensates to still reach the bottom edge. Any
+   fixed-position element placed from getBoundingClientRect() must go
+   through lib/cssZoom.ts. */
+@media (min-width: 1024px) and (max-width: 1440px), (min-width: 1024px) and (max-height: 820px) {
+  html:has(.app-scale) {
+    zoom: 0.9;
+  }
+  html:has(.app-scale) .h-dvh {
+    height: calc(100dvh / 0.9);
+  }
+}
+
 .surface-app {
   background-color: var(--surface-app-bg);
   background-image: var(--surface-app-gradient);

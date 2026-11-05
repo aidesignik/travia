@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { toZoomedPosition } from "@/lib/cssZoom";
 import { useTranslations } from "next-intl";
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
@@ -36,7 +37,10 @@ export function RowActionsMenu({ onEdit, deleteUrl }: { onEdit: () => void; dele
     function reposition() {
       const rect = triggerRef.current?.getBoundingClientRect();
       if (!rect) return;
-      setPosition({ top: rect.bottom + 4, left: rect.right - MENU_WIDTH });
+      // Right-aligned to the trigger: convert its on-screen edge first,
+      // then step back the menu's own (CSS-pixel) width.
+      const anchor = toZoomedPosition({ top: rect.bottom + 4, left: rect.right });
+      setPosition({ top: anchor.top, left: anchor.left - MENU_WIDTH });
     }
     reposition();
     window.addEventListener("resize", reposition);
