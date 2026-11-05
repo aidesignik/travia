@@ -593,5 +593,99 @@
       "REJECTED": "Rejected",
       "SUSPENDED": "Suspended"
     }
+  },
+  "landing": {
+    "nav": {
+      "label": "Main",
+      "product": "Product",
+      "howItWorks": "How it works",
+      "operators": "For operators"
+    },
+    "login": "Login",
+    "tryFree": "Try it’s free",
+    "hero": {
+      "eyebrow": "Built for transport operators",
+      "titleLine1": "Plan rides,",
+      "titleLine2": "not spreadsheets.",
+      "body": "Less paperwork. More time for the road. Bring your bookings, drivers and daily operations together in one calm, connected workspace.",
+      "reassurance": "See how Travia fits the way you work.",
+      "videoLabel": "A new ride is created from a booking, a vehicle, a driver and special requests, then appears in the Travia calendar.",
+      "supporting": "Your day, moving together."
+    },
+    "benefits": {
+      "planning": "Simpler ride planning",
+      "connected": "Connected drivers & vehicles",
+      "paperwork": "Paperwork, handled"
+    },
+    "steps": {
+      "title": "Admin? Handled.",
+      "copy": "Operators lose hours every week to double-booking checks, chasing who's free and typing up paperwork. Travia does the admin nobody wants to do.",
+      "calendar": {
+        "title": "See every ride at a glance.",
+        "description": "One calendar for the whole week, by vehicle or by driver, so nothing slips or double-books."
+      },
+      "assign": {
+        "title": "Assign the right vehicle and driver.",
+        "description": "See who's free and which vehicle fits, then assign both in a couple of clicks."
+      },
+      "paperwork": {
+        "title": "Paperwork done for you.",
+        "description": "Confirmations, contracts, invoices and driver sheets are created automatically for every ride."
+      }
+    },
+    "platform": {
+      "title": "Your whole operation on one platform.",
+      "copy": "From the first booking to the final invoice, keep rides, vehicles and drivers connected.",
+      "calendar": {
+        "title": "Plan the week visually.",
+        "description": "See every vehicle's schedule and drag across days to add a ride.",
+        "link": "Explore the calendar"
+      },
+      "bookings": {
+        "title": "Every booking in one list.",
+        "description": "Search, edit or cancel any ride, with its status always up to date.",
+        "link": "Explore bookings"
+      },
+      "fleet": {
+        "title": "Your fleet, organised.",
+        "description": "Seats, plates and availability for every vehicle, in one place.",
+        "link": "Explore fleet"
+      },
+      "drivers": {
+        "title": "Drivers, at a glance.",
+        "description": "Keep driver details together and see who's free before you assign.",
+        "link": "Explore drivers"
+      }
+    },
+    "paperwork": {
+      "title": "Paperwork, sent in a click.",
+      "body": "Email the confirmation, contract and invoice to your client straight from the ride. No attachments to hunt for, no copy and paste.",
+      "cta": "Learn more",
+      "phone": {
+        "inbox": "Inbox",
+        "from": "[Your company]",
+        "subject": "Your booking BKG-2048"
+      }
+    },
+    "audience": {
+      "title": "Made for the people who keep things moving.",
+      "owners": {
+        "label": "Owners",
+        "statement": "See the whole week and every vehicle at a glance."
+      },
+      "dispatchers": {
+        "label": "Dispatchers",
+        "statement": "Assign rides in seconds, without double-booking."
+      },
+      "clients": {
+        "label": "Clients",
+        "statement": "Get confirmations and invoices without having to ask."
+      }
+    },
+    "closing": {
+      "title": "Ready to plan rides, not spreadsheets?",
+      "demo": "Book a demo",
+      "explore": "Explore the platform"
+    }
   }
 }

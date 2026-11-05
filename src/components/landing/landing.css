@@ -1,0 +1,359 @@
+/* Travia landing page — tokens and type styles from the "Travia landing page"
+   Figma design system (Foundations page). Scoped to .lp so none of these
+   names leak into the app's own Atlas tokens in globals.css. */
+
+.lp {
+  /* Text */
+  --text-primary: #0b1b33;
+  --text-secondary: #657080;
+  --text-inverse: #ffffff;
+  --text-inverse-secondary: #a8b5c7;
+  --text-strong: #26364a;
+
+  /* Surface */
+  --surface-page: #ffffff;
+  --surface-muted: #f3f1ea;
+  --surface-inverse: #0b1b33;
+  --surface-inverse-raised: #1b2a48;
+  --surface-inverse-subtle: #1a2a3f;
+  --surface-subtle: #e8eaeb;
+  --surface-accent: #c7e3fc;
+  /* The hero video's own canvas colour, so the frame and video meet with no seam. */
+  --surface-hero-video: #f0f0e7;
+
+  /* Border */
+  --border-default: #e8eaeb;
+  --border-strong: #d7d9db;
+  --border-muted: #dbdcd5;
+  --border-inverse: #26364a;
+  --border-inverse-subtle: #1a2a3f;
+
+  /* Action */
+  --action-primary: #0b1b33;
+  --action-primary-hover: #142a4d;
+  --action-primary-text: #ffffff;
+  --action-secondary: #ffffff;
+  --action-inverse: #ffffff;
+  --action-inverse-text: #0b1b33;
+
+  /* Icon */
+  --icon-default: #0b1b33;
+  --icon-inverse: #ffffff;
+  --icon-success: #3e6552;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  /* Layout */
+  --layout-page-margin: 48px;
+
+  /* Type scale (desktop) */
+  --type-display-size: 72px;
+  --type-display-line-height: 78px;
+  --type-display-tracking: -3px;
+  --type-h2-size: 56px;
+  --type-h2-line-height: 60px;
+  --type-h2-tracking: -2px;
+  --type-h3-size: 36px;
+  --type-h3-line-height: 39px;
+  --type-h3-tracking: -1px;
+  --type-title-size: 24px;
+  --type-title-line-height: 32px;
+  --type-subtitle-size: 22px;
+  --type-subtitle-line-height: 31px;
+  --type-body-lg-size: 18px;
+  --type-body-lg-line-height: 30px;
+  --type-body-size: 15px;
+  --type-body-line-height: 25px;
+
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-ui), "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+@media (max-width: 1023px) {
+  .lp {
+    --layout-page-margin: 32px;
+    --type-display-size: 56px;
+    --type-display-line-height: 62px;
+    --type-display-tracking: -2px;
+    --type-h2-size: 44px;
+    --type-h2-line-height: 50px;
+    --type-h2-tracking: -1.5px;
+    --type-h3-size: 30px;
+    --type-h3-line-height: 36px;
+    --type-title-size: 22px;
+    --type-title-line-height: 30px;
+  }
+}
+
+@media (max-width: 639px) {
+  .lp {
+    --layout-page-margin: 16px;
+    --type-display-size: 42px;
+    --type-display-line-height: 48px;
+    --type-display-tracking: -1.5px;
+    --type-h2-size: 34px;
+    --type-h2-line-height: 40px;
+    --type-h2-tracking: -1px;
+    --type-h3-size: 26px;
+    --type-h3-line-height: 32px;
+    --type-h3-tracking: -0.5px;
+    --type-title-size: 20px;
+    --type-title-line-height: 28px;
+    --type-subtitle-size: 19px;
+    --type-subtitle-line-height: 27px;
+    --type-body-lg-size: 17px;
+    --type-body-lg-line-height: 28px;
+  }
+}
+
+/* ---- Text styles ---- */
+.lp-display,
+.lp-h2,
+.lp-h3 {
+  font-family: var(--font-sora), "Sora", var(--font-ui), sans-serif;
+  font-weight: 600;
+}
+.lp-display {
+  font-size: var(--type-display-size);
+  line-height: var(--type-display-line-height);
+  letter-spacing: var(--type-display-tracking);
+}
+.lp-h2 {
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-line-height);
+  letter-spacing: var(--type-h2-tracking);
+}
+.lp-h3 {
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-line-height);
+  letter-spacing: var(--type-h3-tracking);
+}
+.lp-title {
+  font-size: var(--type-title-size);
+  line-height: var(--type-title-line-height);
+}
+.lp-subtitle {
+  font-size: var(--type-subtitle-size);
+  line-height: var(--type-subtitle-line-height);
+}
+.lp-body-lg {
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-body-lg-line-height);
+}
+.lp-body {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line-height);
+}
+.lp-eyebrow {
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+/* ---- Button (Figma "Button": Large 56 for hero/CTA, Medium 44 for header) ---- */
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 28px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.lp-btn:focus-visible,
+.lp-link:focus-visible,
+.lp-step:focus-visible {
+  outline: 2px solid var(--action-primary);
+  outline-offset: 3px;
+}
+.lp-btn-md {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 14px;
+}
+.lp-btn-primary {
+  background: var(--action-primary);
+  border-color: var(--action-primary);
+  color: var(--action-primary-text);
+}
+.lp-btn-primary:hover {
+  background: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
+}
+.lp-btn-secondary {
+  background: var(--action-secondary);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.lp-btn-secondary:hover {
+  border-color: var(--text-secondary);
+}
+.lp-btn-inverse {
+  background: var(--action-inverse);
+  border-color: var(--action-inverse);
+  color: var(--action-inverse-text);
+}
+.lp-btn-inverse:hover {
+  background: var(--surface-muted);
+  border-color: var(--surface-muted);
+}
+.lp-btn-inverse-outline {
+  background: transparent;
+  border-color: var(--border-inverse);
+  color: var(--text-inverse);
+}
+.lp-btn-inverse-outline:hover {
+  border-color: var(--text-inverse-secondary);
+}
+.lp-inverse .lp-btn:focus-visible {
+  outline-color: var(--action-inverse);
+}
+
+.lp-link {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-primary);
+  border-radius: 2px;
+}
+.lp-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---- Steps rail ---- */
+.lp-step-progress {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* ---- Phone illustration (paperwork section) ----
+   Drawn at the Figma frame's 520px width; every length is in --u, one
+   design pixel, so the phone scales down with its column. */
+.lp-phone-crop {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 520 / 640;
+  overflow: hidden;
+}
+.lp-phone {
+  --u: calc(100cqw / 520);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 520);
+  height: calc(var(--u) * 900);
+  border-radius: calc(var(--u) * 80);
+  background: #262628;
+}
+.lp-phone-screen {
+  position: absolute;
+  left: calc(var(--u) * 14);
+  top: calc(var(--u) * 14);
+  width: calc(var(--u) * 492);
+  height: calc(var(--u) * 886);
+  border-radius: calc(var(--u) * 66);
+  background: #fff;
+}
+.lp-phone-island {
+  position: absolute;
+  left: calc(var(--u) * 161);
+  top: calc(var(--u) * 31);
+  width: calc(var(--u) * 170);
+  height: calc(var(--u) * 46);
+  border-radius: calc(var(--u) * 23);
+  background: #262628;
+}
+.lp-phone-inbox {
+  position: absolute;
+  left: calc(var(--u) * 32);
+  top: calc(var(--u) * 103);
+  font-size: calc(var(--u) * 22);
+  font-weight: 600;
+  color: #73737e;
+  line-height: 1.25;
+}
+.lp-mail {
+  position: absolute;
+  left: calc(var(--u) * 32);
+  width: calc(var(--u) * 428);
+  background: #fff;
+  border-style: solid;
+  border-width: calc(var(--u) * 1.4);
+  border-radius: calc(var(--u) * 24);
+}
+.lp-mail-main {
+  top: calc(var(--u) * 153);
+  height: calc(var(--u) * 270);
+  border-color: #e3e3e7;
+}
+.lp-mail-next {
+  top: calc(var(--u) * 449);
+  height: calc(var(--u) * 84);
+  border-color: #f0f0f2;
+}
+.lp-mail-avatar {
+  position: absolute;
+  left: calc(var(--u) * 22.6);
+  top: calc(var(--u) * 26.6);
+  width: calc(var(--u) * 46);
+  height: calc(var(--u) * 46);
+  border-radius: 50%;
+  background: #d9d9de;
+}
+.lp-mail-from {
+  position: absolute;
+  left: calc(var(--u) * 83.6);
+  top: calc(var(--u) * 24.6);
+  font-size: calc(var(--u) * 20);
+  font-weight: 700;
+  color: #19191d;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.lp-mail-subject {
+  position: absolute;
+  left: calc(var(--u) * 83.6);
+  top: calc(var(--u) * 53.6);
+  font-size: calc(var(--u) * 18);
+  color: #73737e;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.lp-mail-line {
+  position: absolute;
+  left: calc(var(--u) * 22.6);
+  height: calc(var(--u) * 10);
+  border-radius: calc(var(--u) * 5);
+  background: #e4e4e8;
+}
+.lp-mail-chip {
+  position: absolute;
+  height: calc(var(--u) * 42);
+  padding: 0 calc(var(--u) * 12.6);
+  display: flex;
+  align-items: center;
+  background: #f5f5f7;
+  border: calc(var(--u) * 1.4) solid #e3e3e7;
+  border-radius: calc(var(--u) * 12);
+  font-size: calc(var(--u) * 18);
+  font-weight: 600;
+  color: #19191d;
+  white-space: nowrap;
+}

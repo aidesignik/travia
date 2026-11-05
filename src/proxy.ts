@@ -38,6 +38,12 @@ export default async function middleware(request: NextRequest) {
 
   if (!MARKETPLACE_ENABLED && isMarketplacePath(withoutLocale)) {
     const session = await auth();
+    // While the marketplace is off, the root shows the marketing landing
+    // page to signed-out visitors; signed-in users still go straight to
+    // their workspace.
+    if (withoutLocale.length === 0 && !session?.user) {
+      return intlMiddleware(request);
+    }
     const fallbackPath =
       session?.user.role === "ADMIN"
         ? "/admin/carriers"

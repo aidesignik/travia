@@ -593,5 +593,99 @@
       "REJECTED": "Odbijeno",
       "SUSPENDED": "Suspendovano"
     }
+  },
+  "landing": {
+    "nav": {
+      "label": "Glavna navigacija",
+      "product": "Proizvod",
+      "howItWorks": "Kako radi",
+      "operators": "Za prevoznike"
+    },
+    "login": "Prijava",
+    "tryFree": "Isprobajte besplatno",
+    "hero": {
+      "eyebrow": "Napravljeno za prevoznike",
+      "titleLine1": "Planirajte vožnje,",
+      "titleLine2": "ne tabele.",
+      "body": "Manje papirologije. Više vremena za put. Okupite rezervacije, vozače i svakodnevno poslovanje u jednom mirnom, povezanom radnom prostoru.",
+      "reassurance": "Pogledajte kako se Travia uklapa u vaš način rada.",
+      "videoLabel": "Nova vožnja nastaje iz rezervacije, vozila, vozača i posebnih zahteva, a zatim se pojavljuje u Travia kalendaru.",
+      "supporting": "Vaš dan, u pokretu zajedno."
+    },
+    "benefits": {
+      "planning": "Jednostavnije planiranje vožnji",
+      "connected": "Povezani vozači i vozila",
+      "paperwork": "Papirologija rešena"
+    },
+    "steps": {
+      "title": "Administracija? Rešeno.",
+      "copy": "Prevoznici svake nedelje gube sate na proveru duplih rezervacija, traženje slobodnih vozača i kucanje dokumenata. Travia radi administraciju koju niko ne želi da radi.",
+      "calendar": {
+        "title": "Sve vožnje na jedan pogled.",
+        "description": "Jedan kalendar za celu nedelju, po vozilu ili po vozaču, tako da ništa ne promakne niti se dvaput rezerviše."
+      },
+      "assign": {
+        "title": "Dodelite pravo vozilo i vozača.",
+        "description": "Pogledajte ko je slobodan i koje vozilo odgovara, pa ih dodelite u par klikova."
+      },
+      "paperwork": {
+        "title": "Papirologija umesto vas.",
+        "description": "Potvrde, ugovori, fakture i nalozi za vozače se automatski prave za svaku vožnju."
+      }
+    },
+    "platform": {
+      "title": "Celo poslovanje na jednoj platformi.",
+      "copy": "Od prve rezervacije do konačne fakture, vožnje, vozila i vozači ostaju povezani.",
+      "calendar": {
+        "title": "Planirajte nedelju vizuelno.",
+        "description": "Pogledajte raspored svakog vozila i prevucite preko dana da dodate vožnju.",
+        "link": "Istražite kalendar"
+      },
+      "bookings": {
+        "title": "Sve rezervacije na jednoj listi.",
+        "description": "Pretražite, izmenite ili otkažite bilo koju vožnju, uz status koji je uvek ažuran.",
+        "link": "Istražite rezervacije"
+      },
+      "fleet": {
+        "title": "Vaš vozni park, uređen.",
+        "description": "Sedišta, tablice i dostupnost svakog vozila, na jednom mestu.",
+        "link": "Istražite vozni park"
+      },
+      "drivers": {
+        "title": "Vozači na jedan pogled.",
+        "description": "Čuvajte podatke o vozačima na jednom mestu i vidite ko je slobodan pre dodele.",
+        "link": "Istražite vozače"
+      }
+    },
+    "paperwork": {
+      "title": "Papirologija, poslata jednim klikom.",
+      "body": "Pošaljite klijentu potvrdu, ugovor i fakturu direktno iz vožnje. Bez traženja priloga, bez kopiranja.",
+      "cta": "Saznajte više",
+      "phone": {
+        "inbox": "Prijemno sanduče",
+        "from": "[Vaša firma]",
+        "subject": "Vaša rezervacija BKG-2048"
+      }
+    },
+    "audience": {
+      "title": "Za ljude koji drže stvari u pokretu.",
+      "owners": {
+        "label": "Vlasnici",
+        "statement": "Pogledajte celu nedelju i svako vozilo na jedan pogled."
+      },
+      "dispatchers": {
+        "label": "Dispečeri",
+        "statement": "Dodelite vožnje za nekoliko sekundi, bez duplih rezervacija."
+      },
+      "clients": {
+        "label": "Klijenti",
+        "statement": "Dobijte potvrde i fakture bez potrebe da ih tražite."
+      }
+    },
+    "closing": {
+      "title": "Spremni da planirate vožnje, a ne tabele?",
+      "demo": "Zakažite demo",
+      "explore": "Istražite platformu"
+    }
   }
 }
