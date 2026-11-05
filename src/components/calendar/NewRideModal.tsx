@@ -134,6 +134,14 @@ function initialFormState(editValues?: NewRideEditValues, initialValues?: NewRid
   }
   const { clientPhone: initialClientPhone, ...restInitialValues } = initialValues ?? {};
   const initialPhone = splitPhone(initialClientPhone ?? "");
+  // A prefill can carry keys that are present but undefined (a single-day
+  // calendar cell click sends `returnAt: undefined`). Spread as-is, those
+  // would overwrite the blank defaults below with undefined, and the form
+  // crashes the moment it reads one as a string — e.g. switching that
+  // one-way draft to "Round trip" reads returnAt.split("T").
+  const definedInitialValues = Object.fromEntries(
+    Object.entries(restInitialValues).filter(([, value]) => value !== undefined),
+  ) as typeof restInitialValues;
   return {
     clientCompanyName: "",
     clientName: "",
@@ -159,7 +167,7 @@ function initialFormState(editValues?: NewRideEditValues, initialValues?: NewRid
     // whether this figure already has VAT in it. Takes priority over any
     // future auto-suggestion; see quick/route.ts.
     price: "",
-    ...restInitialValues,
+    ...definedInitialValues,
   };
 }
 
