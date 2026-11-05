@@ -9,6 +9,8 @@ import { AvailableOptionCard } from "@/components/forms/AvailableOptionCard";
 import { findAvailableOptions } from "@/lib/matching";
 import { estimateRouteDistance } from "@/lib/tripDistance";
 import { readTripSearchState, tripStateToQueryString } from "@/lib/tripQueryParams";
+import { MARKETPLACE_ENABLED } from "@/config/features";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -17,6 +19,10 @@ export default async function HomePage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
+  // With the marketplace switched off, the root is the operator landing
+  // page (src/proxy.ts sends signed-in users to their workspace instead).
+  if (!MARKETPLACE_ENABLED) return <LandingPage />;
+
   const [t, tHome, session, params] = await Promise.all([
     getTranslations(),
     getTranslations("home"),

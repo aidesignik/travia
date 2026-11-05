@@ -3,8 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // The app connects through the pooled URL; migrations use the direct
+  // (non-pooler) URL, because `prisma migrate` takes a Postgres advisory
+  // lock that a pooled connection can't reliably hold or release.
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ---------- Enums ----------
