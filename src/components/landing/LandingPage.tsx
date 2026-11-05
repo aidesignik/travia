@@ -40,7 +40,7 @@ export async function LandingPage() {
             width={142}
             height={34}
             priority
-            className="h-[28px] w-auto sm:h-[34px]"
+            className="h-[24px] w-auto sm:h-[28px]"
           />
         </Link>
         <nav aria-label={t("nav.label")} className="hidden items-center gap-8 md:flex">
