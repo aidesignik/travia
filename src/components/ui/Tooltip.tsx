@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { toZoomedPosition } from "@/lib/cssZoom";
 
 // A small floating label for an icon-only control that already carries its
 // own aria-label (this is purely a sighted-user hint, not what makes the
@@ -27,7 +28,7 @@ export function Tooltip({ label, children }: { label: string; children: ReactNod
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       const rect = triggerRef.current?.getBoundingClientRect();
-      if (rect) setPosition({ top: rect.top - 6, left: rect.left + rect.width / 2 });
+      if (rect) setPosition(toZoomedPosition({ top: rect.top - 6, left: rect.left + rect.width / 2 }));
       setOpen(true);
     }, 300);
   }
