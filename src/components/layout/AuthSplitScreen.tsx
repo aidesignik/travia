@@ -2,26 +2,18 @@ import type { ReactNode } from "react";
 import { AuthBackgroundVideo } from "./AuthBackgroundVideo";
 import { NewRideShowcase } from "./NewRideShowcase";
 
-// Shared split-screen shell for the login/register pages: the form sits
-// directly on the page background (no shared card/border), a looping
-// "create a ride" showcase (same on both pages, since there's only one
-// audience while the client marketplace is hidden) floats as its own
-// square media panel to the right — a Calendly-style panel standing in
-// for a screen recording, a looping abstract video behind the animated
-// showcase card. Shares Navbar's 1024px/40px(20px) container so the two
-// line up, and vertically centers the row in the remaining viewport
-// height below the 60px header. Below ~900px the columns wrap: form
-// first, square panel full-width underneath.
+// Split-screen shell for the password screens (/forgot-password,
+// /reset-password): the form sits directly on the page background, and a
+// looping "create a ride" showcase floats as its own square media panel
+// to the right — a looping abstract video behind the animated showcase
+// card. (Login and sign-up use AuthCardScreen instead.) Shares Navbar's
+// 1024px/40px(20px) container so the two line up, and vertically centers
+// the row in the remaining viewport height below the 60px header. Below
+// ~900px the columns wrap: form first, square panel full-width underneath.
 //
-// The panel is pinned to a literal 396px — AuthCredentialsForm's own
-// measured content height on /login — rather than sized off either
-// sibling's flex-stretched height. /login, /forgot-password and
-// /reset-password all share this shell but render very different amounts
-// of content; deriving the panel's size from the row's stretch (the
-// original approach) or from the column's own max-width (an earlier,
-// wrong fix here) both made it grow or shrink from page to page. 396px
-// keeps it exactly the size it is on /login, everywhere, always; re-
-// measure AuthCredentialsForm's rendered height if its content changes.
+// The panel is pinned to a literal 396px rather than sized off either
+// sibling's flex-stretched height, so it stays the same size no matter
+// how much content the form column has.
 export async function AuthSplitScreen({ children }: { children: ReactNode }) {
   return (
     // min-h here must stay in sync with the beige container's own min-h in
