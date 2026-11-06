@@ -90,7 +90,14 @@ export async function LandingPage() {
             <p className="mt-4 text-[12px] text-[var(--text-secondary)]">{t("hero.reassurance")}</p>
           </div>
 
-          <div className="mx-auto max-w-[1344px] overflow-hidden rounded-[var(--radius-xl)] bg-[var(--surface-hero-video)]">
+          {/* Sized from the viewport height (16:9, leaving room for the
+              header) so the whole video fits on screen when scrolled to —
+              on a laptop it narrows and centres instead of running off the
+              bottom; on a large monitor it still reaches the full 1344px. */}
+          <div
+            className="mx-auto max-w-[1344px] overflow-hidden rounded-[var(--radius-xl)] bg-[var(--surface-hero-video)]"
+            style={{ width: "min(100%, calc((100svh - 140px) * 16 / 9))" }}
+          >
             <video
               className="block aspect-video w-full object-cover"
               src="/landing/hero.mp4"
