@@ -615,9 +615,9 @@
   "landing": {
     "nav": {
       "label": "Main",
-      "product": "Product",
+      "features": "Features",
       "howItWorks": "How it works",
-      "operators": "For operators"
+      "audience": "Who it's for"
     },
     "login": "Login",
     "tryFree": "Try for free",

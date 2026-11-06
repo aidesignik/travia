@@ -615,9 +615,9 @@
   "landing": {
     "nav": {
       "label": "Glavna navigacija",
-      "product": "Proizvod",
+      "features": "Funkcije",
       "howItWorks": "Kako radi",
-      "operators": "Za prevoznike"
+      "audience": "Za koga je"
     },
     "login": "Prijava",
     "tryFree": "Isprobajte besplatno",
