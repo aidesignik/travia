@@ -330,8 +330,7 @@
   left: calc(var(--u) * 18);
   right: calc(var(--u) * 18);
   top: calc(var(--u) * 88);
-  height: calc(var(--u) * 84);
-  padding: 0 calc(var(--u) * 18);
+  padding: calc(var(--u) * 16) calc(var(--u) * 18);
   display: flex;
   align-items: center;
   gap: calc(var(--u) * 14);
@@ -345,137 +344,108 @@
   height: calc(var(--u) * 48);
   flex-shrink: 0;
   border-radius: calc(var(--u) * 12);
-  background: #2563eb;
-  color: #fff;
+  background: #fff;
+  box-shadow: 0 0 0 calc(var(--u) * 1) rgba(0, 0, 0, .06);
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.lp-ph-notif-ic svg { width: calc(var(--u) * 26); height: calc(var(--u) * 26); }
+.lp-ph-notif-ic img { width: calc(var(--u) * 30); height: calc(var(--u) * 30); }
 .lp-ph-notif-txt { min-width: 0; flex: 1; }
 .lp-ph-notif-txt b { display: block; font-size: calc(var(--u) * 17); font-weight: 700; color: #19191d; }
-.lp-ph-notif-txt span { display: block; margin-top: calc(var(--u) * 2); font-size: calc(var(--u) * 15); color: #3f3f46; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lp-ph-notif-now { align-self: flex-start; margin-top: calc(var(--u) * 20); font-size: calc(var(--u) * 13); color: #8a8a92; }
+.lp-ph-notif-txt span { display: block; margin-top: calc(var(--u) * 2); font-size: calc(var(--u) * 15); line-height: 1.35; color: #3f3f46; }
+.lp-ph-notif-now { align-self: flex-start; margin-top: calc(var(--u) * 2); font-size: calc(var(--u) * 13); color: #8a8a92; }
 
-/* The booking email */
-.lp-ph-mail {
+/* The documents list */
+.lp-ph-docs {
   position: absolute;
-  left: calc(var(--u) * 32);
-  right: calc(var(--u) * 32);
+  left: calc(var(--u) * 26);
+  right: calc(var(--u) * 26);
   top: calc(var(--u) * 150);
-  padding: calc(var(--u) * 22);
   display: flex;
   flex-direction: column;
   gap: calc(var(--u) * 12);
-  background: #fff;
-  border: calc(var(--u) * 1.4) solid #e3e3e7;
-  border-radius: calc(var(--u) * 24);
 }
-.lp-ph-head { display: flex; align-items: center; gap: calc(var(--u) * 14); }
-.lp-ph-head b { display: block; font-size: calc(var(--u) * 19); font-weight: 700; color: #19191d; }
-.lp-ph-head small { display: block; margin-top: calc(var(--u) * 3); font-size: calc(var(--u) * 15.5); color: #73737e; }
-.lp-ph-avatar {
-  width: calc(var(--u) * 46);
-  height: calc(var(--u) * 46);
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2bb4ff, #2f55ff);
-  color: #fff;
+.lp-ph-doc {
+  position: relative;
+  padding: calc(var(--u) * 14) calc(var(--u) * 18);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--u) * 16);
-  font-weight: 700;
-}
-.lp-ph-trip {
-  align-self: flex-start;
-  margin-top: calc(var(--u) * 4);
-  padding: calc(var(--u) * 8) calc(var(--u) * 12);
-  border-radius: calc(var(--u) * 10);
-  background: #f4f4f6;
-  font-size: calc(var(--u) * 14.5);
-  font-weight: 600;
-  color: #3f3f46;
-  white-space: nowrap;
-}
-.lp-ph-line { display: block; height: calc(var(--u) * 10); border-radius: calc(var(--u) * 5); background: #ececef; }
-.lp-ph-file {
-  height: calc(var(--u) * 62);
-  padding: 0 calc(var(--u) * 14);
-  display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: calc(var(--u) * 14);
+  background: #fff;
   border: calc(var(--u) * 1.4) solid #ececef;
-  border-radius: calc(var(--u) * 16);
-  background: #fafafa;
+  border-radius: calc(var(--u) * 20);
 }
-.lp-ph-file-ic {
-  width: calc(var(--u) * 40);
-  height: calc(var(--u) * 40);
+.lp-ph-doc-tile,
+.lp-ph-doc-ava {
+  width: calc(var(--u) * 48);
+  height: calc(var(--u) * 48);
   flex-shrink: 0;
-  border-radius: calc(var(--u) * 11);
+}
+.lp-ph-doc-tile {
+  border-radius: calc(var(--u) * 13);
+  background: #eef0f2;
+  color: #3c4a5c;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.lp-ph-file-ic svg { width: calc(var(--u) * 22); height: calc(var(--u) * 22); }
-.lp-ph-file-txt { flex: 1; min-width: 0; }
-.lp-ph-file-txt b { display: block; font-size: calc(var(--u) * 16); font-weight: 600; color: #19191d; }
-.lp-ph-file-txt small { display: block; margin-top: calc(var(--u) * 2); font-size: calc(var(--u) * 13); color: #8a8f99; }
-.lp-ph-file-dl { width: calc(var(--u) * 20); height: calc(var(--u) * 20); color: #8a8f99; flex-shrink: 0; }
-.lp-ph-sent {
-  align-self: flex-start;
-  height: calc(var(--u) * 36);
-  padding: 0 calc(var(--u) * 14);
+.lp-ph-doc-tile svg { width: calc(var(--u) * 24); height: calc(var(--u) * 24); }
+.lp-ph-doc-txt { flex: 1; min-width: 0; }
+.lp-ph-doc-txt b { display: block; font-size: calc(var(--u) * 17); font-weight: 700; color: #19191d; }
+.lp-ph-doc-txt small { display: block; margin-top: calc(var(--u) * 2); font-size: calc(var(--u) * 14.5); color: #73737e; }
+.lp-ph-doc-chips { position: relative; display: block; margin-top: calc(var(--u) * 8); height: calc(var(--u) * 30); }
+.lp-ph-chip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: calc(var(--u) * 30);
+  padding: 0 calc(var(--u) * 12);
   display: inline-flex;
   align-items: center;
-  gap: calc(var(--u) * 8);
-  border-radius: calc(var(--u) * 18);
-  background: #e8f8ee;
-  color: #16a34a;
-  font-size: calc(var(--u) * 14.5);
+  gap: calc(var(--u) * 7);
+  border-radius: calc(var(--u) * 10);
+  font-size: calc(var(--u) * 14);
   font-weight: 600;
+  white-space: nowrap;
 }
-.lp-ph-sent svg { width: calc(var(--u) * 16); height: calc(var(--u) * 16); }
+.lp-ph-chip i { width: calc(var(--u) * 7); height: calc(var(--u) * 7); border-radius: 50%; background: currentColor; }
+.lp-ph-chip svg { width: calc(var(--u) * 15); height: calc(var(--u) * 15); }
+.lp-ph-chip-ok { background: #e8f8ee; color: #1f7a45; }
+.lp-ph-chip-warn { background: #fdf0d5; color: #8a5512; }
+.lp-ph-chip-bad { background: #fde2e3; color: #a3232f; }
+.lp-ph-chip-renewed { opacity: 0; }
 
-/* The 9-second loop. Each part has its own keyframes (all on the same
-   duration) so the hand-off between loops stays in step. */
+/* The 9-second loop: the reminder drops in, the Setra row pulses, its
+   chip flips to "Renewed", then everything resets for the next pass. */
 @media (prefers-reduced-motion: no-preference) {
   .lp-ph-notif { animation: lp-ph-notif 9s cubic-bezier(.2, .8, .3, 1) infinite both; }
-  .lp-ph-mail { animation: lp-ph-mail 9s ease-out infinite both; }
-  .lp-ph-file-1 { animation: lp-ph-file-1 9s ease-out infinite both; }
-  .lp-ph-file-2 { animation: lp-ph-file-2 9s ease-out infinite both; }
-  .lp-ph-file-3 { animation: lp-ph-file-3 9s ease-out infinite both; }
-  .lp-ph-sent { animation: lp-ph-sent 9s ease-out infinite both; }
+  .lp-ph-doc-renew { animation: lp-ph-pulse 9s ease-in-out infinite both; }
+  .lp-ph-doc-renew .lp-ph-chip-warn { animation: lp-ph-warn-out 9s ease-out infinite both; }
+  .lp-ph-doc-renew .lp-ph-chip-renewed { animation: lp-ph-renewed-in 9s ease-out infinite both; }
 }
 @keyframes lp-ph-notif {
-  0%, 3% { opacity: 0; transform: translateY(-120%); }
-  8%, 26% { opacity: 1; transform: translateY(0); }
-  28.5% { opacity: 0; transform: translateY(-35%) scale(.97); }
-  31%, 100% { opacity: 0; transform: translateY(-120%); }
+  0%, 6% { opacity: 0; transform: translateY(-120%); }
+  11%, 34% { opacity: 1; transform: translateY(0); }
+  36.5% { opacity: 0; transform: translateY(-35%) scale(.97); }
+  39%, 100% { opacity: 0; transform: translateY(-120%); }
 }
-@keyframes lp-ph-mail {
-  0%, 12% { opacity: 0; transform: translateY(calc(var(--u) * 24)) scale(.97); }
-  18%, 88% { opacity: 1; transform: none; }
-  94%, 100% { opacity: 0; transform: none; }
+@keyframes lp-ph-pulse {
+  0%, 36% { transform: none; border-color: #ececef; box-shadow: none; }
+  40% { transform: scale(1.025); border-color: #f2c46d; box-shadow: 0 0 0 calc(var(--u) * 5) rgba(242, 196, 109, .28); }
+  46% { transform: none; border-color: #f2c46d; box-shadow: 0 0 0 calc(var(--u) * 5) rgba(242, 196, 109, .12); }
+  52% { transform: scale(1.02); border-color: #9bdcb3; box-shadow: 0 0 0 calc(var(--u) * 5) rgba(22, 163, 74, .16); }
+  58%, 88% { transform: none; border-color: #bfe8cf; box-shadow: none; }
+  94%, 100% { transform: none; border-color: #ececef; box-shadow: none; }
 }
-@keyframes lp-ph-file-1 {
-  0%, 21% { opacity: 0; transform: translateY(calc(var(--u) * 14)) scale(.94); }
-  24% { opacity: 1; transform: scale(1.02); }
-  27%, 100% { opacity: 1; transform: none; }
+@keyframes lp-ph-warn-out {
+  0%, 49% { opacity: 1; transform: none; }
+  53%, 92% { opacity: 0; transform: translateY(calc(var(--u) * -8)); }
+  97%, 100% { opacity: 1; transform: none; }
 }
-@keyframes lp-ph-file-2 {
-  0%, 27% { opacity: 0; transform: translateY(calc(var(--u) * 14)) scale(.94); }
-  30% { opacity: 1; transform: scale(1.02); }
-  33%, 100% { opacity: 1; transform: none; }
-}
-@keyframes lp-ph-file-3 {
-  0%, 33% { opacity: 0; transform: translateY(calc(var(--u) * 14)) scale(.94); }
-  36% { opacity: 1; transform: scale(1.02); }
-  39%, 100% { opacity: 1; transform: none; }
-}
-@keyframes lp-ph-sent {
-  0%, 43% { opacity: 0; transform: scale(.6); }
-  47% { opacity: 1; transform: scale(1.08); }
-  50%, 100% { opacity: 1; transform: none; }
+@keyframes lp-ph-renewed-in {
+  0%, 50% { opacity: 0; transform: translateY(calc(var(--u) * 8)) scale(.92); }
+  54% { opacity: 1; transform: scale(1.05); }
+  57%, 91% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
 }

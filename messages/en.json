@@ -657,18 +657,33 @@
         "link": "Explore drivers"
       }
     },
-    "paperwork": {
-      "title": "Paperwork, sent in a click.",
-      "body": "Email the confirmation, contract and invoice to your client straight from the ride. No attachments to hunt for, no copy and paste.",
+    "expiry": {
+      "title": "Never miss an expiry.",
+      "body": "Travia tracks registrations and inspections for every vehicle, and licences, CPC cards, ID cards and medical certificates for every driver, then warns you before anything runs out.",
       "cta": "Learn more",
       "phone": {
-        "inbox": "Inbox",
-        "from": "Your company",
-        "subject": "Booking confirmed · BKG-2048",
-        "notification": "Your booking BKG-2048 is confirmed",
+        "title": "Documents",
+        "notification": "Registration for Setra S 515 HD expires in 12 days",
         "now": "now",
-        "trip": "Munich → Berlin · Thu 15 Jun · 09:00",
-        "sentBy": "Sent automatically by Travia"
+        "rows": {
+          "setra": {
+            "doc": "Registration",
+            "status": "Expires in 12 days",
+            "renewed": "Renewed · valid until Jun 2027"
+          },
+          "daniel": {
+            "doc": "Driving licence",
+            "status": "Valid until Mar 2029"
+          },
+          "man": {
+            "doc": "Technical inspection",
+            "status": "Expired 3 days ago"
+          },
+          "marco": {
+            "doc": "Medical certificate",
+            "status": "Valid until Nov 2027"
+          }
+        }
       }
     },
     "audience": {

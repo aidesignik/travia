@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { ArrowUpRight, Bookmark, Bus, CalendarDays, Check, Download, FileText, Mail, Route, User } from "lucide-react";
+import { ArrowUpRight, Bookmark, Bus, CalendarDays, Check, Route, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { StepsSection } from "./StepsSection";
 import "./landing.css";
@@ -19,13 +19,15 @@ const FEATURES = [
 ] as const;
 
 const AUDIENCES = ["owners", "dispatchers", "clients"] as const;
-// The three PDFs in the phone illustration, coloured like the documents
-// elsewhere on the page (and in the app's ride documents).
-const PHONE_FILES = [
-  { name: "Confirmation.pdf", size: "PDF · 84 KB", bg: "#c4f1ec", fg: "#0f6b63" },
-  { name: "Contract.pdf", size: "PDF · 126 KB", bg: "#e6dffb", fg: "#5b3fb0" },
-  { name: "Invoice.pdf", size: "PDF · 62 KB", bg: "#ffe3bf", fg: "#8a5512" },
-];
+// The documents list in the expiry phone illustration: real document
+// kinds the app tracks (vehicle registration/inspection, driver licence,
+// medical certificate), one of each status, and the first one renews.
+const EXPIRY_ROWS = [
+  { key: "setra", name: "Setra S 515 HD", photo: null, status: "warn", renews: true },
+  { key: "daniel", name: "Daniel Reed", photo: "/landing/avatars/daniel-reed.png", status: "ok", renews: false },
+  { key: "man", name: "MAN Lion's Coach", photo: null, status: "bad", renews: false },
+  { key: "marco", name: "Marco Weber", photo: "/landing/avatars/marco-weber.png", status: "ok", renews: false },
+] as const;
 const BENEFITS = ["planning", "connected", "paperwork"] as const;
 const STEPS = [
   { key: "calendar", video: "/landing/step-calendar.mp4", poster: "/landing/step-calendar-poster.jpg" },
@@ -168,22 +170,22 @@ export async function LandingPage() {
           </div>
         </section>
 
-        {/* Paperwork, sent in a click. */}
+        {/* Never miss an expiry. */}
         <section className="px-[var(--layout-page-margin)] pb-20 pt-12 lg:pb-24">
           <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-12 overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-muted)] px-6 pt-14 sm:px-12 lg:aspect-video lg:max-h-[calc(100svh-140px)] lg:w-full lg:flex-row lg:gap-16 lg:px-20 lg:pt-20">
             <div className="flex w-full max-w-[520px] flex-col items-start gap-6 lg:self-center lg:pb-20">
-              <h2 className="lp-h2">{t("paperwork.title")}</h2>
-              <p className="lp-body-lg text-[var(--text-secondary)]">{t("paperwork.body")}</p>
+              <h2 className="lp-h2">{t("expiry.title")}</h2>
+              <p className="lp-body-lg text-[var(--text-secondary)]">{t("expiry.body")}</p>
               <Link href={SIGNUP_HREF} className="lp-link">
-                {t("paperwork.cta")} →
+                {t("expiry.cta")} →
               </Link>
             </div>
             <div className="flex w-full flex-1 justify-center self-end">
-              {/* A short loop of what the client receives: the email
-                  notification drops in, the booking email opens, its three
-                  PDFs land one after another, then it's marked as sent by
-                  Travia. Pure CSS (see .lp-ph-* in landing.css); with
-                  reduced motion it just shows the finished email. */}
+              {/* A short loop on the documents screen: a reminder drops in
+                  for a registration that's about to run out, its row
+                  pulses, then flips to renewed. The list is on screen from
+                  the first frame. Pure CSS (see .lp-ph-* in landing.css);
+                  with reduced motion it shows the list without animating. */}
               <div className="lp-phone-crop" aria-hidden>
                 <div className="lp-phone">
                   <div className="lp-phone-screen">
@@ -195,46 +197,47 @@ export async function LandingPage() {
                       <i style={{ height: "75%" }} />
                       <i style={{ height: "100%" }} />
                     </span>
-                    <p className="lp-phone-inbox">{t("paperwork.phone.inbox")}</p>
+                    <p className="lp-phone-inbox">{t("expiry.phone.title")}</p>
 
                     <div className="lp-ph-notif">
                       <span className="lp-ph-notif-ic">
-                        <Mail aria-hidden strokeWidth={2.2} />
+                        <Image src="/travia-icon.svg" alt="" width={30} height={30} loading="eager" />
                       </span>
                       <span className="lp-ph-notif-txt">
-                        <b>{t("paperwork.phone.from")}</b>
-                        <span>{t("paperwork.phone.notification")}</span>
+                        <b>Travia</b>
+                        <span>{t("expiry.phone.notification")}</span>
                       </span>
-                      <span className="lp-ph-notif-now">{t("paperwork.phone.now")}</span>
+                      <span className="lp-ph-notif-now">{t("expiry.phone.now")}</span>
                     </div>
 
-                    <div className="lp-ph-mail">
-                      <div className="lp-ph-head">
-                        <span className="lp-ph-avatar">YC</span>
-                        <span>
-                          <b>{t("paperwork.phone.from")}</b>
-                          <small>{t("paperwork.phone.subject")}</small>
-                        </span>
-                      </div>
-                      <div className="lp-ph-trip">{t("paperwork.phone.trip")}</div>
-                      <span className="lp-ph-line" style={{ width: "92%" }} />
-                      <span className="lp-ph-line" style={{ width: "64%" }} />
-                      {PHONE_FILES.map((f, i) => (
-                        <div key={f.name} className={`lp-ph-file lp-ph-file-${i + 1}`}>
-                          <span className="lp-ph-file-ic" style={{ background: f.bg, color: f.fg }}>
-                            <FileText aria-hidden strokeWidth={1.9} />
+                    <div className="lp-ph-docs">
+                      {EXPIRY_ROWS.map((row) => (
+                        <div key={row.key} className={`lp-ph-doc${row.renews ? " lp-ph-doc-renew" : ""}`}>
+                          {row.photo ? (
+                            <Image className="lp-ph-doc-ava" src={row.photo} alt="" width={96} height={96} loading="eager" />
+                          ) : (
+                            <span className="lp-ph-doc-tile">
+                              <Bus aria-hidden strokeWidth={1.9} />
+                            </span>
+                          )}
+                          <span className="lp-ph-doc-txt">
+                            <b>{row.name}</b>
+                            <small>{t(`expiry.phone.rows.${row.key}.doc`)}</small>
+                            <span className="lp-ph-doc-chips">
+                              <span className={`lp-ph-chip lp-ph-chip-${row.status}`}>
+                                <i />
+                                {t(`expiry.phone.rows.${row.key}.status`)}
+                              </span>
+                              {row.renews ? (
+                                <span className="lp-ph-chip lp-ph-chip-ok lp-ph-chip-renewed">
+                                  <Check aria-hidden strokeWidth={3} />
+                                  {t(`expiry.phone.rows.${row.key}.renewed`)}
+                                </span>
+                              ) : null}
+                            </span>
                           </span>
-                          <span className="lp-ph-file-txt">
-                            <b>{f.name}</b>
-                            <small>{f.size}</small>
-                          </span>
-                          <Download aria-hidden className="lp-ph-file-dl" strokeWidth={2} />
                         </div>
                       ))}
-                      <div className="lp-ph-sent">
-                        <Check aria-hidden strokeWidth={2.8} />
-                        {t("paperwork.phone.sentBy")}
-                      </div>
                     </div>
                   </div>
                 </div>
