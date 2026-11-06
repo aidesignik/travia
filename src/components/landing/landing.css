@@ -526,3 +526,64 @@
     box-shadow: 0 6px 24px rgba(11, 27, 51, 0.06);
   }
 }
+
+/* "Coming soon" links on the platform cards: they look like the other
+   text links but don't navigate. Hovering, focusing or tapping one shows
+   a small dark pill above it that rises in, with a pointer underneath. */
+.lp-soon {
+  position: relative;
+  display: inline-flex;
+  cursor: default;
+}
+.lp-soon:hover {
+  text-decoration: none;
+}
+.lp-soon-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px 7px 10px;
+  border-radius: 999px;
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(11, 27, 51, 0.18), 0 2px 6px rgba(11, 27, 51, 0.12);
+  opacity: 0;
+  transform: translate(-50%, 6px) scale(0.96);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.lp-soon-tip svg {
+  color: #7dc4ff;
+}
+.lp-soon-tip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--surface-inverse);
+  transform: translate(-50%, -55%) rotate(45deg);
+}
+.lp-soon:hover .lp-soon-tip,
+.lp-soon:focus .lp-soon-tip {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-soon-tip {
+    transition: opacity 0.12s ease;
+    transform: translate(-50%, 0);
+  }
+}

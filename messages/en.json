@@ -626,7 +626,6 @@
       "titleLine1": "Plan rides,",
       "titleLine2": "not spreadsheets.",
       "body": "Less paperwork. More time on the road. Manage bookings, drivers and daily operations in one place.",
-      "reassurance": "See how Travia fits the way you work.",
       "videoLabel": "A new ride is created from a booking, a vehicle, a driver and special requests, then appears in the Travia calendar.",
       "supporting": "Your day, moving together."
     },
@@ -652,6 +651,7 @@
       }
     },
     "platform": {
+      "comingSoon": "Coming soon",
       "title": "Your whole operation on one platform.",
       "copy": "From the first booking to the final invoice, keep rides, vehicles and drivers connected.",
       "calendar": {
