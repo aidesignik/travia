@@ -70,7 +70,7 @@
     "carriers": "Carriers",
     "forCarriers": "For carriers",
     "talkToSales": "Talk to sales",
-    "getStartedFree": "Get started for free"
+    "getStartedFree": "Try for free"
   },
   "home": {
     "title": "Book group transport in minutes.",
@@ -151,7 +151,7 @@
     "signupCardSubtitle": "Start planning rides, vehicles and drivers in one place.",
     "continueWithEmail": "Continue with email",
     "enterEmailPlaceholder": "Enter your work email",
-    "tryFreeLink": "Try it free",
+    "tryFreeLink": "Try for free",
     "loginLink": "Log in",
     "noAccountFoundHint": "There's no account for this email yet. Choose a password to create one.",
     "accountExistsHint": "You already have an account with this email. Enter your password to log in.",
@@ -620,7 +620,7 @@
       "operators": "For operators"
     },
     "login": "Login",
-    "tryFree": "Try it free",
+    "tryFree": "Try for free",
     "hero": {
       "eyebrow": "Built for transport operators",
       "titleLine1": "Plan rides,",

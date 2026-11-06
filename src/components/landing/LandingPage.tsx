@@ -38,8 +38,9 @@ export async function LandingPage() {
 
   return (
     <div className="lp min-h-full">
-      {/* Header */}
-      <header className="flex h-20 items-center justify-between gap-6 px-[var(--layout-page-margin)]">
+      {/* Header: stays pinned while scrolling, with a frosted-glass fill
+          (see .lp-header in landing.css). */}
+      <header className="lp-header sticky top-0 z-50 flex h-20 items-center justify-between gap-6 px-[var(--layout-page-margin)]">
         <Link href="/" aria-label="Travia" className="shrink-0">
           <Image
             src="/travia-logo.svg"
@@ -147,7 +148,7 @@ export async function LandingPage() {
         />
 
         {/* Your whole operation on one platform. */}
-        <section id="platform" className="scroll-mt-6 px-[var(--layout-page-margin)] py-20 lg:py-24">
+        <section id="platform" className="scroll-mt-24 px-[var(--layout-page-margin)] py-20 lg:py-24">
           <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-4 text-center">
             <h2 className="lp-h2 max-w-[760px]">{t("platform.title")}</h2>
             <p className="lp-body-lg max-w-[580px] text-[var(--text-secondary)]">{t("platform.copy")}</p>
@@ -263,7 +264,7 @@ export async function LandingPage() {
         </section>
 
         {/* Made for the people who keep things moving. */}
-        <section id="operators" className="lp-inverse scroll-mt-0 bg-[var(--surface-inverse)] px-[var(--layout-page-margin)] py-20 text-[var(--text-inverse)] lg:py-24">
+        <section id="operators" className="lp-inverse scroll-mt-20 bg-[var(--surface-inverse)] px-[var(--layout-page-margin)] py-20 text-[var(--text-inverse)] lg:py-24">
           <div className="mx-auto flex max-w-[1344px] flex-col gap-14">
             <h2 className="lp-h2 mx-auto max-w-[760px] text-center">{t("audience.title")}</h2>
             <div className="grid gap-6 md:grid-cols-3">

@@ -501,3 +501,28 @@
   34%, 84% { transform: translateY(0); }
   91%, 100% { transform: translateY(110%); }
 }
+
+/* Sticky header glass. Semi-transparent page colour plus a backdrop blur,
+   so content scrolling underneath stays faintly visible but never
+   competes with the nav. The hairline and soft shadow fade in only once
+   the page has scrolled (scroll-driven animation); browsers without
+   scroll timelines simply keep the plain glass bar. */
+.lp-header {
+  background: color-mix(in srgb, var(--surface-page) 72%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
+  border-bottom: 1px solid transparent;
+}
+@supports (animation-timeline: scroll()) {
+  .lp-header {
+    animation: lp-header-scrolled linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 64px;
+  }
+}
+@keyframes lp-header-scrolled {
+  to {
+    border-bottom-color: color-mix(in srgb, var(--border-default) 80%, transparent);
+    box-shadow: 0 6px 24px rgba(11, 27, 51, 0.06);
+  }
+}

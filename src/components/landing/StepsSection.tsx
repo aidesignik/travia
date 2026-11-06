@@ -45,7 +45,7 @@ export function StepsSection({
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-6 px-[var(--layout-page-margin)] pb-20 pt-16 lg:pt-20"
+      className="scroll-mt-24 px-[var(--layout-page-margin)] pb-20 pt-16 lg:pt-20"
     >
       <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-4 text-center">
         <h2 className="lp-h2 max-w-[760px]">{title}</h2>
