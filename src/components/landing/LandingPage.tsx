@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { ArrowUpRight, Bookmark, Bus, CalendarDays, Check, Route, User } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Bookmark, Bus, CalendarDays, Check, ChevronRight, Route, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { StepsSection } from "./StepsSection";
 import "./landing.css";
@@ -19,14 +19,12 @@ const FEATURES = [
 ] as const;
 
 const AUDIENCES = ["owners", "dispatchers", "clients"] as const;
-// The documents list in the expiry phone illustration: real document
-// kinds the app tracks (vehicle registration/inspection, driver licence,
-// medical certificate), one of each status, and the first one renews.
+// The "Needs attention" list in the expiry phone illustration: one driver
+// document and one vehicle document (both kinds the app tracks), and the
+// driver's licence is the one that gets tapped open.
 const EXPIRY_ROWS = [
-  { key: "setra", name: "Setra S 515 HD", photo: null, status: "warn", renews: true },
-  { key: "daniel", name: "Daniel Reed", photo: "/landing/avatars/daniel-reed.png", status: "ok", renews: false },
-  { key: "man", name: "MAN Lion's Coach", photo: null, status: "bad", renews: false },
-  { key: "marco", name: "Marco Weber", photo: "/landing/avatars/marco-weber.png", status: "ok", renews: false },
+  { key: "daniel", name: "Daniel Reed", photo: "/landing/avatars/daniel-reed.png", tapped: true },
+  { key: "setra", name: "Setra S 515 HD", photo: null, tapped: false },
 ] as const;
 const BENEFITS = ["planning", "connected", "paperwork"] as const;
 const STEPS = [
@@ -181,11 +179,11 @@ export async function LandingPage() {
               </Link>
             </div>
             <div className="flex w-full flex-1 justify-center self-end">
-              {/* A short loop on the documents screen: a reminder drops in
-                  for a registration that's about to run out, its row
-                  pulses, then flips to renewed. The list is on screen from
-                  the first frame. Pure CSS (see .lp-ph-* in landing.css);
-                  with reduced motion it shows the list without animating. */}
+              {/* A short loop on a "Needs attention" screen: two documents
+                  expiring soon, a tap on the driver's licence, and its
+                  detail sheet slides up showing it needs an update. Pure
+                  CSS (see .lp-ph-* in landing.css); with reduced motion it
+                  shows the list without animating. */}
               <div className="lp-phone-crop" aria-hidden>
                 <div className="lp-phone">
                   <div className="lp-phone-screen">
@@ -197,22 +195,15 @@ export async function LandingPage() {
                       <i style={{ height: "75%" }} />
                       <i style={{ height: "100%" }} />
                     </span>
-                    <p className="lp-phone-inbox">{t("expiry.phone.title")}</p>
-
-                    <div className="lp-ph-notif">
-                      <span className="lp-ph-notif-ic">
-                        <Image src="/travia-icon.svg" alt="" width={30} height={30} loading="eager" />
-                      </span>
-                      <span className="lp-ph-notif-txt">
-                        <b>Travia</b>
-                        <span>{t("expiry.phone.notification")}</span>
-                      </span>
-                      <span className="lp-ph-notif-now">{t("expiry.phone.now")}</span>
-                    </div>
+                    <p className="lp-phone-inbox lp-ph-attn-title">
+                      {t("expiry.phone.title")}
+                      <span className="lp-ph-count">2</span>
+                    </p>
+                    <p className="lp-ph-attn-sub">{t("expiry.phone.subtitle")}</p>
 
                     <div className="lp-ph-docs">
                       {EXPIRY_ROWS.map((row) => (
-                        <div key={row.key} className={`lp-ph-doc${row.renews ? " lp-ph-doc-renew" : ""}`}>
+                        <div key={row.key} className={`lp-ph-doc${row.tapped ? " lp-ph-doc-tap" : ""}`}>
                           {row.photo ? (
                             <Image className="lp-ph-doc-ava" src={row.photo} alt="" width={96} height={96} loading="eager" />
                           ) : (
@@ -221,23 +212,48 @@ export async function LandingPage() {
                             </span>
                           )}
                           <span className="lp-ph-doc-txt">
-                            <b>{row.name}</b>
-                            <small>{t(`expiry.phone.rows.${row.key}.doc`)}</small>
-                            <span className="lp-ph-doc-chips">
-                              <span className={`lp-ph-chip lp-ph-chip-${row.status}`}>
-                                <i />
-                                {t(`expiry.phone.rows.${row.key}.status`)}
-                              </span>
-                              {row.renews ? (
-                                <span className="lp-ph-chip lp-ph-chip-ok lp-ph-chip-renewed">
-                                  <Check aria-hidden strokeWidth={3} />
-                                  {t(`expiry.phone.rows.${row.key}.renewed`)}
-                                </span>
-                              ) : null}
+                            <b>{t(`expiry.phone.rows.${row.key}.doc`)}</b>
+                            <small>{row.name}</small>
+                            <span className="lp-ph-chip lp-ph-chip-warn">
+                              <i />
+                              {t(`expiry.phone.rows.${row.key}.status`)}
                             </span>
                           </span>
+                          <ChevronRight aria-hidden className="lp-ph-doc-go" strokeWidth={2.2} />
+                          {row.tapped ? <span className="lp-ph-tap" /> : null}
                         </div>
                       ))}
+                    </div>
+
+                    <div className="lp-ph-dim" />
+                    <div className="lp-ph-sheet">
+                      <span className="lp-ph-grab" />
+                      <div className="lp-ph-sheet-head">
+                        <Image className="lp-ph-doc-ava" src="/landing/avatars/daniel-reed.png" alt="" width={96} height={96} loading="eager" />
+                        <span>
+                          <b>{t("expiry.phone.sheet.title")}</b>
+                          <small>Daniel Reed</small>
+                        </span>
+                      </div>
+                      <div className="lp-ph-field">
+                        <span>{t("expiry.phone.sheet.number")}</span>
+                        <b>SRB 0451 2276</b>
+                      </div>
+                      <div className="lp-ph-field">
+                        <span>{t("expiry.phone.sheet.expiry")}</span>
+                        <b>
+                          {t("expiry.phone.sheet.expiryDate")}
+                          <span className="lp-ph-chip lp-ph-chip-warn lp-ph-chip-inline">
+                            <i />
+                            {t("expiry.phone.rows.daniel.status")}
+                          </span>
+                        </b>
+                      </div>
+                      <p className="lp-ph-callout">
+                        <AlertTriangle aria-hidden strokeWidth={2.2} />
+                        {t("expiry.phone.sheet.callout")}
+                      </p>
+                      <span className="lp-ph-btn">{t("expiry.phone.sheet.button")}</span>
                     </div>
                   </div>
                 </div>

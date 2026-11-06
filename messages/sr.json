@@ -662,27 +662,25 @@
       "body": "Travia prati registracije i tehničke preglede za svako vozilo, i vozačke dozvole, CPC kartice, lične karte i lekarska uverenja za svakog vozača, pa vas upozori pre nego što nešto istekne.",
       "cta": "Saznajte više",
       "phone": {
-        "title": "Dokumenta",
-        "notification": "Registracija za Setra S 515 HD ističe za 12 dana",
-        "now": "sada",
+        "title": "Potrebna pažnja",
+        "subtitle": "Ističe u narednih 30 dana",
         "rows": {
-          "setra": {
-            "doc": "Registracija",
-            "status": "Ističe za 12 dana",
-            "renewed": "Obnovljeno · važi do jun 2027"
-          },
           "daniel": {
             "doc": "Vozačka dozvola",
-            "status": "Važi do mar 2029"
+            "status": "Ističe za 12 dana"
           },
-          "man": {
-            "doc": "Tehnički pregled",
-            "status": "Isteklo pre 3 dana"
-          },
-          "marco": {
-            "doc": "Lekarsko uverenje",
-            "status": "Važi do nov 2027"
+          "setra": {
+            "doc": "Registracija",
+            "status": "Ističe za 21 dan"
           }
+        },
+        "sheet": {
+          "title": "Vozačka dozvola",
+          "number": "Broj dozvole",
+          "expiry": "Datum isteka",
+          "expiryDate": "18. jun 2026.",
+          "callout": "Potrebno je ažurirati pre 18. juna. Otpremite obnovljenu dozvolu da bi Daniel ostao dostupan za vožnje.",
+          "button": "Ažuriraj dokument"
         }
       }
     },
