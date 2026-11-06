@@ -663,8 +663,12 @@
       "cta": "Learn more",
       "phone": {
         "inbox": "Inbox",
-        "from": "[Your company]",
-        "subject": "Your booking BKG-2048"
+        "from": "Your company",
+        "subject": "Booking confirmed · BKG-2048",
+        "notification": "Your booking BKG-2048 is confirmed",
+        "now": "now",
+        "trip": "Munich → Berlin · Thu 15 Jun · 09:00",
+        "sentBy": "Sent automatically by Travia"
       }
     },
     "audience": {

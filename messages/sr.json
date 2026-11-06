@@ -663,8 +663,12 @@
       "cta": "Saznajte više",
       "phone": {
         "inbox": "Prijemno sanduče",
-        "from": "[Vaša firma]",
-        "subject": "Vaša rezervacija BKG-2048"
+        "from": "Vaša firma",
+        "subject": "Rezervacija potvrđena · BKG-2048",
+        "notification": "Vaša rezervacija BKG-2048 je potvrđena",
+        "now": "sada",
+        "trip": "Minhen → Berlin · čet 15. jun · 09:00",
+        "sentBy": "Automatski poslato iz Travie"
       }
     },
     "audience": {
