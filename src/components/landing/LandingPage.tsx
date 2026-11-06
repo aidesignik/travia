@@ -40,8 +40,11 @@ export async function LandingPage() {
     <div className="lp min-h-full">
       {/* Header: stays pinned while scrolling, with a frosted-glass fill
           (see .lp-header in landing.css). */}
-      <header className="lp-header sticky top-0 z-50 flex h-20 items-center justify-between gap-6 px-[var(--layout-page-margin)]">
-        <Link href="/" aria-label="Travia" className="shrink-0">
+      {/* Three columns with equal outer tracks, so the menu sits on the
+          page's true centre line (the same axis as the hero) even though
+          the button group on the right is wider than the logo. */}
+      <header className="lp-header sticky top-0 z-50 grid h-20 grid-cols-[1fr_auto_1fr] items-center gap-6 px-[var(--layout-page-margin)]">
+        <Link href="/" aria-label="Travia" className="justify-self-start">
           <Image
             src="/travia-logo.svg"
             alt="Travia"
@@ -64,7 +67,7 @@ export async function LandingPage() {
             {t("nav.audience")}
           </a>
         </nav>
-        <div className="flex items-center gap-5 sm:gap-7">
+        <div className="col-start-3 flex items-center justify-self-end gap-5 sm:gap-7">
           <Link href={LOGIN_HREF} className="lp-link">
             {t("login")}
           </Link>
