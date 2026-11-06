@@ -6,8 +6,8 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-// Same control sizing as AuthCredentialsForm, so this screen's input/button
-// line up with the login form it links back to.
+// 42px controls, sized for the split-screen layout this page still uses
+// (the login and sign-up cards use their own 52px controls).
 const CONTROL_STYLE = { height: 42, borderRadius: 10 } as const;
 
 export function ForgotPasswordForm() {

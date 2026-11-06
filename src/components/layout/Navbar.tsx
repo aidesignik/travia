@@ -18,12 +18,16 @@ export async function Navbar({
   // new and returning users, and the email flow below is the same either
   // way) without losing those two.
   showCta = true,
+  // An outlined "Log in" button in that same row — for the sign-up and
+  // password screens, where the visitor may already have an account.
+  showLoginButton = false,
 }: {
   containerClassName?: string;
   hideLoginLink?: boolean;
   showDivider?: boolean;
   showMarketingCta?: boolean;
   showCta?: boolean;
+  showLoginButton?: boolean;
 } = {}) {
   const [session, t, tNav] = await Promise.all([
     auth(),
@@ -63,8 +67,8 @@ export async function Navbar({
               <LocaleSwitcher variant="menu" />
               <a
                 href="mailto:sales@travia.example"
-                className={`flex h-9 items-center rounded-[8px] px-[10px] text-[14px] font-medium leading-5 text-[var(--ink-2)] transition-colors hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)] ${
-                  showCta ? "ml-1" : "ml-2"
+                className={`hidden h-9 items-center whitespace-nowrap rounded-[8px] px-[10px] text-[14px] font-medium leading-5 sm:flex text-[var(--ink-2)] transition-colors hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)] ${
+                  showCta || showLoginButton ? "ml-1" : "ml-2"
                 }`}
               >
                 {tNav("talkToSales")}
@@ -72,9 +76,17 @@ export async function Navbar({
               {showCta ? (
                 <Link
                   href="/register/carrier"
-                  className="ml-2 flex h-9 items-center rounded-[8px] bg-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-white transition-colors hover:bg-[var(--ink-hover)]"
+                  className="ml-2 flex h-9 items-center whitespace-nowrap rounded-[8px] bg-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-white transition-colors hover:bg-[var(--ink-hover)]"
                 >
                   {tNav("getStartedFree")}
+                </Link>
+              ) : null}
+              {showLoginButton ? (
+                <Link
+                  href="/login"
+                  className="ml-2 flex h-9 items-center whitespace-nowrap rounded-[8px] border border-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-[var(--ink)] transition-colors hover:bg-[var(--bg-subtle)]"
+                >
+                  {tNav("login")}
                 </Link>
               ) : null}
             </div>

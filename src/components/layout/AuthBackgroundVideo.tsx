@@ -5,6 +5,9 @@ export function AuthBackgroundVideo({ className }: { className?: string }) {
     <video
       className={className}
       src="/auth/background.mp4"
+      // First frame as a still: shown while the video loads, when the
+      // browser can't play it, and for reduced-motion visitors.
+      poster="/auth/background-poster.jpg"
       loop
       muted
       playsInline

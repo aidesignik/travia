@@ -1,13 +1,20 @@
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 
-// Shared shell for every (auth)-group page (login, register, the combined
-// register/carrier screen) — the 60px header plus the inset beige content
-// container. Pulled out of layout.tsx so a route that needs a different
-// Navbar config (register/carrier hides the "Get started" CTA — see its
-// own layout.tsx) can still reuse the exact same shell instead of
-// duplicating it.
-export function AuthPageChrome({ children, showCta = true }: { children: ReactNode; showCta?: boolean }) {
+// Shared shell for every auth page (login, sign-up, password reset) — the
+// 60px header plus the inset beige content container. Pulled out of
+// layout.tsx so a route group that needs a different header (sign-up
+// swaps "Get started" for "Log in" — see (auth-continue)/layout.tsx) can
+// still reuse the exact same shell instead of duplicating it.
+export function AuthPageChrome({
+  children,
+  showCta = true,
+  showLoginButton = false,
+}: {
+  children: ReactNode;
+  showCta?: boolean;
+  showLoginButton?: boolean;
+}) {
   return (
     <div className="min-h-screen bg-white">
       <Navbar
@@ -16,6 +23,7 @@ export function AuthPageChrome({ children, showCta = true }: { children: ReactNo
         showDivider={false}
         showMarketingCta
         showCta={showCta}
+        showLoginButton={showLoginButton}
       />
       {/* Bottom margin matches the side margins (mx-4/mx-6) so the beige
           container is inset on all three edges, not just flush to the
