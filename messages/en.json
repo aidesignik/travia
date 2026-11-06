@@ -651,6 +651,7 @@
       }
     },
     "platform": {
+      "comingSoon": "Coming soon",
       "title": "Your whole operation on one platform.",
       "copy": "From the first booking to the final invoice, keep rides, vehicles and drivers connected.",
       "calendar": {

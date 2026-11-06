@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { AlertTriangle, ArrowUpRight, Bookmark, Bus, CalendarDays, Check, ChevronRight, Route, User } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Bookmark, Bus, CalendarDays, Check, ChevronRight, Route, Sparkles, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { StepsSection } from "./StepsSection";
 import "./landing.css";
@@ -162,9 +162,21 @@ export async function LandingPage() {
                 </span>
                 <h3 className="lp-subtitle font-bold">{t(`platform.${key}.title`)}</h3>
                 <p className="lp-body text-[var(--text-secondary)]">{t(`platform.${key}.description`)}</p>
-                <Link href={SIGNUP_HREF} className="lp-link">
+                {/* These feature pages don't exist yet: the link is inert and
+                    shows a "Coming soon" tooltip on hover, focus or tap. */}
+                <span
+                  role="link"
+                  aria-disabled="true"
+                  tabIndex={0}
+                  aria-describedby={`lp-soon-${key}`}
+                  className="lp-link lp-soon"
+                >
                   {t(`platform.${key}.link`)} →
-                </Link>
+                  <span id={`lp-soon-${key}`} role="tooltip" className="lp-soon-tip">
+                    <Sparkles aria-hidden size={13} strokeWidth={2.2} />
+                    {t("platform.comingSoon")}
+                  </span>
+                </span>
               </article>
             ))}
           </div>
