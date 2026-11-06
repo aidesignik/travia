@@ -19,7 +19,7 @@
   --surface-subtle: #e8eaeb;
   --surface-accent: #c7e3fc;
   /* The hero video's own canvas colour, so the frame and video meet with no seam. */
-  --surface-hero-video: #f0f0e7;
+  --surface-hero-video: #f2f2e8;
 
   /* Border */
   --border-default: #e8eaeb;
