@@ -657,18 +657,33 @@
         "link": "Istražite vozače"
       }
     },
-    "paperwork": {
-      "title": "Papirologija, poslata jednim klikom.",
-      "body": "Pošaljite klijentu potvrdu, ugovor i fakturu direktno iz vožnje. Bez traženja priloga, bez kopiranja.",
+    "expiry": {
+      "title": "Nijedan rok neće promaći.",
+      "body": "Travia prati registracije i tehničke preglede za svako vozilo, i vozačke dozvole, CPC kartice, lične karte i lekarska uverenja za svakog vozača, pa vas upozori pre nego što nešto istekne.",
       "cta": "Saznajte više",
       "phone": {
-        "inbox": "Prijemno sanduče",
-        "from": "Vaša firma",
-        "subject": "Rezervacija potvrđena · BKG-2048",
-        "notification": "Vaša rezervacija BKG-2048 je potvrđena",
+        "title": "Dokumenta",
+        "notification": "Registracija za Setra S 515 HD ističe za 12 dana",
         "now": "sada",
-        "trip": "Minhen → Berlin · čet 15. jun · 09:00",
-        "sentBy": "Automatski poslato iz Travie"
+        "rows": {
+          "setra": {
+            "doc": "Registracija",
+            "status": "Ističe za 12 dana",
+            "renewed": "Obnovljeno · važi do jun 2027"
+          },
+          "daniel": {
+            "doc": "Vozačka dozvola",
+            "status": "Važi do mar 2029"
+          },
+          "man": {
+            "doc": "Tehnički pregled",
+            "status": "Isteklo pre 3 dana"
+          },
+          "marco": {
+            "doc": "Lekarsko uverenje",
+            "status": "Važi do nov 2027"
+          }
+        }
       }
     },
     "audience": {
