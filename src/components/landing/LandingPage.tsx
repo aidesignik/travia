@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { ArrowUpRight, Bookmark, Bus, CalendarDays, Check, Route, User } from "lucide-react";
+import { ArrowUpRight, Bookmark, Bus, CalendarDays, Check, Download, FileText, Mail, Route, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { StepsSection } from "./StepsSection";
 import "./landing.css";
@@ -19,6 +19,13 @@ const FEATURES = [
 ] as const;
 
 const AUDIENCES = ["owners", "dispatchers", "clients"] as const;
+// The three PDFs in the phone illustration, coloured like the documents
+// elsewhere on the page (and in the app's ride documents).
+const PHONE_FILES = [
+  { name: "Confirmation.pdf", size: "PDF · 84 KB", bg: "#c4f1ec", fg: "#0f6b63" },
+  { name: "Contract.pdf", size: "PDF · 126 KB", bg: "#e6dffb", fg: "#5b3fb0" },
+  { name: "Invoice.pdf", size: "PDF · 62 KB", bg: "#ffe3bf", fg: "#8a5512" },
+];
 const BENEFITS = ["planning", "connected", "paperwork"] as const;
 const STEPS = [
   { key: "calendar", video: "/landing/step-calendar.mp4", poster: "/landing/step-calendar-poster.jpg" },
@@ -172,36 +179,62 @@ export async function LandingPage() {
               </Link>
             </div>
             <div className="flex w-full flex-1 justify-center self-end">
+              {/* A short loop of what the client receives: the email
+                  notification drops in, the booking email opens, its three
+                  PDFs land one after another, then it's marked as sent by
+                  Travia. Pure CSS (see .lp-ph-* in landing.css); with
+                  reduced motion it just shows the finished email. */}
               <div className="lp-phone-crop" aria-hidden>
                 <div className="lp-phone">
                   <div className="lp-phone-screen">
                     <div className="lp-phone-island" />
+                    <span className="lp-ph-time">9:41</span>
+                    <span className="lp-ph-bars">
+                      <i style={{ height: "35%" }} />
+                      <i style={{ height: "55%" }} />
+                      <i style={{ height: "75%" }} />
+                      <i style={{ height: "100%" }} />
+                    </span>
                     <p className="lp-phone-inbox">{t("paperwork.phone.inbox")}</p>
-                    <div className="lp-mail lp-mail-main">
-                      <span className="lp-mail-avatar" />
-                      <p className="lp-mail-from">{t("paperwork.phone.from")}</p>
-                      <p className="lp-mail-subject">{t("paperwork.phone.subject")}</p>
-                      <span className="lp-mail-line" style={{ top: "calc(var(--u) * 90.6)", width: "calc(var(--u) * 380)" }} />
-                      <span className="lp-mail-line" style={{ top: "calc(var(--u) * 116.6)", width: "calc(var(--u) * 304)" }} />
-                      <span className="lp-mail-chip" style={{ left: "calc(var(--u) * 22.6)", top: "calc(var(--u) * 148.6)" }}>
-                        Confirmation.pdf
+
+                    <div className="lp-ph-notif">
+                      <span className="lp-ph-notif-ic">
+                        <Mail aria-hidden strokeWidth={2.2} />
                       </span>
-                      <span className="lp-mail-chip" style={{ left: "calc(var(--u) * 213.6)", top: "calc(var(--u) * 148.6)" }}>
-                        Contract.pdf
+                      <span className="lp-ph-notif-txt">
+                        <b>{t("paperwork.phone.from")}</b>
+                        <span>{t("paperwork.phone.notification")}</span>
                       </span>
-                      <span className="lp-mail-chip" style={{ left: "calc(var(--u) * 22.6)", top: "calc(var(--u) * 200.6)" }}>
-                        Invoice.pdf
-                      </span>
+                      <span className="lp-ph-notif-now">{t("paperwork.phone.now")}</span>
                     </div>
-                    <div className="lp-mail lp-mail-next">
-                      <span
-                        className="lp-mail-line"
-                        style={{ top: "calc(var(--u) * 23.6)", width: "calc(var(--u) * 190)", height: "calc(var(--u) * 11)" }}
-                      />
-                      <span
-                        className="lp-mail-line"
-                        style={{ top: "calc(var(--u) * 46.6)", width: "calc(var(--u) * 322)", height: "calc(var(--u) * 11)", background: "#f4f4f6" }}
-                      />
+
+                    <div className="lp-ph-mail">
+                      <div className="lp-ph-head">
+                        <span className="lp-ph-avatar">YC</span>
+                        <span>
+                          <b>{t("paperwork.phone.from")}</b>
+                          <small>{t("paperwork.phone.subject")}</small>
+                        </span>
+                      </div>
+                      <div className="lp-ph-trip">{t("paperwork.phone.trip")}</div>
+                      <span className="lp-ph-line" style={{ width: "92%" }} />
+                      <span className="lp-ph-line" style={{ width: "64%" }} />
+                      {PHONE_FILES.map((f, i) => (
+                        <div key={f.name} className={`lp-ph-file lp-ph-file-${i + 1}`}>
+                          <span className="lp-ph-file-ic" style={{ background: f.bg, color: f.fg }}>
+                            <FileText aria-hidden strokeWidth={1.9} />
+                          </span>
+                          <span className="lp-ph-file-txt">
+                            <b>{f.name}</b>
+                            <small>{f.size}</small>
+                          </span>
+                          <Download aria-hidden className="lp-ph-file-dl" strokeWidth={2} />
+                        </div>
+                      ))}
+                      <div className="lp-ph-sent">
+                        <Check aria-hidden strokeWidth={2.8} />
+                        {t("paperwork.phone.sentBy")}
+                      </div>
                     </div>
                   </div>
                 </div>
