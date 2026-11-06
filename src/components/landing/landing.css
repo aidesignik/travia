@@ -252,6 +252,15 @@
   aspect-ratio: 520 / 640;
   overflow: hidden;
 }
+/* On desktop the paperwork panel matches the hero video panel's height
+   (16:9, capped to the viewport), so the phone shrinks with it: its
+   width is held to what fits between the panel's top padding (80px) and
+   bottom edge, keeping the same amount of phone on show. */
+@media (min-width: 1024px) {
+  .lp-phone-crop {
+    max-width: min(520px, calc((100svh - 140px - 80px) * 520 / 640));
+  }
+}
 .lp-phone {
   --u: calc(100cqw / 520);
   position: absolute;

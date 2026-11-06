@@ -170,7 +170,7 @@ export async function LandingPage() {
 
         {/* Paperwork, sent in a click. */}
         <section className="px-[var(--layout-page-margin)] pb-20 pt-12 lg:pb-24">
-          <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-12 overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-muted)] px-6 pt-14 sm:px-12 lg:h-[720px] lg:flex-row lg:gap-16 lg:px-20 lg:pt-20">
+          <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-12 overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-muted)] px-6 pt-14 sm:px-12 lg:aspect-video lg:max-h-[calc(100svh-140px)] lg:w-full lg:flex-row lg:gap-16 lg:px-20 lg:pt-20">
             <div className="flex w-full max-w-[520px] flex-col items-start gap-6 lg:self-center lg:pb-20">
               <h2 className="lp-h2">{t("paperwork.title")}</h2>
               <p className="lp-body-lg text-[var(--text-secondary)]">{t("paperwork.body")}</p>
