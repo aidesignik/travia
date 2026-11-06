@@ -662,27 +662,25 @@
       "body": "Travia tracks registrations and inspections for every vehicle, and licences, CPC cards, ID cards and medical certificates for every driver, then warns you before anything runs out.",
       "cta": "Learn more",
       "phone": {
-        "title": "Documents",
-        "notification": "Registration for Setra S 515 HD expires in 12 days",
-        "now": "now",
+        "title": "Needs attention",
+        "subtitle": "Expiring in the next 30 days",
         "rows": {
-          "setra": {
-            "doc": "Registration",
-            "status": "Expires in 12 days",
-            "renewed": "Renewed · valid until Jun 2027"
-          },
           "daniel": {
             "doc": "Driving licence",
-            "status": "Valid until Mar 2029"
+            "status": "Expires in 12 days"
           },
-          "man": {
-            "doc": "Technical inspection",
-            "status": "Expired 3 days ago"
-          },
-          "marco": {
-            "doc": "Medical certificate",
-            "status": "Valid until Nov 2027"
+          "setra": {
+            "doc": "Registration",
+            "status": "Expires in 21 days"
           }
+        },
+        "sheet": {
+          "title": "Driving licence",
+          "number": "Licence number",
+          "expiry": "Expiry date",
+          "expiryDate": "18 Jun 2026",
+          "callout": "Needs an update before 18 Jun. Upload the renewed licence to keep Daniel available for rides.",
+          "button": "Update document"
         }
       }
     },
