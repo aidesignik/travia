@@ -97,7 +97,6 @@ export async function LandingPage() {
                 {t("login")}
               </Link>
             </div>
-            <p className="mt-4 text-[12px] text-[var(--text-secondary)]">{t("hero.reassurance")}</p>
           </div>
 
           {/* Same width and corners as the other full-width section panels
