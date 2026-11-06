@@ -37,7 +37,7 @@ export async function LandingPage() {
           <Image
             src="/travia-logo.svg"
             alt="Travia"
-            width={142}
+            width={134}
             height={34}
             priority
             className="h-[24px] w-auto sm:h-[28px]"
