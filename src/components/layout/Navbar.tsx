@@ -11,7 +11,7 @@ export async function Navbar({
   hideLoginLink = false,
   showDivider = true,
   showMarketingCta = false,
-  // The "Get started for free" CTA within the marketing-CTA row — kept
+  // The "Try for free" CTA within the marketing-CTA row — kept
   // separate from showMarketingCta itself so a page can still show the
   // language switcher + "Talk to sales" (e.g. the combined sign-in/sign-up
   // screen, where "Get started" doesn't fit: Google already covers both
