@@ -718,9 +718,7 @@
       }
     },
     "closing": {
-      "title": "Spremni da planirate vožnje, a ne tabele?",
-      "demo": "Zakažite demo",
-      "explore": "Istražite platformu"
+      "title": "Spremni da planirate vožnje, a ne tabele?"
     }
   }
 }

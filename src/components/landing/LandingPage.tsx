@@ -283,11 +283,12 @@ export async function LandingPage() {
               <h2 className="lp-h3 max-w-[1000px]">{t("closing.title")}</h2>
               <div className="flex flex-wrap justify-center gap-3">
                 <Link href={SIGNUP_HREF} className="lp-btn lp-btn-inverse">
-                  {t("closing.demo")}
+                  {t("tryFree")}
+                  <ArrowUpRight aria-hidden size={18} strokeWidth={2} />
                 </Link>
-                <a href="#how-it-works" className="lp-btn lp-btn-inverse-outline">
-                  {t("closing.explore")}
-                </a>
+                <Link href={LOGIN_HREF} className="lp-btn lp-btn-inverse-outline">
+                  {t("login")}
+                </Link>
               </div>
             </div>
           </div>
