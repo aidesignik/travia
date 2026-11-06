@@ -90,16 +90,16 @@ export async function LandingPage() {
             <p className="mt-4 text-[12px] text-[var(--text-secondary)]">{t("hero.reassurance")}</p>
           </div>
 
-          {/* Sized from the viewport height (16:9, leaving room for the
-              header) so the whole video fits on screen when scrolled to —
-              on a laptop it narrows and centres instead of running off the
-              bottom; on a large monitor it still reaches the full 1344px. */}
-          <div
-            className="mx-auto max-w-[1344px] overflow-hidden rounded-[var(--radius-xl)] bg-[var(--surface-hero-video)]"
-            style={{ width: "min(100%, calc((100svh - 140px) * 16 / 9))" }}
-          >
+          {/* Same width and corners as the other full-width section panels
+              (e.g. "Paperwork, sent in a click."), but its height is capped
+              to the viewport (leaving room for the header) so the whole
+              panel fits on screen when scrolled to. When the cap kicks in,
+              the 16:9 video stays whole and centred; the panel colour
+              matches the video's own background, so the extra space at its
+              sides reads as part of the scene. */}
+          <div className="mx-auto aspect-video max-h-[calc(100svh-140px)] w-full max-w-[1344px] overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-hero-video)]">
             <video
-              className="block aspect-video w-full object-cover"
+              className="block h-full w-full object-contain"
               src="/landing/hero.mp4"
               poster="/landing/hero-poster.jpg"
               autoPlay
