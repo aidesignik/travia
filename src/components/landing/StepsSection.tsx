@@ -88,7 +88,7 @@ export function StepsSection({
                         <span className="block h-[2px] overflow-hidden">
                           <span
                             ref={trackRef}
-                            className="lp-step-progress block h-full w-full bg-[var(--surface-inverse)]"
+                            className="lp-step-progress block h-full w-full bg-[linear-gradient(90deg,#2BB4FF_0%,#2F55FF_100%)]"
                           />
                         </span>
                         <span className="block h-px bg-[var(--border-default)]" />
@@ -105,7 +105,7 @@ export function StepsSection({
           id="lp-step-panel"
           role="tabpanel"
           aria-labelledby={`lp-step-${active}`}
-          className="relative aspect-[788/504] w-full overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-muted)] bg-[var(--surface-muted)] lg:max-w-[788px]"
+          className="relative aspect-[788/504] w-full overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-muted)] bg-[var(--surface-muted)] lg:max-w-[700px]"
         >
           <video
             key={step.video}
