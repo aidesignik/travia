@@ -52,14 +52,16 @@ export async function LandingPage() {
           />
         </Link>
         <nav aria-label={t("nav.label")} className="hidden items-center gap-8 md:flex">
-          <a href="#platform" className="text-[14px] font-medium text-[var(--text-strong)] hover:text-[var(--text-primary)]">
-            {t("nav.product")}
-          </a>
+          {/* In page order: the three steps, the feature overview, then
+              the "who it's for" section. */}
           <a href="#how-it-works" className="text-[14px] font-medium text-[var(--text-strong)] hover:text-[var(--text-primary)]">
             {t("nav.howItWorks")}
           </a>
+          <a href="#platform" className="text-[14px] font-medium text-[var(--text-strong)] hover:text-[var(--text-primary)]">
+            {t("nav.features")}
+          </a>
           <a href="#operators" className="text-[14px] font-medium text-[var(--text-strong)] hover:text-[var(--text-primary)]">
-            {t("nav.operators")}
+            {t("nav.audience")}
           </a>
         </nav>
         <div className="flex items-center gap-5 sm:gap-7">
@@ -283,11 +285,12 @@ export async function LandingPage() {
               <h2 className="lp-h3 max-w-[1000px]">{t("closing.title")}</h2>
               <div className="flex flex-wrap justify-center gap-3">
                 <Link href={SIGNUP_HREF} className="lp-btn lp-btn-inverse">
-                  {t("closing.demo")}
+                  {t("tryFree")}
+                  <ArrowUpRight aria-hidden size={18} strokeWidth={2} />
                 </Link>
-                <a href="#how-it-works" className="lp-btn lp-btn-inverse-outline">
-                  {t("closing.explore")}
-                </a>
+                <Link href={LOGIN_HREF} className="lp-btn lp-btn-inverse-outline">
+                  {t("login")}
+                </Link>
               </div>
             </div>
           </div>

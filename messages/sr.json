@@ -615,9 +615,9 @@
   "landing": {
     "nav": {
       "label": "Glavna navigacija",
-      "product": "Proizvod",
+      "features": "Funkcije",
       "howItWorks": "Kako radi",
-      "operators": "Za prevoznike"
+      "audience": "Za koga je"
     },
     "login": "Prijava",
     "tryFree": "Isprobajte besplatno",
@@ -718,9 +718,7 @@
       }
     },
     "closing": {
-      "title": "Spremni da planirate vožnje, a ne tabele?",
-      "demo": "Zakažite demo",
-      "explore": "Istražite platformu"
+      "title": "Spremni da planirate vožnje, a ne tabele?"
     }
   }
 }
