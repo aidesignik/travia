@@ -15,8 +15,17 @@ export function createBlobStore(prefix: string) {
     return blobs.find((b) => b.pathname === target)?.url ?? null;
   }
 
+  // Same pathname on every save, so a re-save (a ride's documents are
+  // regenerated after each edit) has to overwrite: Vercel Blob refuses to
+  // replace an existing pathname unless allowOverwrite is set. The short
+  // cache lifetime keeps a replaced file from being served stale.
   async function save(filename: string, buffer: Buffer): Promise<void> {
-    await put(pathname(filename), buffer, { access: "public", addRandomSuffix: false });
+    await put(pathname(filename), buffer, {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 60,
+    });
   }
 
   async function read(filename: string): Promise<Buffer> {
