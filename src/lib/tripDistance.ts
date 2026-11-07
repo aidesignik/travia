@@ -3,6 +3,7 @@ import { osrmRouteDistanceKm, haversineRouteDistanceKm, haversineKm, type Coordi
 import { formatLocation, type CityLocation } from "./location";
 import { resolveReturnLeg } from "./rideReturnLeg";
 import { findCityCoordinates } from "./citySearch";
+import { googleRouteDistanceKm } from "./googleMaps";
 
 // A generic/ambiguous location name (e.g. "Hotel") can geocode to an
 // unrelated place of the same name elsewhere in the (Nominatim-scoped)
@@ -14,9 +15,19 @@ const MAX_LOCATION_DRIFT_KM = 60;
 
 export interface RouteEstimate {
   distanceKm: number;
-  provider: "osrm" | "stub-haversine";
-  /** Geocoded coordinates in the same order as the input waypoints, for callers that want to cache them. */
+  provider: "google" | "osrm" | "stub-haversine";
+  /**
+   * Geocoded coordinates in the same order as the input waypoints, for
+   * callers that want to cache them. Empty for Google routes: Google's terms
+   * don't allow keeping its coordinates, and none are requested.
+   */
   coordinates: Coordinates[];
+  /**
+   * True when at least one waypoint's exact location couldn't be found and
+   * its city centre was used instead — the figure is then only a rough
+   * estimate (badly so for a ride inside one city), and the UI says so.
+   */
+  approximate: boolean;
 }
 
 /**
@@ -51,49 +62,68 @@ async function geocodeCity(city: string): Promise<Coordinates | null> {
  * unrelated place with the same name instead of failing outright, so a
  * "successful" geocode isn't on its own proof the match is correct.
  */
-async function geocodeWaypoint(waypoint: CityLocation): Promise<Coordinates | null> {
-  if (!waypoint.location) return geocodeCity(waypoint.city);
+async function geocodeWaypoint(
+  waypoint: CityLocation,
+): Promise<{ coords: Coordinates; approximate: boolean } | null> {
+  if (!waypoint.location) {
+    const city = await geocodeCity(waypoint.city);
+    return city ? { coords: city, approximate: false } : null;
+  }
 
   const specific = await geocodeAddress(formatLocation(waypoint));
   const cityOnly = await geocodeCity(waypoint.city);
-  if (!specific) return cityOnly;
-  if (!cityOnly) return specific;
+  if (!specific) return cityOnly ? { coords: cityOnly, approximate: true } : null;
+  if (!cityOnly) return { coords: specific, approximate: false };
 
   const driftKm = haversineKm(specific, cityOnly);
-  return driftKm > MAX_LOCATION_DRIFT_KM ? cityOnly : specific;
+  return driftKm > MAX_LOCATION_DRIFT_KM
+    ? { coords: cityOnly, approximate: true }
+    : { coords: specific, approximate: false };
 }
 
 /**
- * Geocodes an ordered list of waypoints (pickup, any stops, destination —
- * at least 2), then computes the real road distance across the whole route
- * via OSRM, falling back to a haversine-based estimate if OSRM is
- * unreachable. Returns null only if one of the waypoints can't be geocoded
- * at all (city included). Geocoding is sequential (not parallel) to respect
- * Nominatim's rate limit even with several stops.
+ * Road distance across an ordered list of waypoints (pickup, any stops,
+ * destination — at least 2).
+ *
+ * With GOOGLE_MAPS_API_KEY set, Google Routes calculates it straight from
+ * the waypoint addresses, which handles exact places inside a city (e.g.
+ * Sava Centar → Aerodrom Nikola Tesla) that the free geocoder often can't
+ * find. Otherwise, or if Google fails, each waypoint is geocoded via
+ * Nominatim and routed via OSRM, falling back to a haversine-based estimate
+ * if OSRM is unreachable. Returns null only if one of the waypoints can't
+ * be geocoded at all (city included). Geocoding is sequential (not
+ * parallel) to respect Nominatim's rate limit even with several stops.
  */
 export async function estimateRouteDistance(
   waypoints: CityLocation[],
 ): Promise<RouteEstimate | null> {
+  const googleKm = await googleRouteDistanceKm(waypoints.map(formatLocation)).catch(() => null);
+  if (googleKm !== null) {
+    return { distanceKm: googleKm, provider: "google", coordinates: [], approximate: false };
+  }
+
   const coordinates: Coordinates[] = [];
+  let approximate = false;
   for (const waypoint of waypoints) {
-    const coords = await geocodeWaypoint(waypoint);
-    if (!coords) {
+    const geocoded = await geocodeWaypoint(waypoint);
+    if (!geocoded) {
       // The live distance preview fails silently in the UI by design (it's
       // a non-critical nicety) — log server-side so a geocoding failure is
       // at least visible to whoever's running the dev server.
       console.warn(`[tripDistance] couldn't geocode "${formatLocation(waypoint)}" (or "${waypoint.city}")`);
       return null;
     }
-    coordinates.push(coords);
+    coordinates.push(geocoded.coords);
+    approximate ||= geocoded.approximate;
   }
 
   try {
     const result = await osrmRouteDistanceKm(coordinates);
-    return { distanceKm: result.distanceKm, provider: "osrm", coordinates };
+    return { distanceKm: result.distanceKm, provider: "osrm", coordinates, approximate };
   } catch (err) {
     console.warn("[tripDistance] OSRM routing failed, falling back to haversine estimate:", err);
     const result = haversineRouteDistanceKm(coordinates);
-    return { distanceKm: result.distanceKm, provider: "stub-haversine", coordinates };
+    return { distanceKm: result.distanceKm, provider: "stub-haversine", coordinates, approximate };
   }
 }
 
@@ -116,6 +146,8 @@ export interface TripDistanceResult {
   outboundKm: number;
   // null for a one-way trip — there's no return leg to report.
   returnKm: number | null;
+  /** Some exact location couldn't be found, so a city centre stood in for it (see RouteEstimate). */
+  approximate: boolean;
 }
 
 /**
@@ -138,7 +170,12 @@ export async function estimateTripDistance(input: TripDistanceInput): Promise<Tr
   const outboundEstimate = await estimateRouteDistance(outboundWaypoints).catch(() => null);
   if (!outboundEstimate) return null;
   if (!input.isRoundTrip) {
-    return { totalKm: outboundEstimate.distanceKm, outboundKm: outboundEstimate.distanceKm, returnKm: null };
+    return {
+      totalKm: outboundEstimate.distanceKm,
+      outboundKm: outboundEstimate.distanceKm,
+      returnKm: null,
+      approximate: outboundEstimate.approximate,
+    };
   }
 
   const returnLeg = resolveReturnLeg(
@@ -169,5 +206,6 @@ export async function estimateTripDistance(input: TripDistanceInput): Promise<Tr
     totalKm: outboundEstimate.distanceKm + returnEstimate.distanceKm,
     outboundKm: outboundEstimate.distanceKm,
     returnKm: returnEstimate.distanceKm,
+    approximate: outboundEstimate.approximate || returnEstimate.approximate,
   };
 }

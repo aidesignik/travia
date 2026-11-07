@@ -230,6 +230,9 @@ export function NewRideModal({
   const [returnKm, setReturnKm] = useState<number | null>(null);
   const [calculatingDistance, setCalculatingDistance] = useState(false);
   const [distanceError, setDistanceError] = useState(false);
+  // An exact location couldn't be found, so a city centre stood in for it —
+  // the figure (and any price based on it) needs checking.
+  const [distanceApproximate, setDistanceApproximate] = useState(false);
 
   const returnDateRef = useRef<DatePickerHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -266,6 +269,7 @@ export function NewRideModal({
     const timer = setTimeout(async () => {
       setCalculatingDistance(true);
       setDistanceError(false);
+      setDistanceApproximate(false);
       const res = await fetch("/api/carrier/distance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -291,6 +295,7 @@ export function NewRideModal({
         setDistanceKm(body.distanceKm);
         setOutboundKm(typeof body.outboundKm === "number" ? body.outboundKm : null);
         setReturnKm(typeof body.returnKm === "number" ? body.returnKm : null);
+        setDistanceApproximate(body.approximate === true);
       } else {
         setDistanceError(true);
       }
@@ -739,6 +744,7 @@ export function NewRideModal({
                 estimateLabel={tn("estimateLabel")}
                 failedLabel={tn("distanceUnavailable")}
                 calculatingLabel={tn("calculating")}
+                warning={distanceApproximate ? tn("distanceApproximate") : null}
               />
 
               {distanceVisible ? (

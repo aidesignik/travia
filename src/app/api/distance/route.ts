@@ -20,5 +20,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "DISTANCE_UNAVAILABLE" }, { status: 422 });
   }
 
-  return NextResponse.json({ distanceKm: result.totalKm, outboundKm: result.outboundKm, returnKm: result.returnKm });
+  return NextResponse.json({ distanceKm: result.totalKm, outboundKm: result.outboundKm, returnKm: result.returnKm, approximate: result.approximate });
 }

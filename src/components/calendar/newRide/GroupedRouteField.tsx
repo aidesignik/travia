@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { CityCombobox, type CityComboboxHandle } from "@/components/forms/CityCombobox";
+import { PlaceLocationInput } from "@/components/forms/PlaceLocationInput";
 
 // §5.1 — "like Google Maps directions": one bordered field holding two
 // inputs (city select, location text) split by an internal divider, rather
@@ -51,12 +52,13 @@ export function GroupedRouteField({
         className="min-w-0 flex-[1_1_0] border-r border-[var(--border-soft)] pl-3 pr-[10px]"
       />
       <div className="flex min-w-0 flex-[1.2_1_0] items-center pl-3" style={{ paddingRight: removable ? 0 : 12 }}>
-        <input
+        <PlaceLocationInput
+          variant="grouped"
           value={locationValue}
+          onChange={onLocationChange}
+          city={cityValue}
           placeholder={locationPlaceholder}
           aria-label={locationPlaceholder}
-          onChange={(e) => onLocationChange(e.target.value)}
-          className="h-full min-w-0 flex-1 truncate bg-transparent text-[14px] text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
         />
         {removable ? (
           <button
