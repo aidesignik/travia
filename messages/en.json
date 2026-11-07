@@ -1,4 +1,7 @@
 {
+  "places": {
+    "poweredByGoogle": "Powered by Google"
+  },
   "common": {
     "appName": "Travia",
     "language": "Language",
@@ -479,6 +482,7 @@
       "estimateLabel": "Estimate",
       "distanceUnavailable": "Distance unavailable",
       "calculating": "Calculating…",
+      "distanceApproximate": "We couldn't find one of these exact locations, so its city centre was used. Check the distance and price.",
       "cena": "Price",
       "cenaUkljucujePdv": "Price includes VAT",
       "emailBelongsToOtherRole": "That email is already used by a different account type — please use another address.",

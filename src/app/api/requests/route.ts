@@ -71,10 +71,11 @@ export async function POST(request: Request) {
           where: { id: created.id },
           data: {
             estimatedDistanceKm: estimate.distanceKm,
-            pickupLat: pickupCoords.lat,
-            pickupLng: pickupCoords.lng,
-            destinationLat: destinationCoords.lat,
-            destinationLng: destinationCoords.lng,
+            // Empty for Google routes (no coordinates kept) — see RouteEstimate.
+            pickupLat: pickupCoords?.lat,
+            pickupLng: pickupCoords?.lng,
+            destinationLat: destinationCoords?.lat,
+            destinationLng: destinationCoords?.lng,
           },
         }),
         ...created.stops.map((stop, index) =>

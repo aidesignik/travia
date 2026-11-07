@@ -1,8 +1,8 @@
 "use client";
 
 import { useId } from "react";
-import { Input } from "@/components/ui/Input";
 import { CityCombobox } from "@/components/forms/CityCombobox";
+import { PlaceLocationInput } from "@/components/forms/PlaceLocationInput";
 
 const LABEL_CLASS = "text-[13px] font-semibold text-[var(--ink-2)]";
 
@@ -37,12 +37,13 @@ export function CityLocationFields({
       <label htmlFor={`${uid}-location`} className={`order-3 sm:order-2 ${LABEL_CLASS}`}>
         {locationLabel}
       </label>
-      <Input
+      <PlaceLocationInput
         id={`${uid}-location`}
         className="order-4"
         required
         value={location}
-        onChange={(e) => onLocationChange(e.target.value)}
+        onChange={onLocationChange}
+        city={city}
       />
     </div>
   );

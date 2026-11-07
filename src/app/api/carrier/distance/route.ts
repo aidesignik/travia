@@ -23,5 +23,5 @@ export async function POST(request: Request) {
 
   // distanceKm kept as the total for existing callers that only read that
   // field; outboundKm/returnKm are additive, for a breakdown display.
-  return NextResponse.json({ distanceKm: result.totalKm, outboundKm: result.outboundKm, returnKm: result.returnKm });
+  return NextResponse.json({ distanceKm: result.totalKm, outboundKm: result.outboundKm, returnKm: result.returnKm, approximate: result.approximate });
 }
