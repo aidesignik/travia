@@ -373,6 +373,20 @@
       "loadError": "Couldn't load the calendar — try refreshing.",
       "pax": "pax",
       "detail": {
+        "driverMessage": {
+          "sendLabel": "Send to driver",
+          "copy": "Copy",
+          "copied": "Copied",
+          "title": "New ride",
+          "departure": "Route",
+          "stop": "Stop",
+          "returnTrip": "Return",
+          "vehicle": "Vehicle",
+          "passengers": "Passengers",
+          "client": "Client",
+          "note": "Note",
+          "map": "Pickup on the map"
+        },
         "trip": "Trip",
         "assignmentSection": "Assignment",
         "detailsSection": "Details",
