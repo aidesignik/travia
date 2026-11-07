@@ -17,6 +17,8 @@ import { RingMarker, PinMarker, DotConnector } from "./newRide/timelineMarkers";
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
 import { AssignmentSelect } from "./AssignmentSelect";
+import { DriverMessageActions } from "./DriverMessageActions";
+import { buildDriverMessage } from "@/lib/driverMessage";
 import { clientDisplayName } from "@/lib/clientDisplay";
 import { formatPhone } from "@/lib/phoneDisplay";
 import { displayRideStatus } from "@/lib/rideStatus";
@@ -245,6 +247,47 @@ export function RideDetailDrawer({
         },
       )
     : null;
+
+  // Ride details for the "Send to driver" WhatsApp/Viber/SMS buttons.
+  const atText = (date: Date) => `${formatPickerDate(date, locale)}, ${formatTime24(date)}`;
+  const driverMessage = driver
+    ? buildDriverMessage(
+        {
+          departureText: atText(departure),
+          pickup: { city: ride.pickupCity, location: ride.pickupLocation },
+          stops: ride.stops,
+          destination: { city: ride.destinationCity, location: ride.destinationLocation },
+          returnTrip:
+            resolvedReturn && ride.returnAt
+              ? {
+                  text: atText(new Date(ride.returnAt)),
+                  pickup: { city: resolvedReturn.pickupCity, location: resolvedReturn.pickupLocation },
+                  stops: resolvedReturn.stops,
+                  destination: { city: resolvedReturn.destinationCity, location: resolvedReturn.destinationLocation },
+                }
+              : null,
+          vehicleText: vehicle
+            ? `${tType(vehicle.type)} ${vehicle.model}${vehicle.licensePlate ? ` · ${formatPlate(vehicle.licensePlate)}` : ""}`
+            : null,
+          passengerCount: ride.passengerCount,
+          clientText: [clientDisplayName(ride.client), ride.client.phone ? formatPhone(ride.client.phone) : null]
+            .filter(Boolean)
+            .join(" · "),
+          note: ride.specialRequests,
+        },
+        {
+          title: tDetail("driverMessage.title"),
+          departure: tDetail("driverMessage.departure"),
+          stop: tDetail("driverMessage.stop"),
+          returnTrip: tDetail("driverMessage.returnTrip"),
+          vehicle: tDetail("driverMessage.vehicle"),
+          passengers: tDetail("driverMessage.passengers"),
+          client: tDetail("driverMessage.client"),
+          note: tDetail("driverMessage.note"),
+          map: tDetail("driverMessage.map"),
+        },
+      )
+    : "";
 
   const routeTitle = `${ride.pickupCity} → ${ride.destinationCity}${
     resolvedReturn ? ` → ${resolvedReturn.destinationCity}` : ""
@@ -694,6 +737,10 @@ export function RideDetailDrawer({
                   </>
                 )}
               </div>
+
+              {driver?.phone && changingField !== "driver" ? (
+                <DriverMessageActions phone={driver.phone} message={driverMessage} />
+              ) : null}
 
               {changingField === "driver" ? (
                 <div className="flex items-center gap-2 pl-12">

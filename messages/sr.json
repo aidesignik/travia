@@ -373,6 +373,20 @@
       "loadError": "Nije uspelo učitavanje kalendara — pokušajte ponovo.",
       "pax": "put.",
       "detail": {
+        "driverMessage": {
+          "sendLabel": "Pošalji vozaču",
+          "copy": "Kopiraj",
+          "copied": "Kopirano",
+          "title": "Nova vožnja",
+          "departure": "Ruta",
+          "stop": "Usputna stanica",
+          "returnTrip": "Povratak",
+          "vehicle": "Vozilo",
+          "passengers": "Putnika",
+          "client": "Klijent",
+          "note": "Napomena",
+          "map": "Polazište na mapi"
+        },
         "trip": "Ruta",
         "assignmentSection": "Dodela",
         "detailsSection": "Detalji",
