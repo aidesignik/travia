@@ -192,3 +192,31 @@ export function searchCities(query: string): CitySuggestion[] {
   }
   return suggestions;
 }
+
+// English exonyms Google (or a user) may give for Serbian cities the
+// dataset stores under their local name.
+const CITY_EXONYMS: Record<string, string> = { belgrade: "beograd" };
+
+/**
+ * The city string to store for a place Google located in `name` (its
+ * town) — the dataset's own `display` when there's a match, so a city
+ * picked through Google is stored exactly like one picked from the city
+ * list ("Beograd", "Paris, France") and keeps working with
+ * findCityCoordinates, the calendar and filters. Falls back to the name
+ * itself (with the country appended outside Serbia) for places too small
+ * to be in the dataset.
+ */
+export function resolveCityDisplay(name: string, countryCode: string | null): string {
+  const trimmed = name.trim();
+  const rawKey = searchKey(trimmed);
+  const key = CITY_EXONYMS[rawKey] ?? rawKey;
+  const code = countryCode ? countryCode.toUpperCase() : null;
+
+  const matches = getIndex().filter((c) => c.key === key && (!code || c.country === code));
+  if (matches.length > 0) {
+    matches.sort((a, b) => (a.country === "RS" ? -1 : b.country === "RS" ? 1 : 0));
+    return displayFor(matches[0]);
+  }
+  if (!code || code === "RS") return trimmed;
+  return `${trimmed}, ${regionNames.of(code) ?? code}`;
+}

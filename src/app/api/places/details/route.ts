@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
-import { composePlaceLocation, googleMapsEnabled, placeAddressParts } from "@/lib/googleMaps";
+import { composePlaceLocation, googleMapsEnabled, placeAddressParts, resolvePlaceSelection } from "@/lib/googleMaps";
 import { guardPlacesRequest } from "@/lib/placesRequest";
 
 const PLACE_ID = /^[A-Za-z0-9_-]{10,400}$/;
 
 // Called once when a suggestion is picked: ends the autocomplete session
-// (which is what makes its keystrokes free) and returns the text to put in
-// the "exact location" field — name, street, borough. If the details call
-// fails, the suggestion's own text is still returned, so picking always
-// works.
+// (which is what makes its keystrokes free). Returns the exact-location
+// text (name, street, borough) and the city it's in. With `derive=1` (the
+// single route field) the city comes from Google; otherwise (the older
+// two-field forms) the location is composed relative to the `city` the
+// form already has. If the details call fails, both are still worked out
+// from the suggestion's own text, so picking always works.
 export async function GET(request: Request) {
   if (!googleMapsEnabled()) {
     return NextResponse.json({ error: "PLACES_DISABLED" }, { status: 404 });
@@ -26,5 +28,8 @@ export async function GET(request: Request) {
   const city = (guard.params.get("city") ?? "").trim();
 
   const parts = await placeAddressParts({ placeId, sessionToken: guard.sessionToken, language: guard.language });
-  return NextResponse.json({ location: composePlaceLocation({ main, secondary }, parts, city) });
+  if (guard.params.get("derive") === "1") {
+    return NextResponse.json(resolvePlaceSelection({ main, secondary }, parts));
+  }
+  return NextResponse.json({ location: composePlaceLocation({ main, secondary }, parts, city), city });
 }
