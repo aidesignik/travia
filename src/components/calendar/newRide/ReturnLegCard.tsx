@@ -3,14 +3,13 @@
 import { useEffect, useRef, useState, type Ref } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Pencil, RotateCcw } from "lucide-react";
-import type { CityComboboxHandle } from "@/components/forms/CityCombobox";
 import type { DatePickerHandle } from "@/components/ui/DatePicker";
 import type { ReturnTripValues } from "@/components/forms/ReturnTripFields";
 import { resolveReturnLeg } from "@/lib/rideReturnLeg";
 import type { CityLocation } from "@/lib/location";
 import { LegCard, DateTimeRow } from "./RouteLegCard";
 import { RouteTimeline } from "./RouteTimeline";
-import { GroupedRouteField } from "./GroupedRouteField";
+import { GroupedRouteField, type RouteFieldHandle } from "./GroupedRouteField";
 import { RingMarker, PinMarker, DotConnector } from "./timelineMarkers";
 import { SHEET_TEXT_BUTTON_CLASS } from "./sheetFieldClasses";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -37,7 +36,6 @@ export function ReturnLegCard({
   dateRef,
   kmText,
   stopPlaceholder,
-  locationPlaceholder,
   originPlaceholder,
   destinationPlaceholder,
   datePlaceholder,
@@ -57,7 +55,6 @@ export function ReturnLegCard({
   dateRef?: Ref<DatePickerHandle>;
   kmText: string;
   stopPlaceholder: string;
-  locationPlaceholder: string;
   originPlaceholder: string;
   destinationPlaceholder: string;
   datePlaceholder: string;
@@ -68,7 +65,7 @@ export function ReturnLegCard({
   const tc = useTranslations("common");
   const [mode, setMode] = useState<ReturnMode>(() => deriveMode(value));
   const [confirmingBackToMirror, setConfirmingBackToMirror] = useState(false);
-  const stopRefs = useRef<Array<CityComboboxHandle | null>>([]);
+  const stopRefs = useRef<Array<RouteFieldHandle | null>>([]);
   const prevStopCount = useRef(value.returnStops.length);
 
   useEffect(() => {
@@ -194,15 +191,12 @@ export function ReturnLegCard({
                   <RingMarker />
                 </div>
                 <GroupedRouteField
-                  cityRef={(el) => {
+                  ref={(el) => {
                     stopRefs.current[index] = el;
                   }}
-                  cityValue={stop.city}
-                  onCityChange={(v) => updateStop(index, { city: v })}
-                  cityPlaceholder={stopPlaceholder}
-                  locationValue={stop.location}
-                  onLocationChange={(v) => updateStop(index, { location: v })}
-                  locationPlaceholder={locationPlaceholder}
+                  value={stop}
+                  onChange={(v) => updateStop(index, v)}
+                  placeholder={stopPlaceholder}
                   removable
                   onRemove={() => removeStop(index)}
                   removeLabel={t("removeStop")}
@@ -234,12 +228,12 @@ export function ReturnLegCard({
         <RouteTimeline
           originCity={value.returnPickupCity}
           originLocation={value.returnPickupLocation}
-          onOriginCityChange={(v) => onChange({ ...value, returnPickupCity: v })}
-          onOriginLocationChange={(v) => onChange({ ...value, returnPickupLocation: v })}
+          onOriginChange={(v) => onChange({ ...value, returnPickupCity: v.city, returnPickupLocation: v.location })}
           destinationCity={value.returnDestinationCity}
           destinationLocation={value.returnDestinationLocation}
-          onDestinationCityChange={(v) => onChange({ ...value, returnDestinationCity: v })}
-          onDestinationLocationChange={(v) => onChange({ ...value, returnDestinationLocation: v })}
+          onDestinationChange={(v) =>
+            onChange({ ...value, returnDestinationCity: v.city, returnDestinationLocation: v.location })
+          }
           stops={value.returnStops}
           onAddStop={addCustomStop}
           onRemoveStop={(i) => onChange({ ...value, returnStops: value.returnStops.filter((_, idx) => idx !== i) })}
@@ -249,7 +243,6 @@ export function ReturnLegCard({
           originPlaceholder={originPlaceholder}
           destinationPlaceholder={destinationPlaceholder}
           stopPlaceholder={stopPlaceholder}
-          locationPlaceholder={locationPlaceholder}
           addStopLabel={t("addStop")}
           removeStopLabel={t("removeStop")}
         />

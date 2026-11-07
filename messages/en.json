@@ -1,6 +1,10 @@
 {
   "places": {
-    "poweredByGoogle": "Powered by Google"
+    "poweredByGoogle": "Powered by Google",
+    "useTyped": "Use “{text}”",
+    "wholeCity": "City",
+    "asCity": "As the city",
+    "addressIn": "Address or place in {city}…"
   },
   "common": {
     "appName": "Travia",

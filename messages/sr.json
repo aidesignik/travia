@@ -1,6 +1,10 @@
 {
   "places": {
-    "poweredByGoogle": "Powered by Google"
+    "poweredByGoogle": "Powered by Google",
+    "useTyped": "Koristi „{text}“",
+    "wholeCity": "Grad",
+    "asCity": "Kao grad",
+    "addressIn": "Adresa ili mesto u gradu {city}…"
   },
   "common": {
     "appName": "Travia",

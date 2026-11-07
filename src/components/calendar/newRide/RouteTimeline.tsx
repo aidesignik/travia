@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { CityComboboxHandle } from "@/components/forms/CityCombobox";
 import type { CityLocation } from "@/lib/location";
 import { RingMarker, PinMarker, DotConnector } from "./timelineMarkers";
-import { GroupedRouteField } from "./GroupedRouteField";
+import { GroupedRouteField, type RouteFieldHandle } from "./GroupedRouteField";
 
 // §5.1 "like Google Maps directions" route list — no field labels, role
 // comes from the marker + placeholder + order. Used for Odlazak and,
@@ -13,12 +12,10 @@ import { GroupedRouteField } from "./GroupedRouteField";
 export function RouteTimeline({
   originCity,
   originLocation,
-  onOriginCityChange,
-  onOriginLocationChange,
+  onOriginChange,
   destinationCity,
   destinationLocation,
-  onDestinationCityChange,
-  onDestinationLocationChange,
+  onDestinationChange,
   stops,
   onAddStop,
   onRemoveStop,
@@ -26,7 +23,6 @@ export function RouteTimeline({
   originPlaceholder,
   destinationPlaceholder,
   stopPlaceholder,
-  locationPlaceholder,
   addStopLabel,
   removeStopLabel,
   maxStops = 5,
@@ -36,12 +32,12 @@ export function RouteTimeline({
 }: {
   originCity: string;
   originLocation: string;
-  onOriginCityChange: (v: string) => void;
-  onOriginLocationChange: (v: string) => void;
+  // City and exact location always change together (one pick in the
+  // single route field sets both), so one handler per endpoint.
+  onOriginChange: (v: CityLocation) => void;
   destinationCity: string;
   destinationLocation: string;
-  onDestinationCityChange: (v: string) => void;
-  onDestinationLocationChange: (v: string) => void;
+  onDestinationChange: (v: CityLocation) => void;
   stops: CityLocation[];
   onAddStop: () => void;
   onRemoveStop: (index: number) => void;
@@ -49,7 +45,6 @@ export function RouteTimeline({
   originPlaceholder: string;
   destinationPlaceholder: string;
   stopPlaceholder: string;
-  locationPlaceholder: string;
   addStopLabel: string;
   removeStopLabel: string;
   maxStops?: number;
@@ -60,10 +55,10 @@ export function RouteTimeline({
   destinationError?: boolean;
   requiredLabel?: string;
 }) {
-  const stopRefs = useRef<Array<CityComboboxHandle | null>>([]);
+  const stopRefs = useRef<Array<RouteFieldHandle | null>>([]);
   const prevStopCount = useRef(stops.length);
 
-  // "Dodaj stanicu" focuses the new stop's city select (§5.1).
+  // "Dodaj stanicu" focuses the new stop's field (§5.1).
   useEffect(() => {
     if (stops.length > prevStopCount.current) {
       stopRefs.current[stops.length - 1]?.focus();
@@ -79,12 +74,10 @@ export function RouteTimeline({
             <RingMarker />
           </div>
           <GroupedRouteField
-            cityValue={originCity}
-            onCityChange={onOriginCityChange}
-            cityPlaceholder={originPlaceholder}
-            locationValue={originLocation}
-            onLocationChange={onOriginLocationChange}
-            locationPlaceholder={locationPlaceholder}
+            value={{ city: originCity, location: originLocation }}
+            onChange={onOriginChange}
+            placeholder={originPlaceholder}
+            requireLocation
             error={originError}
           />
         </div>
@@ -105,15 +98,12 @@ export function RouteTimeline({
                 <RingMarker />
               </div>
               <GroupedRouteField
-                cityRef={(el) => {
+                ref={(el) => {
                   stopRefs.current[index] = el;
                 }}
-                cityValue={stop.city}
-                onCityChange={(v) => onUpdateStop(index, { city: v })}
-                cityPlaceholder={stopPlaceholder}
-                locationValue={stop.location}
-                onLocationChange={(v) => onUpdateStop(index, { location: v })}
-                locationPlaceholder={locationPlaceholder}
+                value={stop}
+                onChange={(v) => onUpdateStop(index, v)}
+                placeholder={stopPlaceholder}
                 removable
                 onRemove={() => onRemoveStop(index)}
                 removeLabel={removeStopLabel}
@@ -133,12 +123,10 @@ export function RouteTimeline({
             <PinMarker />
           </div>
           <GroupedRouteField
-            cityValue={destinationCity}
-            onCityChange={onDestinationCityChange}
-            cityPlaceholder={destinationPlaceholder}
-            locationValue={destinationLocation}
-            onLocationChange={onDestinationLocationChange}
-            locationPlaceholder={locationPlaceholder}
+            value={{ city: destinationCity, location: destinationLocation }}
+            onChange={onDestinationChange}
+            placeholder={destinationPlaceholder}
+            requireLocation
             error={destinationError}
           />
         </div>

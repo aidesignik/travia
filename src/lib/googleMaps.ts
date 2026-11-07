@@ -1,4 +1,5 @@
 import type { Coordinates } from "./distance";
+import { resolveCityDisplay } from "./citySearch";
 
 // Google Maps Platform: Places (New) autocomplete + details for the
 // "exact location" search field, and Routes for road distance. All calls
@@ -128,7 +129,13 @@ export interface PlaceAddressParts {
   street: string | null;
   sublocality: string | null;
   locality: string | null;
+  /** administrative_area_level_2 — the town stand-in for places outside any locality. */
+  area?: string | null;
   country: string | null;
+  /** ISO country code, e.g. "RS". */
+  countryCode?: string | null;
+  /** The place's own types, e.g. ["locality", "political"] for a city. */
+  types?: string[];
 }
 
 export async function placeAddressParts(params: {
@@ -143,7 +150,7 @@ export async function placeAddressParts(params: {
   });
   const res = await googleFetch(`${PLACES_URL}/places/${encodeURIComponent(params.placeId)}?${query}`, {
     method: "GET",
-    fieldMask: "addressComponents",
+    fieldMask: "addressComponents,types",
   });
   if (!res) return null;
   if (!res.ok) {
@@ -152,11 +159,12 @@ export async function placeAddressParts(params: {
   }
 
   const data = (await res.json().catch(() => null)) as {
-    addressComponents?: Array<{ longText?: string; types?: string[] }>;
+    addressComponents?: Array<{ longText?: string; shortText?: string; types?: string[] }>;
+    types?: string[];
   } | null;
   const components = data?.addressComponents ?? [];
-  const find = (...types: string[]) =>
-    components.find((c) => types.some((type) => c.types?.includes(type)))?.longText?.trim() || null;
+  const component = (...types: string[]) => components.find((c) => types.some((type) => c.types?.includes(type)));
+  const find = (...types: string[]) => component(...types)?.longText?.trim() || null;
 
   const route = find("route");
   const number = find("street_number");
@@ -164,8 +172,57 @@ export async function placeAddressParts(params: {
     street: route ? (number ? `${route} ${number}` : route) : null,
     sublocality: find("sublocality_level_1", "sublocality"),
     locality: find("locality", "postal_town"),
+    area: find("administrative_area_level_2"),
     country: find("country"),
+    countryCode: component("country")?.shortText?.trim() || null,
+    types: data?.types ?? [],
   };
+}
+
+// A suggestion that IS a town/region/country (picking "Novi Sad" itself)
+// sets just the ride's city — there's no exact spot inside it.
+const AREA_TYPES = new Set([
+  "locality",
+  "postal_town",
+  "administrative_area_level_1",
+  "administrative_area_level_2",
+  "administrative_area_level_3",
+  "country",
+]);
+
+/**
+ * City + exact location for a suggestion picked in the single route field
+ * (RoutePlaceField): the city comes from Google's own address data, mapped
+ * onto the city list's spelling (resolveCityDisplay), and the location is
+ * the name/street/borough relative to it. Without details, both are read
+ * from the suggestion's secondary text ("Milentija Popovića, Beograd,
+ * Srbija" → city "Beograd").
+ */
+export function resolvePlaceSelection(
+  suggestion: { main: string; secondary: string },
+  parts: PlaceAddressParts | null,
+): { city: string; location: string } {
+  if (parts) {
+    const town = parts.locality ?? parts.area;
+    const isArea = (parts.types ?? []).some((type) => AREA_TYPES.has(type));
+    if (isArea) {
+      return { city: resolveCityDisplay(town ?? suggestion.main, parts.countryCode ?? null), location: "" };
+    }
+    const city = town ? resolveCityDisplay(town, parts.countryCode ?? null) : "";
+    return { city, location: composePlaceLocation(suggestion, parts, city) };
+  }
+
+  const segments = suggestion.secondary
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (segments.length === 0) {
+    // Nothing but a name (typically a country or region) — treat it as the city.
+    return { city: resolveCityDisplay(suggestion.main, null), location: "" };
+  }
+  // Secondary text ends with the country; the segment before it is the town.
+  const city = segments.length >= 2 ? resolveCityDisplay(segments[segments.length - 2], null) : "";
+  return { city, location: composePlaceLocation(suggestion, null, city) };
 }
 
 function normalizeName(value: string): string {

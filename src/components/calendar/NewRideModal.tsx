@@ -675,12 +675,12 @@ export function NewRideModal({
                 <RouteTimeline
                   originCity={form.pickupCity}
                   originLocation={form.pickupLocation}
-                  onOriginCityChange={(v) => setForm({ ...form, pickupCity: v })}
-                  onOriginLocationChange={(v) => setForm({ ...form, pickupLocation: v })}
+                  onOriginChange={(v) => setForm({ ...form, pickupCity: v.city, pickupLocation: v.location })}
                   destinationCity={form.destinationCity}
                   destinationLocation={form.destinationLocation}
-                  onDestinationCityChange={(v) => setForm({ ...form, destinationCity: v })}
-                  onDestinationLocationChange={(v) => setForm({ ...form, destinationLocation: v })}
+                  onDestinationChange={(v) =>
+                    setForm({ ...form, destinationCity: v.city, destinationLocation: v.location })
+                  }
                   stops={form.stops}
                   onAddStop={addStop}
                   onRemoveStop={removeStop}
@@ -688,7 +688,6 @@ export function NewRideModal({
                   originPlaceholder={tn("odaklePolazi")}
                   destinationPlaceholder={tn("kudaIde")}
                   stopPlaceholder={tn("stanica")}
-                  locationPlaceholder={tn("locationPlaceholder")}
                   addStopLabel={tn("addStop")}
                   removeStopLabel={tn("removeStop")}
                   originError={submitAttempted && (!form.pickupCity || !form.pickupLocation)}
@@ -726,7 +725,6 @@ export function NewRideModal({
                   originPlaceholder={tn("odaklePolazi")}
                   destinationPlaceholder={tn("kudaIde")}
                   stopPlaceholder={tn("stanica")}
-                  locationPlaceholder={tn("locationPlaceholder")}
                   datePlaceholder={tn("datumPovratka")}
                   timePlaceholder={tn("vreme")}
                   returnDateError={
