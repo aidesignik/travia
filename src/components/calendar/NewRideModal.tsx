@@ -28,6 +28,10 @@ const DEPARTURE_JUMP_DEBOUNCE_MS = 400;
 const DISTANCE_CALC_DEBOUNCE_MS = 900;
 
 export interface NewRideInitialValues {
+  // The existing client a duplicated ride belongs to, so the copy stays
+  // linked to that same client record (as if picked from the client
+  // search) instead of being matched again by email. Not a form field.
+  clientId?: string;
   clientCompanyName?: string;
   clientName?: string;
   clientEmail?: string;
@@ -139,9 +143,10 @@ function initialFormState(editValues?: NewRideEditValues, initialValues?: NewRid
   // would overwrite the blank defaults below with undefined, and the form
   // crashes the moment it reads one as a string — e.g. switching that
   // one-way draft to "Round trip" reads returnAt.split("T").
+  // clientId isn't a form field — it seeds selectedClientId in NewRideModal.
   const definedInitialValues = Object.fromEntries(
-    Object.entries(restInitialValues).filter(([, value]) => value !== undefined),
-  ) as typeof restInitialValues;
+    Object.entries(restInitialValues).filter(([key, value]) => value !== undefined && key !== "clientId"),
+  ) as Omit<typeof restInitialValues, "clientId">;
   return {
     clientCompanyName: "",
     clientName: "",
@@ -214,7 +219,9 @@ export function NewRideModal({
   // if the carrier changes the company name themselves, since that's the
   // clearest sign they now mean a different client. Seeded from the ride's
   // own client when editing.
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(editValues?.clientId ?? null);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(
+    editValues?.clientId ?? initialValues?.clientId ?? null,
+  );
 
   const [availableVehicles, setAvailableVehicles] = useState<CalendarVehicle[]>([]);
   const [availableDrivers, setAvailableDrivers] = useState<CalendarDriver[]>([]);

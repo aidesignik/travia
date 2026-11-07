@@ -459,8 +459,10 @@ export function RideDetailDrawer({
   }
 
   const duplicateInitialValues: NewRideInitialValues = {
+    clientId: ride.clientId,
     clientCompanyName: ride.client.companyName ?? "",
     clientName: ride.client.name ?? "",
+    clientEmail: ride.client.email,
     clientPhone: ride.client.phone ?? "",
     pickupCity: ride.pickupCity,
     pickupLocation: ride.pickupLocation,
