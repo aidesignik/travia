@@ -218,20 +218,25 @@ export function ResourceTimelineGrid({
           ) : (
             resources.map((resource, resourceIndex) => {
               const isLastResource = resourceIndex === resources.length - 1;
+              // Clamp to the visible week only what actually overlaps it — a
+              // ride or block entirely before Monday (or after Sunday) must
+              // not be pinned onto the first (or last) day.
               const resourceRides = rides
                 .filter((r) => (grouping === "vehicle" ? r.vehicleId : r.driverId) === resource.id)
-                .map((ride) => {
-                  const startIdx = Math.max(0, dayIndex(weekStart, ride.departureAt));
-                  const endIdx = ride.returnAt ? Math.min(6, dayIndex(weekStart, ride.returnAt)) : startIdx;
-                  return { ride, startIdx, endIdx };
+                .flatMap((ride) => {
+                  const rawStart = dayIndex(weekStart, ride.departureAt);
+                  const rawEnd = ride.returnAt ? dayIndex(weekStart, ride.returnAt) : rawStart;
+                  if (rawEnd < 0 || rawStart > 6) return [];
+                  return [{ ride, startIdx: Math.max(0, rawStart), endIdx: Math.min(6, rawEnd) }];
                 });
               const resourceBlocks = blocks
                 .filter((b) => (grouping === "vehicle" ? b.vehicleId : b.driverId) === resource.id)
-                .map((block) => ({
-                  block,
-                  startIdx: Math.max(0, dayIndex(weekStart, block.startAt)),
-                  endIdx: Math.min(6, dayIndex(weekStart, block.endAt)),
-                }));
+                .flatMap((block) => {
+                  const rawStart = dayIndex(weekStart, block.startAt);
+                  const rawEnd = dayIndex(weekStart, block.endAt);
+                  if (rawEnd < 0 || rawStart > 6) return [];
+                  return [{ block, startIdx: Math.max(0, rawStart), endIdx: Math.min(6, rawEnd) }];
+                });
               const isDragTarget = dragOverTarget?.resourceId === resource.id;
 
               // Overlapping rides/blocks for this resource get their own lane

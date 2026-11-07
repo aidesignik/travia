@@ -34,7 +34,18 @@ export async function GET(request: Request) {
         status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
         OR: [{ vehicleId: { not: null } }, { driverId: { not: null } }],
         departureAt: { lt: weekEnd },
-        AND: [{ OR: [{ returnAt: null }, { returnAt: { gte: weekStart } }] }],
+        // Overlaps the week: a round trip until its return, a one-way ride
+        // only on its own departure day. (Matching every one-way ride with
+        // returnAt: null used to pull in all earlier weeks' one-way rides,
+        // which the grid then pinned to Monday.)
+        AND: [
+          {
+            OR: [
+              { returnAt: null, departureAt: { gte: weekStart } },
+              { returnAt: { gte: weekStart } },
+            ],
+          },
+        ],
       },
       include: { client: { select: { name: true, companyName: true, phone: true, email: true } }, stops: STOPS_INCLUDE },
     }),
