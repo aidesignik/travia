@@ -69,8 +69,8 @@ export interface CalendarDriver {
 }
 
 export interface CalendarData {
-  weekStart: string;
-  weekEnd: string;
+  rangeStart: string;
+  rangeEnd: string;
   vehicles: CalendarVehicle[];
   drivers: CalendarDriver[];
   rides: CalendarRide[];
@@ -79,3 +79,5 @@ export interface CalendarData {
 }
 
 export type ResourceGrouping = "vehicle" | "driver";
+
+export type CalendarView = "day" | "week" | "month";

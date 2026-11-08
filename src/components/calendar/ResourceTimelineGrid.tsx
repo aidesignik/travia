@@ -4,18 +4,20 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Wrench, Plus } from "lucide-react";
 import { RideBlockCard } from "./RideBlockCard";
+import { RideMonthBar } from "./RideMonthBar";
 import { DriverAvatar } from "@/components/ui/DriverAvatar";
 import { formatPlate } from "@/lib/plateDisplay";
 import { AddVehiclePanel } from "@/components/forms/AddVehiclePanel";
 import { AddDriverPanel } from "@/components/forms/AddDriverPanel";
-import { CALENDAR_GRID_TEMPLATE } from "@/lib/tableLayout";
+import { CALENDAR_DAY_COLUMN_MIN_WIDTH, CALENDAR_RESOURCE_COLUMN_WIDTH } from "@/lib/tableLayout";
 import { toDateOnlyString } from "@/lib/pickerDateFormat";
-import type { CalendarBlock, CalendarDriver, CalendarRide, CalendarVehicle, ResourceGrouping } from "./types";
+import type { CalendarBlock, CalendarDriver, CalendarRide, CalendarVehicle, CalendarView, ResourceGrouping } from "./types";
 
-// Defaults for a ride created by clicking/dragging an empty calendar cell —
-// there's no time-of-day granularity in a day cell to derive these from, so
-// a plain business-hours guess stands in until the carrier edits it in the
-// form that opens right after.
+// Defaults for a ride created by clicking/dragging an empty day cell (week
+// and month views) — there's no time-of-day granularity in a day cell to
+// derive these from, so a plain business-hours guess stands in until the
+// carrier edits it in the form that opens right after. The day view's hour
+// cells use the hour itself instead.
 const CELL_CREATE_DEPARTURE_TIME = "09:00";
 const CELL_CREATE_RETURN_TIME = "18:00";
 
@@ -27,7 +29,22 @@ export interface CellRideDraft {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const GRID_TEMPLATE_COLUMNS = CALENDAR_GRID_TEMPLATE;
+// The day view lays rides out on quarter-hour slots (four per hour column),
+// so a 08:00–14:00 ride and a 19:30 one sit at their real times with the
+// gap between them visible.
+const SLOT_MS = 15 * 60 * 1000;
+const SLOTS_PER_HOUR = 4;
+const DAY_SLOTS = 24 * SLOTS_PER_HOUR;
+// How long a one-way ride (no return time) is drawn in the day view —
+// matches AVERAGE_TRIP_DURATION in lib/availability.ts.
+const ONE_WAY_SPAN_MS = 4 * 60 * 60 * 1000;
+
+// Per view: narrowest a column may get before the grid scrolls sideways
+// (hour / day / day), and the height of one lane of rides.
+const COLUMN_MIN_WIDTH: Record<CalendarView, number> = { day: 64, week: CALENDAR_DAY_COLUMN_MIN_WIDTH, month: 92 };
+const LANE_MIN_HEIGHT: Record<CalendarView, number> = { day: 112, week: 132, month: 60 };
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
 
 export interface DragOverTarget {
   resourceId: string;
@@ -49,9 +66,9 @@ function startOfDay(date: Date) {
   return d;
 }
 
-function dayIndex(weekStart: Date, dateStr: string) {
+function dayIndex(rangeStart: Date, dateStr: string) {
   const d = startOfDay(new Date(dateStr));
-  return Math.round((d.getTime() - weekStart.getTime()) / DAY_MS);
+  return Math.round((d.getTime() - rangeStart.getTime()) / DAY_MS);
 }
 
 // Rides (and blocks) for the same resource that overlap in the days they
@@ -77,7 +94,8 @@ function assignLanes(items: { id: string; startIdx: number; endIdx: number }[]) 
 }
 
 export function ResourceTimelineGrid({
-  weekStart,
+  view,
+  days,
   grouping,
   vehicles,
   drivers,
@@ -92,7 +110,10 @@ export function ResourceTimelineGrid({
   onResourceAdded,
   onCreateRide,
 }: {
-  weekStart: Date;
+  view: CalendarView;
+  // The visible days, local midnights: one for the day view, seven for the
+  // week, every day of the month for the month view.
+  days: Date[];
   grouping: ResourceGrouping;
   vehicles: CalendarVehicle[];
   drivers: CalendarDriver[];
@@ -129,30 +150,62 @@ export function ResourceTimelineGrid({
       if (!cellSelection) return;
       const startIdx = Math.min(cellSelection.startIdx, cellSelection.endIdx);
       const endIdx = Math.max(cellSelection.startIdx, cellSelection.endIdx);
-      const departureDay = new Date(weekStart.getTime() + startIdx * DAY_MS);
       const isRoundTrip = endIdx > startIdx;
-      const draft: CellRideDraft = {
-        resourceId: cellSelection.resourceId,
-        departureAt: `${toDateOnlyString(departureDay)}T${CELL_CREATE_DEPARTURE_TIME}`,
-        isRoundTrip,
-      };
-      if (isRoundTrip) {
-        const returnDay = new Date(weekStart.getTime() + endIdx * DAY_MS);
-        draft.returnAt = `${toDateOnlyString(returnDay)}T${CELL_CREATE_RETURN_TIME}`;
+      let draft: CellRideDraft;
+      if (view === "day") {
+        // Hour cells: the ride starts at the hour clicked; dragging across
+        // hours makes it a same-day round trip back by the end of the last.
+        const date = toDateOnlyString(days[0]);
+        draft = { resourceId: cellSelection.resourceId, departureAt: `${date}T${pad2(startIdx)}:00`, isRoundTrip };
+        if (isRoundTrip) draft.returnAt = `${date}T${endIdx === 23 ? "23:45" : `${pad2(endIdx + 1)}:00`}`;
+      } else {
+        draft = {
+          resourceId: cellSelection.resourceId,
+          departureAt: `${toDateOnlyString(days[startIdx])}T${CELL_CREATE_DEPARTURE_TIME}`,
+          isRoundTrip,
+        };
+        if (isRoundTrip) draft.returnAt = `${toDateOnlyString(days[endIdx])}T${CELL_CREATE_RETURN_TIME}`;
       }
       onCreateRide(draft);
       setCellSelection(null);
     }
     window.addEventListener("mouseup", finish);
     return () => window.removeEventListener("mouseup", finish);
-  }, [cellSelection, weekStart, onCreateRide]);
+  }, [cellSelection, days, view, onCreateRide]);
   // sr's default Intl formatting is Cyrillic; the rest of this app's
   // Serbian copy is Latin, so map to the Latin variant like the DatePicker
   // already does (see src/lib/pickerDateFormat.ts).
   const intlLocale = locale === "sr" ? "sr-Latn" : "en";
   const [addingResource, setAddingResource] = useState(false);
-  const today = startOfDay(new Date());
-  const days = Array.from({ length: 7 }, (_, i) => new Date(weekStart.getTime() + i * DAY_MS));
+  const now = new Date();
+  const today = startOfDay(now);
+  const rangeStart = days[0];
+  const isDayView = view === "day";
+  // Header/cell columns: hours in the day view, days otherwise.
+  const columnCount = isDayView ? 24 : days.length;
+  const lastIdx = (isDayView ? DAY_SLOTS : days.length) - 1;
+  const gridTemplate = `${CALENDAR_RESOURCE_COLUMN_WIDTH}px repeat(${columnCount}, minmax(${COLUMN_MIN_WIDTH[view]}px, 1fr))`;
+  const dayStartMs = rangeStart.getTime();
+  const toSlot = (ms: number) => Math.floor((ms - dayStartMs) / SLOT_MS);
+  // Start/end column of an item on this view's grid (days, or quarter-hour
+  // slots in the day view), clamped to what's visible; null when it falls
+  // entirely outside the range.
+  function placement(startStr: string, endStr: string | null, oneWay: boolean) {
+    if (isDayView) {
+      const start = new Date(startStr).getTime();
+      const end = endStr ? new Date(endStr).getTime() : start + (oneWay ? ONE_WAY_SPAN_MS : 0);
+      if (end <= dayStartMs || start >= dayStartMs + DAY_MS) return null;
+      const startIdx = Math.max(0, toSlot(start));
+      const endIdx = Math.min(lastIdx, Math.max(startIdx, Math.ceil((end - dayStartMs) / SLOT_MS) - 1));
+      return { startIdx, endIdx };
+    }
+    const rawStart = dayIndex(rangeStart, startStr);
+    const rawEnd = endStr ? dayIndex(rangeStart, endStr) : rawStart;
+    if (rawEnd < 0 || rawStart > lastIdx) return null;
+    return { startIdx: Math.max(0, rawStart), endIdx: Math.min(lastIdx, rawEnd) };
+  }
+  const showNowLine = isDayView && today.getTime() === rangeStart.getTime();
+  const nowSlot = toSlot(now.getTime());
 
   const resources: Resource[] =
     grouping === "vehicle"
@@ -183,32 +236,59 @@ export function ResourceTimelineGrid({
           the single scroll container for both axes, which is what lets the
           sticky header (top) and sticky resource column (left) below both
           resolve against the same scrolling ancestor. */}
-      <div className="min-w-full">
-        <div className="sticky top-0 z-20 grid" style={{ gridTemplateColumns: GRID_TEMPLATE_COLUMNS }}>
+      {/* At least the scroller's width, and wide enough for every column at
+          its minimum — so row lines and the add row run the full width when
+          the day/month grid scrolls sideways. */}
+      <div style={{ minWidth: `max(100%, ${CALENDAR_RESOURCE_COLUMN_WIDTH + columnCount * COLUMN_MIN_WIDTH[view]}px)` }}>
+        <div className="sticky top-0 z-20 grid" style={{ gridTemplateColumns: gridTemplate }}>
             <div
               className="sticky left-0 z-30 flex items-center border-r bg-white px-[14px] py-4 text-[13px] text-[var(--ink-secondary)]"
               style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
             >
               {resources.length > 0 ? resourceCountLabel : ""}
             </div>
-            {days.map((day, i) => {
-              const weekday = day.toLocaleDateString(intlLocale, { weekday: "short" });
-              const dateNum = day.getDate();
-              return (
-                <div
-                  key={i}
-                  className="flex items-center gap-[6px] border-r bg-white px-[14px] py-4 last:border-r-0"
-                  style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
-                >
-                  <span className="text-[14px]" style={{ color: "#6E6E68" }}>
-                    {weekday}
-                  </span>
-                  <span className="text-[14px] font-semibold" style={{ color: "#1B1B19" }}>
-                    {dateNum}
-                  </span>
-                </div>
-              );
-            })}
+            {isDayView
+              ? Array.from({ length: 24 }, (_, hour) => (
+                  <div
+                    key={hour}
+                    data-hour={hour}
+                    className="flex items-center border-r bg-white px-[10px] py-4 last:border-r-0"
+                    style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
+                  >
+                    <span
+                      className={`text-[13px] tabular-nums ${showNowLine && now.getHours() === hour ? "font-semibold" : ""}`}
+                      style={{ color: showNowLine && now.getHours() === hour ? "var(--action-bg)" : "#6E6E68" }}
+                    >
+                      {pad2(hour)}:00
+                    </span>
+                  </div>
+                ))
+              : days.map((day, i) => {
+                  const weekday = day.toLocaleDateString(intlLocale, { weekday: "short" });
+                  const isToday = day.getTime() === today.getTime();
+                  return (
+                    <div
+                      key={i}
+                      data-today={isToday ? "" : undefined}
+                      className={`flex items-center border-r bg-white py-4 last:border-r-0 ${
+                        view === "month" ? "flex-col justify-center gap-[1px] px-1" : "gap-[6px] px-[14px]"
+                      }`}
+                      style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
+                    >
+                      <span className={view === "month" ? "text-[12px]" : "text-[14px]"} style={{ color: "#6E6E68" }}>
+                        {weekday}
+                      </span>
+                      <span
+                        className={`text-[14px] font-semibold ${
+                          isToday ? "flex h-[24px] min-w-[24px] items-center justify-center rounded-full px-[5px]" : ""
+                        }`}
+                        style={isToday ? { background: "var(--action-bg)", color: "#fff" } : { color: "#1B1B19" }}
+                      >
+                        {day.getDate()}
+                      </span>
+                    </div>
+                  );
+                })}
           </div>
 
           {resources.length === 0 ? (
@@ -218,24 +298,20 @@ export function ResourceTimelineGrid({
           ) : (
             resources.map((resource, resourceIndex) => {
               const isLastResource = resourceIndex === resources.length - 1;
-              // Clamp to the visible week only what actually overlaps it — a
-              // ride or block entirely before Monday (or after Sunday) must
-              // not be pinned onto the first (or last) day.
+              // Clamp to the visible range only what actually overlaps it — a
+              // ride or block entirely before (or after) the range must not
+              // be pinned onto the first (or last) column.
               const resourceRides = rides
                 .filter((r) => (grouping === "vehicle" ? r.vehicleId : r.driverId) === resource.id)
                 .flatMap((ride) => {
-                  const rawStart = dayIndex(weekStart, ride.departureAt);
-                  const rawEnd = ride.returnAt ? dayIndex(weekStart, ride.returnAt) : rawStart;
-                  if (rawEnd < 0 || rawStart > 6) return [];
-                  return [{ ride, startIdx: Math.max(0, rawStart), endIdx: Math.min(6, rawEnd) }];
+                  const at = placement(ride.departureAt, ride.returnAt, true);
+                  return at ? [{ ride, ...at }] : [];
                 });
               const resourceBlocks = blocks
                 .filter((b) => (grouping === "vehicle" ? b.vehicleId : b.driverId) === resource.id)
                 .flatMap((block) => {
-                  const rawStart = dayIndex(weekStart, block.startAt);
-                  const rawEnd = dayIndex(weekStart, block.endAt);
-                  if (rawEnd < 0 || rawStart > 6) return [];
-                  return [{ block, startIdx: Math.max(0, rawStart), endIdx: Math.min(6, rawEnd) }];
+                  const at = placement(block.startAt, block.endAt, false);
+                  return at ? [{ block, ...at }] : [];
                 });
               const isDragTarget = dragOverTarget?.resourceId === resource.id;
 
@@ -251,13 +327,13 @@ export function ResourceTimelineGrid({
                   key={resource.id}
                   className="grid"
                   style={{
-                    gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
+                    gridTemplateColumns: gridTemplate,
                     borderBottom: isLastResource ? undefined : "1px solid #EFEFEC",
                   }}
                 >
                   <div
-                    className="sticky left-0 z-10 flex min-h-[132px] items-center gap-[10px] border-r bg-white px-5 py-[18px]"
-                    style={{ borderRightColor: "#F1F1EE" }}
+                    className="sticky left-0 z-[25] flex items-center gap-[10px] border-r bg-white px-5 py-[18px]"
+                    style={{ borderRightColor: "#F1F1EE", minHeight: LANE_MIN_HEIGHT[view] }}
                   >
                     {grouping === "driver" ? (
                       <DriverAvatar
@@ -283,10 +359,11 @@ export function ResourceTimelineGrid({
                     </div>
                   </div>
                   <div
-                    className="relative col-span-7 grid"
+                    className="relative grid"
                     style={{
-                      gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-                      gridTemplateRows: `repeat(${laneCount}, minmax(132px, auto))`,
+                      gridColumn: "2 / -1",
+                      gridTemplateColumns: `repeat(${lastIdx + 1}, minmax(0, 1fr))`,
+                      gridTemplateRows: `repeat(${laneCount}, minmax(${LANE_MIN_HEIGHT[view]}px, auto))`,
                     }}
                     onDragOver={(e) => {
                       if (!draggingRideId) return;
@@ -299,8 +376,10 @@ export function ResourceTimelineGrid({
                       if (draggingRideId) onDropRide(resource.id);
                     }}
                   >
-                    {days.map((day, i) => {
-                      const isToday = day.getTime() === today.getTime();
+                    {Array.from({ length: columnCount }, (_, i) => {
+                      const isToday = isDayView
+                        ? showNowLine && now.getHours() === i
+                        : days[i].getTime() === today.getTime();
                       const inSelection =
                         cellSelection?.resourceId === resource.id &&
                         i >= Math.min(cellSelection.startIdx, cellSelection.endIdx) &&
@@ -308,7 +387,7 @@ export function ResourceTimelineGrid({
                       return (
                         <div
                           key={i}
-                          title={t("createRideOnDay")}
+                          title={isDayView ? t("createRideAtTime") : t("createRideOnDay")}
                           onMouseDown={(e) => {
                             // Left click only, and only on the empty cell
                             // itself — a ride/block sitting in a different
@@ -335,19 +414,39 @@ export function ResourceTimelineGrid({
                                   ? "bg-[var(--bg-today)] hover:bg-[var(--action-100)]/60"
                                   : "bg-white hover:bg-[var(--action-100)]/40"
                           }`}
-                          style={{ gridRow: "1 / -1", gridColumn: i + 1, borderRightColor: "#F1F1EE" }}
+                          style={{
+                            gridRow: "1 / -1",
+                            gridColumn: isDayView ? `${i * SLOTS_PER_HOUR + 1} / span ${SLOTS_PER_HOUR}` : i + 1,
+                            borderRightColor: "#F1F1EE",
+                          }}
                         />
                       );
                     })}
 
+                    {showNowLine && nowSlot >= 0 && nowSlot <= lastIdx ? (
+                      <div
+                        aria-hidden
+                        className="pointer-events-none z-[15] w-[2px] rounded-full"
+                        style={{
+                          gridRow: "1 / -1",
+                          gridColumn: nowSlot + 1,
+                          justifySelf: "start",
+                          marginLeft: `${(((now.getTime() - dayStartMs) % SLOT_MS) / SLOT_MS) * 100}%`,
+                          background: "var(--action-bg)",
+                        }}
+                      />
+                    ) : null}
+
                     {resourceBlocks.map(({ block, startIdx, endIdx }) => (
                       <div
                         key={block.id}
-                        className="z-0 flex h-10 items-center gap-[6px] truncate rounded-[9px] px-[10px] text-[13.5px] font-medium"
+                        className={`z-0 flex items-center gap-[6px] truncate rounded-[9px] font-medium ${
+                          view === "month" ? "h-9 px-[7px] text-[12.5px]" : "h-10 px-[10px] text-[13.5px]"
+                        }`}
                         style={{
                           gridRow: (laneOf.get(block.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
-                          margin: "12px 8px",
+                          margin: view === "week" ? "12px 8px" : "12px 3px",
                           background: "var(--status-blocked-bg)",
                           color: "#3B1F87",
                           alignSelf: "start",
@@ -362,20 +461,24 @@ export function ResourceTimelineGrid({
                     {resourceRides.map(({ ride, startIdx, endIdx }) => (
                       <div
                         key={ride.id}
-                        className="z-10"
+                        className="z-10 min-w-0"
                         style={{
                           gridRow: (laneOf.get(ride.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
-                          margin: "9px",
+                          margin: view === "week" ? "9px" : view === "month" ? "6px 3px" : "9px 3px",
                         }}
                       >
-                        <RideBlockCard
-                          ride={ride}
-                          onClick={() => onRideClick(ride.id)}
-                          style={{ height: "100%" }}
-                          seats={seatsFor(ride)}
-                          driver={driverFor(ride)}
-                        />
+                        {view === "month" ? (
+                          <RideMonthBar ride={ride} onClick={() => onRideClick(ride.id)} />
+                        ) : (
+                          <RideBlockCard
+                            ride={ride}
+                            onClick={() => onRideClick(ride.id)}
+                            style={{ height: "100%" }}
+                            seats={seatsFor(ride)}
+                            driver={driverFor(ride)}
+                          />
+                        )}
                       </div>
                     ))}
 
@@ -384,7 +487,7 @@ export function ResourceTimelineGrid({
                         className="z-20 flex items-center rounded-[10px] px-2 py-1 text-[12.5px] font-semibold text-white"
                         style={{
                           gridRow: 1,
-                          gridColumn: "1 / 8",
+                          gridColumn: "1 / -1",
                           margin: "6px",
                           justifySelf: "start",
                           background: "var(--ink-destructive)",
@@ -402,7 +505,7 @@ export function ResourceTimelineGrid({
           <button
             type="button"
             onClick={() => setAddingResource(true)}
-            className="flex h-12 w-full items-center gap-[6px] border-t px-5 text-[13.5px] font-medium text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+            className="sticky left-0 flex h-12 w-[100cqw] items-center gap-[6px] border-t px-5 text-[13.5px] font-medium text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
             style={{ borderTopColor: "#EFEFEC" }}
           >
             <Plus size={14} strokeWidth={1.9} />
