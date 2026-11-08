@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, Bus, UserRound } from "lucide-react";
 import {
   ResourceTimelineGrid,
   CELL_CREATE_DEPARTURE_TIME,
+  CELL_CREATE_RETURN_TIME,
   type DragOverTarget,
   type CellRideDraft,
 } from "./ResourceTimelineGrid";
@@ -439,9 +440,16 @@ export function RidesCalendar() {
               setAnchor(day);
               changeView("day");
             }}
-            onCreateRide={(day) =>
-              setCellRideDraft({ departureAt: `${toDateOnlyString(day)}T${CELL_CREATE_DEPARTURE_TIME}`, isRoundTrip: false })
-            }
+            onCreateRide={(start, end) => {
+              // One day: a ride that day. Several: a round trip out on the
+              // first, back on the last — same defaults as the week view.
+              const isRoundTrip = end.getTime() > start.getTime();
+              setCellRideDraft({
+                departureAt: `${toDateOnlyString(start)}T${CELL_CREATE_DEPARTURE_TIME}`,
+                isRoundTrip,
+                ...(isRoundTrip ? { returnAt: `${toDateOnlyString(end)}T${CELL_CREATE_RETURN_TIME}` } : {}),
+              });
+            }}
           />
         ) : (
           <ResourceTimelineGrid
