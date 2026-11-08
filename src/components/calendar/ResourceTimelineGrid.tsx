@@ -406,7 +406,7 @@ export function ResourceTimelineGrid({
                           }}
                           className={`cursor-pointer select-none border-r transition-colors duration-[.1s] ease-out last:border-r-0 ${
                             inSelection
-                              ? "bg-[var(--action-100)]"
+                              ? "bg-[var(--calendar-selection)]"
                               : isDragTarget
                                 ? dragOverTarget?.conflict
                                   ? "bg-[var(--chip-critical)]/30"
@@ -446,6 +446,9 @@ export function ResourceTimelineGrid({
                           gridRow: (laneOf.get(block.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
                           margin: view === "week" ? "12px 8px" : "12px 3px",
+                          // Let a cell click/drag pass through to the cells
+                          // underneath (see the ride cards below).
+                          pointerEvents: cellSelection ? "none" : undefined,
                           background: "var(--status-blocked-bg)",
                           color: "#3B1F87",
                           alignSelf: "start",
@@ -465,6 +468,10 @@ export function ResourceTimelineGrid({
                           gridRow: (laneOf.get(ride.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
                           margin: view === "week" ? "9px" : "9px 3px",
+                          // While cells are being click-dragged, the pointer
+                          // passes through ride cards to the cells beneath, so
+                          // the selection follows it even over existing rides.
+                          pointerEvents: cellSelection ? "none" : undefined,
                         }}
                       >
                         <RideBlockCard
