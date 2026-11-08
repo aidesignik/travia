@@ -1,21 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { RideMonthBar } from "./RideMonthBar";
 import type { CalendarRide } from "./types";
 
-// Day cell geometry, used to work out how many lanes of rides fit in a week
-// row of the current height: padding above the date badge, the badge, one
-// ride lane, the "+N more" link, and the gap between rows.
-const CELL_PADDING = 6;
-const DATE_BADGE = 24;
-const ENTRY = 34;
-const MORE_LINK = 18;
-const GAP = 4;
-// Rows never get shorter than this; on a very short window the grid then
-// scrolls rather than squeezing rides out entirely.
-const MIN_ROW_HEIGHT = 96;
+// Each day shows at most this many lanes of rides; a day with more gets
+// "+N more", which opens it in the day view.
+const MAX_LANES = 2;
+// Week row geometry: padding above the date badge, the badge, one ride
+// lane, the "+N more" link, and the gap between them. Rows are never
+// shorter than what two lanes plus the link need.
+const CELL_PADDING = 4;
+const DATE_BADGE = 22;
+const ENTRY = 30;
+const MORE_LINK = 16;
+const GAP = 3;
+const MIN_ROW_HEIGHT = CELL_PADDING * 2 + DATE_BADGE + MAX_LANES * (GAP + ENTRY) + GAP + MORE_LINK;
 const DAY_MS = 86_400_000;
 
 function startOfDay(date: Date) {
@@ -69,10 +69,10 @@ function assignLanes(segments: Omit<Segment, "lane">[]): Segment[] {
 // area (no scrolling), unlike the day/week resource timeline. A ride is one
 // continuous bar across the days it spans — destination and client, status
 // as its colour — split only where it wraps onto the next week row (squared
-// ends show it carries on). Each week row shows as many lanes of rides as
-// its height allows; a day with more gets "+N more", which opens that day
-// in the day view. Clicking a date opens it in the day view; clicking a
-// day's empty space starts a new ride on it.
+// ends show it carries on). Each day shows up to two rides; a day with more
+// gets "+N more", which opens that day in the day view. Clicking a date
+// opens it in the day view; clicking a day's empty space starts a new ride
+// on it.
 export function MonthGrid({
   days,
   rides,
@@ -109,21 +109,6 @@ export function MonthGrid({
   const firstIdx = cellIndex(first);
   const lastIdx = cellIndex(last);
 
-  // Rows share the visible height, so how many lanes a row can show depends
-  // on the window — measured, and re-measured on resize.
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [rowHeight, setRowHeight] = useState(0);
-  useEffect(() => {
-    const el = gridRef.current;
-    if (!el) return;
-    const measure = () => setRowHeight(el.clientHeight / weeks);
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [weeks]);
-  const room = Math.max(rowHeight, MIN_ROW_HEIGHT) - CELL_PADDING * 2 - DATE_BADGE - GAP;
-
   // Each ride as one segment per week row it touches, clamped to the month.
   const segmentsByWeek: Omit<Segment, "lane">[][] = Array.from({ length: weeks }, () => []);
   for (const ride of rides) {
@@ -158,19 +143,13 @@ export function MonthGrid({
         ))}
       </div>
       <div
-        ref={gridRef}
         className="grid min-h-0 flex-1"
         style={{ gridTemplateRows: `repeat(${weeks}, minmax(${MIN_ROW_HEIGHT}px, 1fr))` }}
       >
         {Array.from({ length: weeks }, (_, week) => {
           const segments = assignLanes(segmentsByWeek[week]);
           const laneCount = segments.reduce((max, s) => Math.max(max, s.lane + 1), 0);
-          // All lanes if they fit; otherwise as many as fit above the
-          // "+N more" row (at least one).
-          const visibleLanes =
-            laneCount * (ENTRY + GAP) <= room
-              ? laneCount
-              : Math.max(1, Math.floor((room - MORE_LINK - GAP) / (ENTRY + GAP)));
+          const visibleLanes = Math.min(laneCount, MAX_LANES);
           const hiddenPerDay = Array.from({ length: 7 }, (_, col) =>
             segments.filter((s) => s.lane >= visibleLanes && s.startCol <= col && s.endCol >= col).length,
           );
@@ -198,7 +177,7 @@ export function MonthGrid({
                     onClick={(e) => {
                       if (inMonth && e.target === e.currentTarget) onCreateRide(day);
                     }}
-                    className={`min-w-0 px-[6px] pt-[6px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
+                    className={`min-w-0 px-[6px] pt-[4px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
                       inMonth ? "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30" : "bg-[#FAFAF8]"
                     }`}
                     // Spans the row's full height (past the last grid line, so
@@ -210,7 +189,7 @@ export function MonthGrid({
                       disabled={!inMonth}
                       onClick={() => onOpenDay(day)}
                       title={inMonth ? t("openDay") : undefined}
-                      className={`flex h-[24px] min-w-[24px] items-center justify-center rounded-full px-[6px] text-[13.5px] font-semibold tabular-nums transition-colors duration-[.1s] ${
+                      className={`flex h-[22px] min-w-[22px] items-center justify-center rounded-full px-[6px] text-[13px] font-semibold tabular-nums transition-colors duration-[.1s] ${
                         isToday
                           ? "bg-[var(--action-bg)] text-white"
                           : inMonth
@@ -254,7 +233,7 @@ export function MonthGrid({
                     key={`more-${col}`}
                     type="button"
                     onClick={() => onOpenDay(cells[week * 7 + col])}
-                    className="z-10 ml-[6px] h-[18px] self-start justify-self-start rounded-[6px] px-[6px] text-[12px] font-semibold text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
+                    className="z-10 ml-[6px] h-[16px] self-start justify-self-start rounded-[6px] px-[6px] text-[12px] font-semibold leading-[16px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
                     style={{ gridRow: visibleLanes + 2, gridColumn: col + 1 }}
                   >
                     {t("moreRides", { count: hidden })}

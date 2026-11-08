@@ -44,12 +44,12 @@ export function RideMonthBar({
         className="pointer-events-none absolute inset-0 bg-[rgba(20,20,19,0)] transition-colors duration-[.12s] ease-out group-hover:bg-[rgba(20,20,19,.04)]"
       />
       <span
-        className="relative min-w-0 truncate text-[12.5px] font-semibold leading-[16px]"
+        className="relative min-w-0 truncate text-[12.5px] font-semibold leading-[15px]"
         style={{ color: status === "CANCELLED" ? "var(--ink-muted)" : "var(--ink-primary)" }}
       >
         {ride.destinationCity}
       </span>
-      <span className="relative min-w-0 truncate text-[11.5px] leading-[14px]" style={{ color: RIDE_STATUS_TEXT[status] }}>
+      <span className="relative min-w-0 truncate text-[11.5px] leading-[15px]" style={{ color: RIDE_STATUS_TEXT[status] }}>
         {client}
       </span>
     </button>
