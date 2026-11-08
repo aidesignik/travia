@@ -354,8 +354,18 @@
     "calendarTitle": "Calendar",
     "calendar": {
       "today": "Today",
+      "viewLabel": "Calendar view",
+      "views": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
       "previousWeek": "Previous week",
       "nextWeek": "Next week",
+      "previousDay": "Previous day",
+      "nextDay": "Next day",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
       "byVehicle": "Vehicles",
       "byDriver": "Drivers",
       "newRide": "New ride",
@@ -434,6 +444,7 @@
       "conflictWith": "Already booked ({client})",
       "conflictBlocked": "This resource is blocked at that time",
       "createRideOnDay": "Click, or click and drag, to create a ride",
+      "createRideAtTime": "Click, or click and drag across hours, to create a ride at this time",
       "legend": {
         "PENDING": "Pending",
         "CONFIRMED": "Confirmed",
@@ -448,6 +459,7 @@
         "OTHER": "Other"
       },
       "cardAriaLabel": "{route}, {client}, {time}, driver {driver}",
+      "monthBarAriaLabel": "{route}, {client}, {time}",
       "statusAriaLabel": "Status: {status}"
     },
     "requestsTitle": "Incoming requests",

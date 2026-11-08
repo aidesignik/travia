@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Bus, UserRound } from "lucide-react";
@@ -16,22 +16,58 @@ import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
 import { clientDisplayName } from "@/lib/clientDisplay";
 import { displayRideStatus } from "@/lib/rideStatus";
+import { CALENDAR_RESOURCE_COLUMN_WIDTH } from "@/lib/tableLayout";
 import { parseStatusParam, serializeStatusParam } from "@/lib/statusFilterParam";
-import type { CalendarData, CalendarRide, ResourceGrouping, RideStatus } from "./types";
+import type { CalendarData, CalendarRide, CalendarView, ResourceGrouping, RideStatus } from "./types";
 
 const STATUSES: RideStatus[] = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 const AVERAGE_TRIP_DURATION_HOURS = 4;
 
-function startOfWeek(date: Date) {
+function startOfDay(date: Date) {
   const d = new Date(date);
-  const day = d.getDay();
-  // Monday-start week
-  const diff = (day === 0 ? -6 : 1) - day;
-  d.setDate(d.getDate() + diff);
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+function startOfWeek(date: Date) {
+  const d = startOfDay(date);
+  const day = d.getDay();
+  // Monday-start week
+  d.setDate(d.getDate() + ((day === 0 ? -6 : 1) - day));
+  return d;
+}
+
+function addDays(date: Date, days: number) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+const VIEWS: CalendarView[] = ["day", "week", "month"];
+const VIEW_STORAGE_KEY = "travia.calendarView";
+
+// The visible days (local midnights, built with setDate so a DST change
+// inside the range can't shift a day) for the view around `anchor`. The
+// range sent to the server runs from the first day's midnight to the
+// midnight after the last.
+function viewDays(view: CalendarView, anchor: Date): Date[] {
+  if (view === "day") return [startOfDay(anchor)];
+  if (view === "week") {
+    const monday = startOfWeek(anchor);
+    return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
+  }
+  const first = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+  const count = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0).getDate();
+  return Array.from({ length: count }, (_, i) => addDays(first, i));
+}
+
+// Prev/next: a day, a week, or a calendar month (from the 1st, so stepping
+// from 31 Jan doesn't skip February).
+function stepAnchor(view: CalendarView, anchor: Date, direction: 1 | -1) {
+  if (view === "day") return addDays(anchor, direction);
+  if (view === "week") return addDays(anchor, 7 * direction);
+  return new Date(anchor.getFullYear(), anchor.getMonth() + direction, 1);
 }
 
 function cellRideDraftInitialValues(draft: CellRideDraft, grouping: ResourceGrouping): NewRideInitialValues {
@@ -74,7 +110,14 @@ export function RidesCalendar() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [view, setView] = useState<CalendarView>("week");
+  // Any date inside the visible range; the range itself comes from the view.
+  const [anchor, setAnchor] = useState(() => startOfDay(new Date()));
+  const days = useMemo(() => viewDays(view, anchor), [view, anchor]);
+  const rangeStart = days[0];
+  const rangeEnd = addDays(days[days.length - 1], 1);
+  const rangeKey = `${rangeStart.toISOString()}|${rangeEnd.toISOString()}`;
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [grouping, setGrouping] = useState<ResourceGrouping>("vehicle");
   const [statusFilter, setStatusFilter] = useState<string[]>(() =>
     parseStatusParam(searchParams.get("status"), STATUSES),
@@ -101,9 +144,9 @@ export function RidesCalendar() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(`/api/carrier/calendar?weekStart=${weekStart.toISOString()}`, {
-        signal: controller.signal,
-      });
+      const [start, end] = rangeKey.split("|");
+      const params = new URLSearchParams({ start, end });
+      const res = await fetch(`/api/carrier/calendar?${params}`, { signal: controller.signal });
       if (res.ok) {
         setData(await res.json());
       } else {
@@ -115,7 +158,42 @@ export function RidesCalendar() {
       clearTimeout(timeout);
       setLoading(false);
     }
-  }, [weekStart]);
+  }, [rangeKey]);
+
+  // The chosen view is remembered per browser. Read after mount (not in the
+  // useState initializer) so the server-rendered markup matches the first
+  // client render.
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(VIEW_STORAGE_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (saved && (VIEWS as string[]).includes(saved)) setView(saved as CalendarView);
+    } catch {
+      // Storage blocked (private mode etc.) — just start on the week view.
+    }
+  }, []);
+
+  function changeView(next: CalendarView) {
+    setView(next);
+    try {
+      window.localStorage.setItem(VIEW_STORAGE_KEY, next);
+    } catch {
+      // Not remembered this time — the view still switches.
+    }
+  }
+
+  // Where a sideways-scrolling view opens: the day view at 06:00 (the hours
+  // before stay a scroll away), the month view with today a couple of days
+  // in from the left when it's the current month, otherwise the start.
+  const hasData = data !== null;
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller || !hasData) return;
+    const selector = view === "day" ? '[data-hour="6"]' : view === "month" ? "[data-today]" : null;
+    const target = selector ? scroller.querySelector<HTMLElement>(selector) : null;
+    const lead = view === "month" && target ? 2 * target.offsetWidth : 0;
+    scroller.scrollLeft = target ? Math.max(0, target.offsetLeft - CALENDAR_RESOURCE_COLUMN_WIDTH - lead) : 0;
+  }, [view, rangeKey, hasData]);
 
   useEffect(() => {
     // Standard fetch-on-mount/on-dependency-change — load() only touches
@@ -225,9 +303,16 @@ export function RidesCalendar() {
     );
   }
 
-  const weekEnd = new Date(weekStart.getTime() + 6 * DAY_MS);
+  const lastDay = days[days.length - 1];
   const fmtDay = (d: Date) => new Intl.DateTimeFormat(intlLocale, { day: "numeric", month: "short" }).format(d);
-  const weekLabel = `${fmtDay(weekStart)} – ${fmtDay(weekEnd)} ${weekEnd.getFullYear()}`;
+  const rangeLabel =
+    view === "day"
+      ? new Intl.DateTimeFormat(intlLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(rangeStart)
+      : view === "week"
+        ? `${fmtDay(rangeStart)} – ${fmtDay(lastDay)} ${lastDay.getFullYear()}`
+        : new Intl.DateTimeFormat(intlLocale, { month: "long", year: "numeric" }).format(rangeStart);
+  const previousLabel = view === "day" ? t("previousDay") : view === "week" ? t("previousWeek") : t("previousMonth");
+  const nextLabel = view === "day" ? t("nextDay") : view === "week" ? t("nextWeek") : t("nextMonth");
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[14px] bg-[var(--surface-card-bg)] shadow-[var(--shadow-surface-card)]">
@@ -238,8 +323,8 @@ export function RidesCalendar() {
         >
           <button
             type="button"
-            onClick={() => setWeekStart(new Date(weekStart.getTime() - 7 * DAY_MS))}
-            aria-label={t("previousWeek")}
+            onClick={() => setAnchor(stepAnchor(view, anchor, -1))}
+            aria-label={previousLabel}
             className={WEEK_ARROW_CLASS}
           >
             <ChevronLeft size={16} strokeWidth={1.9} />
@@ -248,12 +333,12 @@ export function RidesCalendar() {
             className="flex h-full items-center whitespace-nowrap px-3 text-[14px] font-semibold text-[var(--ink-primary)]"
             style={{ borderLeft: "1px solid var(--border-control)", borderRight: "1px solid var(--border-control)" }}
           >
-            {weekLabel}
+            {rangeLabel}
           </span>
           <button
             type="button"
-            onClick={() => setWeekStart(new Date(weekStart.getTime() + 7 * DAY_MS))}
-            aria-label={t("nextWeek")}
+            onClick={() => setAnchor(stepAnchor(view, anchor, 1))}
+            aria-label={nextLabel}
             className={WEEK_ARROW_CLASS}
           >
             <ChevronRight size={16} strokeWidth={1.9} />
@@ -261,11 +346,33 @@ export function RidesCalendar() {
         </div>
         <button
           type="button"
-          onClick={() => setWeekStart(startOfWeek(new Date()))}
+          onClick={() => setAnchor(startOfDay(new Date()))}
           className={`ml-1 ${TODAY_BUTTON_CLASS}`}
         >
           {t("today")}
         </button>
+        <div
+          role="radiogroup"
+          aria-label={t("viewLabel")}
+          className="ml-1 flex h-10 shrink-0 items-center gap-[3px] rounded-[10px] bg-[var(--border-soft)] p-[3px]"
+        >
+          {VIEWS.map((v) => (
+            <button
+              key={v}
+              type="button"
+              role="radio"
+              aria-checked={view === v}
+              onClick={() => changeView(v)}
+              className={`flex h-[34px] items-center rounded-[8px] px-[12px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
+                view === v
+                  ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
+                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+              }`}
+            >
+              {t(`views.${v}`)}
+            </button>
+          ))}
+        </div>
 
         <div className="ml-auto flex items-center gap-2">
           <MultiSelectFilter
@@ -311,9 +418,10 @@ export function RidesCalendar() {
           computed as auto too (CSS overflow rules), which makes it its own
           (never-scrolling) "scroll box" and breaks sticky-to-the-real-
           scroller for anything inside it. */}
-      <div className="min-h-0 flex-1 overflow-auto">
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto" style={{ containerType: "inline-size" }}>
         <ResourceTimelineGrid
-          weekStart={weekStart}
+          view={view}
+          days={days}
           grouping={grouping}
           vehicles={data.vehicles}
           drivers={data.drivers}
@@ -329,6 +437,10 @@ export function RidesCalendar() {
           onCreateRide={setCellRideDraft}
         />
         {data.unassigned.length > 0 ? (
+          // Pinned to the scroller's visible width, so it stays in view when
+          // the day/month grid is scrolled sideways (100cqw = the scroller's
+          // width; it's the size container below).
+          <div className="sticky left-0 w-[100cqw]">
           <UnassignedQueue
             rides={data.unassigned}
             onDragStart={setDraggingRideId}
@@ -338,6 +450,7 @@ export function RidesCalendar() {
             }}
             onRideClick={setSelectedRideId}
           />
+          </div>
         ) : null}
       </div>
 
@@ -348,7 +461,7 @@ export function RidesCalendar() {
             closeNewRide();
             load();
           }}
-          onDepartureDateChange={(date) => setWeekStart(startOfWeek(date))}
+          onDepartureDateChange={(date) => setAnchor(startOfDay(date))}
         />
       ) : null}
 

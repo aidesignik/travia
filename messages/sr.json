@@ -354,8 +354,18 @@
     "calendarTitle": "Kalendar",
     "calendar": {
       "today": "Danas",
+      "viewLabel": "Prikaz kalendara",
+      "views": {
+        "day": "Dan",
+        "week": "Nedelja",
+        "month": "Mesec"
+      },
       "previousWeek": "Prethodna nedelja",
       "nextWeek": "Sledeća nedelja",
+      "previousDay": "Prethodni dan",
+      "nextDay": "Sledeći dan",
+      "previousMonth": "Prethodni mesec",
+      "nextMonth": "Sledeći mesec",
       "byVehicle": "Vozila",
       "byDriver": "Vozači",
       "newRide": "Nova vožnja",
@@ -434,6 +444,7 @@
       "conflictWith": "Već zauzeto ({client})",
       "conflictBlocked": "Ovaj resurs je blokiran u tom periodu",
       "createRideOnDay": "Kliknite, ili kliknite i prevucite, da kreirate vožnju",
+      "createRideAtTime": "Kliknite, ili kliknite i prevucite preko sati, da kreirate vožnju u ovom terminu",
       "legend": {
         "PENDING": "Na čekanju",
         "CONFIRMED": "Potvrđeno",
@@ -448,6 +459,7 @@
         "OTHER": "Ostalo"
       },
       "cardAriaLabel": "{route}, {client}, {time}, vozač {driver}",
+      "monthBarAriaLabel": "{route}, {client}, {time}",
       "statusAriaLabel": "Status: {status}"
     },
     "requestsTitle": "Novi zahtevi",
