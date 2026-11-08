@@ -33,7 +33,7 @@ export function RideMonthBar({
       onClick={onClick}
       title={`${route} · ${client} · ${time}`}
       aria-label={t("monthBarAriaLabel", { route, client, time })}
-      className="group relative flex h-full w-full min-w-0 cursor-pointer flex-col justify-center gap-0 overflow-hidden px-[8px] text-left transition-[box-shadow,translate] duration-[.12s] ease-out hover:-translate-y-px hover:shadow-[0_1px_2px_rgba(20,20,19,.06),0_4px_12px_rgba(20,20,19,.06)]"
+      className="group relative flex h-full w-full min-w-0 cursor-pointer items-center overflow-hidden px-[10px] text-left transition-[box-shadow,translate] duration-[.12s] ease-out hover:-translate-y-px hover:shadow-[0_1px_2px_rgba(20,20,19,.06),0_4px_12px_rgba(20,20,19,.06)]"
       style={{
         background: RIDE_STATUS_BG[status],
         borderRadius: `${continuesBefore ? 0 : 8}px ${continuesAfter ? 0 : 8}px ${continuesAfter ? 0 : 8}px ${continuesBefore ? 0 : 8}px`,
@@ -43,14 +43,21 @@ export function RideMonthBar({
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[rgba(20,20,19,0)] transition-colors duration-[.12s] ease-out group-hover:bg-[rgba(20,20,19,.04)]"
       />
-      <span
-        className="relative min-w-0 truncate text-[12.5px] font-semibold leading-[16px]"
-        style={{ color: status === "CANCELLED" ? "var(--ink-muted)" : "var(--ink-primary)" }}
-      >
-        {ride.destinationCity}
-      </span>
-      <span className="relative min-w-0 truncate text-[11.5px] leading-[14px]" style={{ color: RIDE_STATUS_TEXT[status] }}>
-        {client}
+      {/* One line: destination, then the client — the client gives way
+          (ellipsis) first when the bar is narrow. */}
+      <span className="relative flex min-w-0 items-baseline gap-[5px] text-[12.5px] leading-[16px]">
+        <span
+          className="max-w-full shrink-0 truncate font-semibold"
+          style={{ color: status === "CANCELLED" ? "var(--ink-muted)" : "var(--ink-primary)" }}
+        >
+          {ride.destinationCity}
+        </span>
+        <span aria-hidden className="shrink-0" style={{ color: RIDE_STATUS_TEXT[status], opacity: 0.6 }}>
+          ·
+        </span>
+        <span className="min-w-0 truncate" style={{ color: RIDE_STATUS_TEXT[status] }}>
+          {client}
+        </span>
       </span>
     </button>
   );
