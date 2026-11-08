@@ -214,7 +214,7 @@ export function MonthGrid({
                       !inMonth
                         ? "bg-[#FAFAF8]"
                         : inSelection
-                          ? "cursor-pointer bg-[var(--action-100)]"
+                          ? "cursor-pointer bg-[var(--calendar-selection)]"
                           : "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30"
                     }`}
                     // Spans the row's full height (past the last grid line, so
@@ -252,6 +252,10 @@ export function MonthGrid({
                       gridColumn: `${s.startCol + 1} / ${s.endCol + 2}`,
                       marginLeft: s.continuesBefore ? 0 : 5,
                       marginRight: s.continuesAfter ? 0 : 5,
+                      // While days are being dragged, the pointer passes
+                      // through bars to the day cells underneath, so the
+                      // selection follows it even over existing rides.
+                      pointerEvents: selection ? "none" : undefined,
                     }}
                   >
                     <RideMonthBar
@@ -271,7 +275,7 @@ export function MonthGrid({
                     type="button"
                     onClick={() => onOpenDay(cells[week * 7 + col])}
                     className="z-10 ml-[6px] h-[16px] self-start justify-self-start rounded-[6px] px-[6px] text-[12px] font-semibold leading-[16px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
-                    style={{ gridRow: visibleLanes + 2, gridColumn: col + 1 }}
+                    style={{ gridRow: visibleLanes + 2, gridColumn: col + 1, pointerEvents: selection ? "none" : undefined }}
                   >
                     {t("moreRides", { count: hidden })}
                   </button>
