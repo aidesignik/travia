@@ -12,9 +12,9 @@ const MAX_LANES = 2;
 // shorter than what two lanes plus the link need.
 const CELL_PADDING = 4;
 const DATE_BADGE = 22;
-const ENTRY = 30;
+const ENTRY = 28;
 const MORE_LINK = 16;
-const GAP = 3;
+const GAP = 4;
 const MIN_ROW_HEIGHT = CELL_PADDING * 2 + DATE_BADGE + MAX_LANES * (GAP + ENTRY) + GAP + MORE_LINK;
 const DAY_MS = 86_400_000;
 
