@@ -445,6 +445,8 @@
       "conflictBlocked": "This resource is blocked at that time",
       "createRideOnDay": "Click, or click and drag, to create a ride",
       "createRideAtTime": "Click, or click and drag across hours, to create a ride at this time",
+      "openDay": "Open this day",
+      "moreRides": "+{count} more",
       "legend": {
         "PENDING": "Pending",
         "CONFIRMED": "Confirmed",
