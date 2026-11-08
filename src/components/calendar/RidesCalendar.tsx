@@ -4,7 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Bus, UserRound } from "lucide-react";
-import { ResourceTimelineGrid, type DragOverTarget, type CellRideDraft } from "./ResourceTimelineGrid";
+import {
+  ResourceTimelineGrid,
+  CELL_CREATE_DEPARTURE_TIME,
+  type DragOverTarget,
+  type CellRideDraft,
+} from "./ResourceTimelineGrid";
+import { MonthGrid } from "./MonthGrid";
 import { UnassignedQueue } from "./UnassignedQueue";
 import { NewRideModal, type NewRideInitialValues } from "./NewRideModal";
 import { RideDetailDrawer } from "./RideDetailDrawer";
@@ -17,6 +23,7 @@ import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog
 import { clientDisplayName } from "@/lib/clientDisplay";
 import { displayRideStatus } from "@/lib/rideStatus";
 import { CALENDAR_RESOURCE_COLUMN_WIDTH } from "@/lib/tableLayout";
+import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import { parseStatusParam, serializeStatusParam } from "@/lib/statusFilterParam";
 import type { CalendarData, CalendarRide, CalendarView, ResourceGrouping, RideStatus } from "./types";
 
@@ -75,7 +82,7 @@ function cellRideDraftInitialValues(draft: CellRideDraft, grouping: ResourceGrou
     departureAt: draft.departureAt,
     isRoundTrip: draft.isRoundTrip,
     returnAt: draft.returnAt,
-    ...(grouping === "vehicle" ? { vehicleId: draft.resourceId } : { driverId: draft.resourceId }),
+    ...(draft.resourceId ? (grouping === "vehicle" ? { vehicleId: draft.resourceId } : { driverId: draft.resourceId }) : {}),
   };
 }
 
@@ -182,17 +189,14 @@ export function RidesCalendar() {
     }
   }
 
-  // Where a sideways-scrolling view opens: the day view at 06:00 (the hours
-  // before stay a scroll away), the month view with today a couple of days
-  // in from the left when it's the current month, otherwise the start.
+  // The day view opens scrolled to 06:00 (the hours before stay a scroll
+  // away); the week and month views always start at the left edge.
   const hasData = data !== null;
   useEffect(() => {
     const scroller = scrollRef.current;
     if (!scroller || !hasData) return;
-    const selector = view === "day" ? '[data-hour="6"]' : view === "month" ? "[data-today]" : null;
-    const target = selector ? scroller.querySelector<HTMLElement>(selector) : null;
-    const lead = view === "month" && target ? 2 * target.offsetWidth : 0;
-    scroller.scrollLeft = target ? Math.max(0, target.offsetLeft - CALENDAR_RESOURCE_COLUMN_WIDTH - lead) : 0;
+    const six = view === "day" ? scroller.querySelector<HTMLElement>('[data-hour="6"]') : null;
+    scroller.scrollLeft = six ? six.offsetLeft - CALENDAR_RESOURCE_COLUMN_WIDTH : 0;
   }, [view, rangeKey, hasData]);
 
   useEffect(() => {
@@ -382,32 +386,36 @@ export function RidesCalendar() {
             selected={statusFilter}
             onChange={updateStatusFilter}
           />
-          <div className="flex h-10 shrink-0 items-center gap-[3px] rounded-[10px] bg-[var(--border-soft)] p-[3px]">
-            <button
-              type="button"
-              onClick={() => setGrouping("vehicle")}
-              className={`flex h-[34px] items-center gap-[6px] rounded-[8px] px-[10px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
-                grouping === "vehicle"
-                  ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
-                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
-              }`}
-            >
-              <Bus size={14} strokeWidth={1.9} />
-              {t("byVehicle")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setGrouping("driver")}
-              className={`flex h-[34px] items-center gap-[6px] rounded-[8px] px-[10px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
-                grouping === "driver"
-                  ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
-                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
-              }`}
-            >
-              <UserRound size={14} strokeWidth={1.9} />
-              {t("byDriver")}
-            </button>
-          </div>
+          {/* Vehicles/Drivers only splits the day and week timelines into
+              rows; the month grid isn't per resource. */}
+          {view !== "month" ? (
+            <div className="flex h-10 shrink-0 items-center gap-[3px] rounded-[10px] bg-[var(--border-soft)] p-[3px]">
+              <button
+                type="button"
+                onClick={() => setGrouping("vehicle")}
+                className={`flex h-[34px] items-center gap-[6px] rounded-[8px] px-[10px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
+                  grouping === "vehicle"
+                    ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
+                    : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+                }`}
+              >
+                <Bus size={14} strokeWidth={1.9} />
+                {t("byVehicle")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setGrouping("driver")}
+                className={`flex h-[34px] items-center gap-[6px] rounded-[8px] px-[10px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
+                  grouping === "driver"
+                    ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
+                    : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+                }`}
+              >
+                <UserRound size={14} strokeWidth={1.9} />
+                {t("byDriver")}
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -419,23 +427,38 @@ export function RidesCalendar() {
           (never-scrolling) "scroll box" and breaks sticky-to-the-real-
           scroller for anything inside it. */}
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto" style={{ containerType: "inline-size" }}>
-        <ResourceTimelineGrid
-          view={view}
-          days={days}
-          grouping={grouping}
-          vehicles={data.vehicles}
-          drivers={data.drivers}
-          rides={filteredRides}
-          blocks={data.blocks}
-          onRideClick={setSelectedRideId}
-          onDropRide={handleDrop}
-          dragOverTarget={dragOverTarget}
-          onDragOverResource={handleDragOverResource}
-          onDragLeave={() => setDragOverTarget(null)}
-          draggingRideId={draggingRideId}
-          onResourceAdded={load}
-          onCreateRide={setCellRideDraft}
-        />
+        {view === "month" ? (
+          <MonthGrid
+            days={days}
+            rides={filteredRides}
+            onRideClick={setSelectedRideId}
+            onOpenDay={(day) => {
+              setAnchor(day);
+              changeView("day");
+            }}
+            onCreateRide={(day) =>
+              setCellRideDraft({ departureAt: `${toDateOnlyString(day)}T${CELL_CREATE_DEPARTURE_TIME}`, isRoundTrip: false })
+            }
+          />
+        ) : (
+          <ResourceTimelineGrid
+            view={view}
+            days={days}
+            grouping={grouping}
+            vehicles={data.vehicles}
+            drivers={data.drivers}
+            rides={filteredRides}
+            blocks={data.blocks}
+            onRideClick={setSelectedRideId}
+            onDropRide={handleDrop}
+            dragOverTarget={dragOverTarget}
+            onDragOverResource={handleDragOverResource}
+            onDragLeave={() => setDragOverTarget(null)}
+            draggingRideId={draggingRideId}
+            onResourceAdded={load}
+            onCreateRide={setCellRideDraft}
+          />
+        )}
         {data.unassigned.length > 0 ? (
           // Pinned to the scroller's visible width, so it stays in view when
           // the day/month grid is scrolled sideways (100cqw = the scroller's

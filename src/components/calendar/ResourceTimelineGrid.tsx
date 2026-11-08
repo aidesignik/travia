@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Wrench, Plus } from "lucide-react";
 import { RideBlockCard } from "./RideBlockCard";
-import { RideMonthBar } from "./RideMonthBar";
 import { DriverAvatar } from "@/components/ui/DriverAvatar";
 import { formatPlate } from "@/lib/plateDisplay";
 import { AddVehiclePanel } from "@/components/forms/AddVehiclePanel";
@@ -13,16 +12,17 @@ import { CALENDAR_DAY_COLUMN_MIN_WIDTH, CALENDAR_RESOURCE_COLUMN_WIDTH } from "@
 import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import type { CalendarBlock, CalendarDriver, CalendarRide, CalendarVehicle, CalendarView, ResourceGrouping } from "./types";
 
-// Defaults for a ride created by clicking/dragging an empty day cell (week
-// and month views) — there's no time-of-day granularity in a day cell to
-// derive these from, so a plain business-hours guess stands in until the
-// carrier edits it in the form that opens right after. The day view's hour
-// cells use the hour itself instead.
-const CELL_CREATE_DEPARTURE_TIME = "09:00";
+// Defaults for a ride created by clicking/dragging an empty day cell (the
+// week view, and the month grid's day cells) — there's no time-of-day
+// granularity in a day cell to derive these from, so a plain business-hours
+// guess stands in until the carrier edits it in the form that opens right
+// after. The day view's hour cells use the hour itself instead.
+export const CELL_CREATE_DEPARTURE_TIME = "09:00";
 const CELL_CREATE_RETURN_TIME = "18:00";
 
 export interface CellRideDraft {
-  resourceId: string;
+  // The row it was created on; absent from the month grid, which has none.
+  resourceId?: string;
   departureAt: string;
   isRoundTrip: boolean;
   returnAt?: string;
@@ -39,10 +39,14 @@ const DAY_SLOTS = 24 * SLOTS_PER_HOUR;
 // matches AVERAGE_TRIP_DURATION in lib/availability.ts.
 const ONE_WAY_SPAN_MS = 4 * 60 * 60 * 1000;
 
+// The month view is its own grid (MonthGrid); this timeline draws the day
+// and week views.
+type TimelineView = Exclude<CalendarView, "month">;
+
 // Per view: narrowest a column may get before the grid scrolls sideways
-// (hour / day / day), and the height of one lane of rides.
-const COLUMN_MIN_WIDTH: Record<CalendarView, number> = { day: 64, week: CALENDAR_DAY_COLUMN_MIN_WIDTH, month: 92 };
-const LANE_MIN_HEIGHT: Record<CalendarView, number> = { day: 112, week: 132, month: 60 };
+// (an hour / a day), and the height of one lane of rides.
+const COLUMN_MIN_WIDTH: Record<TimelineView, number> = { day: 64, week: CALENDAR_DAY_COLUMN_MIN_WIDTH };
+const LANE_MIN_HEIGHT: Record<TimelineView, number> = { day: 112, week: 132 };
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
@@ -110,9 +114,9 @@ export function ResourceTimelineGrid({
   onResourceAdded,
   onCreateRide,
 }: {
-  view: CalendarView;
+  view: TimelineView;
   // The visible days, local midnights: one for the day view, seven for the
-  // week, every day of the month for the month view.
+  // week.
   days: Date[];
   grouping: ResourceGrouping;
   vehicles: CalendarVehicle[];
@@ -238,7 +242,7 @@ export function ResourceTimelineGrid({
           resolve against the same scrolling ancestor. */}
       {/* At least the scroller's width, and wide enough for every column at
           its minimum — so row lines and the add row run the full width when
-          the day/month grid scrolls sideways. */}
+          the day view's hour grid scrolls sideways. */}
       <div style={{ minWidth: `max(100%, ${CALENDAR_RESOURCE_COLUMN_WIDTH + columnCount * COLUMN_MIN_WIDTH[view]}px)` }}>
         <div className="sticky top-0 z-20 grid" style={{ gridTemplateColumns: gridTemplate }}>
             <div
@@ -269,13 +273,10 @@ export function ResourceTimelineGrid({
                   return (
                     <div
                       key={i}
-                      data-today={isToday ? "" : undefined}
-                      className={`flex items-center border-r bg-white py-4 last:border-r-0 ${
-                        view === "month" ? "flex-col justify-center gap-[1px] px-1" : "gap-[6px] px-[14px]"
-                      }`}
+                      className="flex items-center gap-[6px] border-r bg-white px-[14px] py-4 last:border-r-0"
                       style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
                     >
-                      <span className={view === "month" ? "text-[12px]" : "text-[14px]"} style={{ color: "#6E6E68" }}>
+                      <span className="text-[14px]" style={{ color: "#6E6E68" }}>
                         {weekday}
                       </span>
                       <span
@@ -440,9 +441,7 @@ export function ResourceTimelineGrid({
                     {resourceBlocks.map(({ block, startIdx, endIdx }) => (
                       <div
                         key={block.id}
-                        className={`z-0 flex items-center gap-[6px] truncate rounded-[9px] font-medium ${
-                          view === "month" ? "h-9 px-[7px] text-[12.5px]" : "h-10 px-[10px] text-[13.5px]"
-                        }`}
+                        className="z-0 flex h-10 items-center gap-[6px] truncate rounded-[9px] px-[10px] text-[13.5px] font-medium"
                         style={{
                           gridRow: (laneOf.get(block.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
@@ -465,20 +464,16 @@ export function ResourceTimelineGrid({
                         style={{
                           gridRow: (laneOf.get(ride.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
-                          margin: view === "week" ? "9px" : view === "month" ? "6px 3px" : "9px 3px",
+                          margin: view === "week" ? "9px" : "9px 3px",
                         }}
                       >
-                        {view === "month" ? (
-                          <RideMonthBar ride={ride} onClick={() => onRideClick(ride.id)} />
-                        ) : (
-                          <RideBlockCard
-                            ride={ride}
-                            onClick={() => onRideClick(ride.id)}
-                            style={{ height: "100%" }}
-                            seats={seatsFor(ride)}
-                            driver={driverFor(ride)}
-                          />
-                        )}
+                        <RideBlockCard
+                          ride={ride}
+                          onClick={() => onRideClick(ride.id)}
+                          style={{ height: "100%" }}
+                          seats={seatsFor(ride)}
+                          driver={driverFor(ride)}
+                        />
                       </div>
                     ))}
 

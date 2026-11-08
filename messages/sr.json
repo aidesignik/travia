@@ -445,6 +445,8 @@
       "conflictBlocked": "Ovaj resurs je blokiran u tom periodu",
       "createRideOnDay": "Kliknite, ili kliknite i prevucite, da kreirate vožnju",
       "createRideAtTime": "Kliknite, ili kliknite i prevucite preko sati, da kreirate vožnju u ovom terminu",
+      "openDay": "Otvori ovaj dan",
+      "moreRides": "+{count} još",
       "legend": {
         "PENDING": "Na čekanju",
         "CONFIRMED": "Potvrđeno",
