@@ -31,12 +31,17 @@ export function MultiSelectFilter({
   options,
   selected,
   onChange,
+  align = "left",
 }: {
   label: string;
   clearLabel: string;
   options: MultiSelectOption[];
   selected: string[];
   onChange: (values: string[]) => void;
+  // Which edge of the trigger the menu lines up with — "right" for a
+  // trigger near the right edge of a clipping container, so the 240px menu
+  // opens leftwards instead of being cut off.
+  align?: "left" | "right";
 }) {
   const t = useTranslations("common");
   const [open, setOpen] = useState(false);
@@ -144,7 +149,7 @@ export function MultiSelectFilter({
           role="listbox"
           aria-multiselectable="true"
           style={{ minWidth: 240 }}
-          className="absolute left-0 z-[70] mt-1 rounded-[12px] bg-[var(--bg-panel)] p-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--border-hairline)]"
+          className={`absolute ${align === "right" ? "right-0" : "left-0"} z-[70] mt-1 rounded-[12px] bg-[var(--bg-panel)] p-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--border-hairline)]`}
         >
           {options.map((opt, i) => {
             const isSelected = selected.includes(opt.value);

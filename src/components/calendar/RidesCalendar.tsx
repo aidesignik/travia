@@ -385,6 +385,9 @@ export function RidesCalendar() {
             options={statusOptions}
             selected={statusFilter}
             onChange={updateStatusFilter}
+            // It sits at the calendar card's right edge (the card clips
+            // overflow), so the menu opens leftwards.
+            align="right"
           />
           {/* Vehicles/Drivers only splits the day and week timelines into
               rows; the month grid isn't per resource. */}
