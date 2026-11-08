@@ -18,7 +18,7 @@ import type { CalendarBlock, CalendarDriver, CalendarRide, CalendarVehicle, Cale
 // guess stands in until the carrier edits it in the form that opens right
 // after. The day view's hour cells use the hour itself instead.
 export const CELL_CREATE_DEPARTURE_TIME = "09:00";
-const CELL_CREATE_RETURN_TIME = "18:00";
+export const CELL_CREATE_RETURN_TIME = "18:00";
 
 export interface CellRideDraft {
   // The row it was created on; absent from the month grid, which has none.

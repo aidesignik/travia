@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { RideMonthBar } from "./RideMonthBar";
 import type { CalendarRide } from "./types";
@@ -71,8 +72,9 @@ function assignLanes(segments: Omit<Segment, "lane">[]): Segment[] {
 // as its colour — split only where it wraps onto the next week row (squared
 // ends show it carries on). Each day shows up to two rides; a day with more
 // gets "+N more", which opens that day in the day view. Clicking a date
-// opens it in the day view; clicking a day's empty space starts a new ride
-// on it.
+// opens it in the day view; clicking a day's empty space — or dragging
+// across several days, even into the next week — starts a new ride on
+// those dates (no vehicle or driver preselected; the grid has no rows).
 export function MonthGrid({
   days,
   rides,
@@ -85,7 +87,8 @@ export function MonthGrid({
   rides: CalendarRide[];
   onRideClick: (rideId: string) => void;
   onOpenDay: (day: Date) => void;
-  onCreateRide: (day: Date) => void;
+  // The first and last day picked (the same day for a plain click).
+  onCreateRide: (start: Date, end: Date) => void;
 }) {
   const t = useTranslations("carrier.calendar");
   const locale = useLocale();
@@ -108,6 +111,27 @@ export function MonthGrid({
   const cellIndex = (date: Date) => Math.round((startOfDay(date).getTime() - gridStart.getTime()) / DAY_MS);
   const firstIdx = cellIndex(first);
   const lastIdx = cellIndex(last);
+
+  // The in-progress click/drag over day cells (cell indexes) — started on
+  // mousedown over an empty part of a day, extended as the pointer enters
+  // other days while the button stays down, and turned into a new ride on
+  // mouseup anywhere (a window listener, so releasing outside the grid
+  // still ends it cleanly).
+  const [selection, setSelection] = useState<{ start: number; end: number } | null>(null);
+  useEffect(() => {
+    if (!selection) return;
+    function finish() {
+      if (!selection) return;
+      const a = Math.min(selection.start, selection.end);
+      const b = Math.max(selection.start, selection.end);
+      setSelection(null);
+      onCreateRide(addDays(gridStart, a), addDays(gridStart, b));
+    }
+    window.addEventListener("mouseup", finish);
+    return () => window.removeEventListener("mouseup", finish);
+  }, [selection, gridStart, onCreateRide]);
+  const selLow = selection ? Math.min(selection.start, selection.end) : -1;
+  const selHigh = selection ? Math.max(selection.start, selection.end) : -1;
 
   // Each ride as one segment per week row it touches, clamped to the month.
   const segmentsByWeek: Omit<Segment, "lane">[][] = Array.from({ length: weeks }, () => []);
@@ -165,20 +189,33 @@ export function MonthGrid({
                 rowGap: GAP,
               }}
             >
-              {/* Day cells: background, borders, date badge, click-to-create. */}
+              {/* Day cells: background, borders, date badge, click/drag-to-create. */}
               {Array.from({ length: 7 }, (_, col) => {
-                const day = cells[week * 7 + col];
+                const idx = week * 7 + col;
+                const day = cells[idx];
                 const inMonth = day.getMonth() === month;
                 const isToday = day.getTime() === today;
+                const inSelection = idx >= selLow && idx <= selHigh;
                 return (
                   <div
                     key={col}
                     title={inMonth ? t("createRideOnDay") : undefined}
-                    onClick={(e) => {
-                      if (inMonth && e.target === e.currentTarget) onCreateRide(day);
+                    onMouseDown={(e) => {
+                      // Left button, on the cell itself (not its date badge).
+                      if (!inMonth || e.button !== 0 || e.target !== e.currentTarget) return;
+                      e.preventDefault();
+                      setSelection({ start: idx, end: idx });
                     }}
-                    className={`min-w-0 px-[6px] pt-[4px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
-                      inMonth ? "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30" : "bg-[#FAFAF8]"
+                    onMouseEnter={() => {
+                      // Only days of this month join a drag.
+                      if (inMonth) setSelection((prev) => (prev ? { ...prev, end: idx } : prev));
+                    }}
+                    className={`min-w-0 select-none px-[6px] pt-[4px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
+                      !inMonth
+                        ? "bg-[#FAFAF8]"
+                        : inSelection
+                          ? "cursor-pointer bg-[var(--action-100)]"
+                          : "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30"
                     }`}
                     // Spans the row's full height (past the last grid line, so
                     // it fills any spare space below the lanes too).
