@@ -3,13 +3,23 @@
 import { useEffect, useRef, useState, type FormEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { ArrowUp, GripVertical, PanelRightClose, PanelRightOpen, RotateCcw, UserRound, X } from "lucide-react";
+import {
+  ArrowUp,
+  Bus,
+  CalendarPlus,
+  GripVertical,
+  List,
+  PanelRight,
+  PanelRightClose,
+  RotateCcw,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import type { RideProposal } from "@/lib/assistant/tools";
 import { AssistantProposalCard } from "./AssistantProposalCard";
-import { AssistantMark } from "./AssistantMark";
 import {
-  ASSISTANT_DOCK_GAP,
   ASSISTANT_DOCK_WIDTH,
   setAssistantDocked,
   setAssistantOpen,
@@ -22,22 +32,17 @@ import {
 export const RIDES_CHANGED_EVENT = "travia:rides-changed";
 
 const PREFS_KEY = "travia.assistant";
-const FLOAT_WIDTH = 400;
-const FLOAT_MAX_HEIGHT = 620;
+const FLOAT_WIDTH = 420;
+/** Inset of the floating window from the viewport edges; it runs full height. */
 const EDGE = 16;
 /** The carrier sidebar's width; a fresh floating window opens just right of it. */
 const SIDEBAR_WIDTH = 252;
 
-// Soft blue/violet wash behind the whole window, with white cards on top.
-const WINDOW_BACKGROUND = [
-  "radial-gradient(120% 45% at 100% 0%, rgba(139,92,246,0.10) 0%, rgba(139,92,246,0) 70%)",
-  "radial-gradient(110% 45% at 0% 100%, rgba(37,99,235,0.10) 0%, rgba(37,99,235,0) 70%)",
-  "linear-gradient(180deg, #FCFCFF 0%, #F4F6FE 100%)",
-].join(", ");
-const CARD_CLASS =
-  "rounded-[14px] bg-white shadow-[0_0_0_1px_rgba(24,24,27,0.04),0_1px_2px_rgba(16,24,40,0.04),0_6px_18px_rgba(76,86,160,0.07)]";
-const ICON_BUTTON_CLASS =
-  "flex h-8 w-8 items-center justify-center rounded-[8px] text-[#71717A] transition-colors duration-[.12s] hover:bg-white/80 hover:text-[var(--ink-primary)]";
+// The header zone is the only tinted area: select-tint fading to white,
+// behind the header row and (when empty) the greeting.
+const HEADER_ZONE_BACKGROUND = "linear-gradient(180deg, var(--select-tint) 0%, var(--bg-panel) 100%)";
+const HEADER_BUTTON_CLASS =
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-transparent text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[rgba(255,255,255,0.7)] hover:text-[var(--ink-primary)]";
 
 interface ChatItem {
   id: number;
@@ -106,7 +111,7 @@ export function AssistantWindow() {
   const [enabled, setEnabled] = useState(false);
   const [docked, setDocked] = useState(false);
   const [pos, setPos] = useState<Point | null>(null);
-  const [floatHeight, setFloatHeight] = useState(FLOAT_MAX_HEIGHT);
+  const [floatHeight, setFloatHeight] = useState(0);
   const [items, setItems] = useState<ChatItem[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -178,12 +183,12 @@ export function AssistantWindow() {
     function fit() {
       const scale = cssScale(probeRef.current);
       const vp = viewportCss(scale);
-      const height = Math.min(FLOAT_MAX_HEIGHT, vp.height - EDGE * 2);
+      const height = vp.height - EDGE * 2;
       setFloatHeight(height);
       setPos((prev) => {
-        // First open: bottom left, next to the sidebar — away from the right
-        // edge, where ride details and forms slide in.
-        const fallback = { x: SIDEBAR_WIDTH + EDGE, y: vp.height - height - EDGE };
+        // First open: just right of the sidebar — away from the right edge,
+        // where ride details and forms slide in.
+        const fallback = { x: SIDEBAR_WIDTH + EDGE, y: EDGE };
         const p = prev ?? fallback;
         return {
           x: Math.min(Math.max(EDGE, p.x), Math.max(EDGE, vp.width - FLOAT_WIDTH - EDGE)),
@@ -291,9 +296,14 @@ export function AssistantWindow() {
     savePrefs({ docked, pos });
   }
 
-  const examples = [t("example1"), t("example2"), t("example3")];
+  const suggestions: { icon: LucideIcon; label: string; prompt: string }[] = [
+    { icon: CalendarPlus, label: t("suggestion1"), prompt: t("example1") },
+    { icon: Bus, label: t("suggestion2"), prompt: t("example2") },
+    { icon: List, label: t("suggestion3"), prompt: t("example3") },
+  ];
+  const empty = items.length === 0;
   const windowStyle = docked
-    ? { top: ASSISTANT_DOCK_GAP, bottom: ASSISTANT_DOCK_GAP, right: ASSISTANT_DOCK_GAP, width: ASSISTANT_DOCK_WIDTH }
+    ? { top: 0, bottom: 0, right: 0, width: ASSISTANT_DOCK_WIDTH }
     : { left: pos?.x ?? 0, top: pos?.y ?? 0, width: FLOAT_WIDTH, height: floatHeight };
 
   return (
@@ -309,121 +319,123 @@ export function AssistantWindow() {
           onKeyDown={(event) => {
             if (event.key === "Escape" && !docked) setAssistantOpen(false);
           }}
-          className={`fixed flex flex-col overflow-hidden border border-white ${
+          className={`fixed flex flex-col overflow-hidden bg-[var(--bg-panel)] font-medium text-[var(--ink-primary)] ${
             docked
-              ? "z-30 rounded-panel shadow-[0_0_0_1px_rgba(24,24,27,0.06),var(--shadow-surface-card)]"
-              : "z-[45] rounded-[18px] shadow-[0_0_0_1px_rgba(24,24,27,0.06),0_24px_60px_rgba(40,48,110,0.18),0_4px_12px_rgba(40,48,110,0.08)]"
+              ? "z-30 border-l border-[var(--border-container)]"
+              : "z-[45] rounded-panel border border-[var(--border-container)] shadow-[var(--shadow-panel)]"
           }`}
-          style={{ ...windowStyle, background: WINDOW_BACKGROUND }}
+          style={windowStyle}
         >
-          <header
-            onPointerDown={onDragStart}
-            onPointerMove={onDragMove}
-            onPointerUp={onDragEnd}
-            onPointerCancel={onDragEnd}
-            className={`flex h-[54px] shrink-0 select-none items-center gap-1 border-b border-[rgba(24,24,27,0.06)] pl-3 pr-2 ${
-              docked ? "" : "cursor-grab active:cursor-grabbing"
-            }`}
-            title={docked ? undefined : t("dragHint")}
-          >
-            {docked ? null : <GripVertical size={15} strokeWidth={1.9} className="shrink-0 text-[#A1A1AA]" aria-hidden />}
-            <AssistantMark size={18} className="ml-1" />
-            <h2 className="ml-[6px] text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
-            <span className="ml-[6px] rounded-[5px] border border-[#D9DCF2] px-[5px] py-px text-[10px] font-semibold uppercase tracking-[0.06em] text-[#5B5FA8]">
-              {t("beta")}
-            </span>
-            <span className="flex-1" />
-            {items.length > 0 ? (
-              <button type="button" onClick={() => setItems([])} aria-label={t("newChat")} title={t("newChat")} className={ICON_BUTTON_CLASS}>
-                <RotateCcw size={15} strokeWidth={1.9} />
+          {/* Header zone: the panel's only tint. */}
+          <div className="shrink-0" style={{ background: HEADER_ZONE_BACKGROUND }}>
+            <header
+              onPointerDown={onDragStart}
+              onPointerMove={onDragMove}
+              onPointerUp={onDragEnd}
+              onPointerCancel={onDragEnd}
+              className={`flex h-14 select-none items-center gap-[10px] pl-3 pr-2 ${docked ? "" : "cursor-grab active:cursor-grabbing"}`}
+              title={docked ? undefined : t("dragHint")}
+            >
+              {docked ? null : <GripVertical size={14} strokeWidth={2} className="shrink-0 text-[var(--ink-muted)]" aria-hidden />}
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[var(--action-bg)] text-white">
+                <Sparkles size={16} strokeWidth={2} aria-hidden />
+              </span>
+              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
+              <span className="rounded-pill bg-[var(--action-100)] px-2 py-[2px] text-[11.5px] font-medium text-[var(--action-800)]">
+                {t("beta")}
+              </span>
+              <span className="flex-1" />
+              {!empty ? (
+                <button type="button" onClick={() => setItems([])} aria-label={t("newChat")} title={t("newChat")} className={HEADER_BUTTON_CLASS}>
+                  <RotateCcw size={18} strokeWidth={1.8} />
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={toggleDocked}
+                aria-label={docked ? t("unpin") : t("pin")}
+                title={docked ? t("unpin") : t("pin")}
+                aria-pressed={docked}
+                className={HEADER_BUTTON_CLASS}
+              >
+                {docked ? <PanelRightClose size={18} strokeWidth={1.8} /> : <PanelRight size={18} strokeWidth={1.8} />}
               </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={toggleDocked}
-              aria-label={docked ? t("unpin") : t("pin")}
-              title={docked ? t("unpin") : t("pin")}
-              aria-pressed={docked}
-              className={ICON_BUTTON_CLASS}
-            >
-              {docked ? <PanelRightClose size={16} strokeWidth={1.9} /> : <PanelRightOpen size={16} strokeWidth={1.9} />}
-            </button>
-            <button
-              type="button"
-              onClick={() => setAssistantOpen(false)}
-              aria-label={t("close")}
-              title={t("close")}
-              className={ICON_BUTTON_CLASS}
-            >
-              <X size={17} strokeWidth={1.9} />
-            </button>
-          </header>
+              <button
+                type="button"
+                onClick={() => setAssistantOpen(false)}
+                aria-label={t("close")}
+                title={t("close")}
+                className={HEADER_BUTTON_CLASS}
+              >
+                <X size={18} strokeWidth={1.8} />
+              </button>
+            </header>
 
-          <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-4" aria-live="polite">
-            {items.length === 0 ? (
-              <div className={`${CARD_CLASS} p-4`}>
-                <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{t("emptyTitle")}</p>
-                <p className="mt-1 text-[13.5px] leading-[1.45] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
-                <div className="mt-4 flex flex-col gap-2">
-                  {examples.map((example) => (
-                    <button
-                      key={example}
-                      type="button"
-                      onClick={() => {
-                        setDraft(example);
-                        inputRef.current?.focus();
-                      }}
-                      className="rounded-[10px] border border-[#E6E8F2] bg-white px-3 py-[10px] text-left text-[13px] leading-[1.4] text-[#52525B] transition-colors duration-[.12s] hover:border-[#C9D3F5] hover:bg-[#F7F9FF] hover:text-[var(--ink-primary)]"
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
+            {empty ? (
+              <div className="flex flex-col gap-[6px] px-5 pb-2 pt-4">
+                <h2 className="text-[19px] font-semibold leading-[1.3] tracking-[-0.015em] text-[var(--ink-primary)]">
+                  {t("emptyTitle")}
+                </h2>
+                <p className="text-[13.5px] font-medium leading-[1.5] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
+              </div>
+            ) : null}
+          </div>
+
+          <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+            {empty ? (
+              <div className="flex flex-col gap-2 px-5 pt-4">
+                {suggestions.map(({ icon: Icon, label, prompt }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      setDraft(prompt);
+                      inputRef.current?.focus();
+                    }}
+                    className="flex min-h-11 items-center gap-3 rounded-control border border-[var(--border-hairline)] bg-white px-[14px] py-3 text-left text-[13px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]"
+                  >
+                    <Icon size={18} strokeWidth={1.9} className="shrink-0 text-[var(--action-bg)]" aria-hidden />
+                    <span className="min-w-0 flex-1">{label}</span>
+                  </button>
+                ))}
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
-                {items.map((item) => (
-                  <div key={item.id} className={`${CARD_CLASS} px-4 py-3`}>
-                    <p className="mb-[6px] flex items-center gap-[6px] text-[11.5px] font-medium text-[#8B8B93]">
-                      {item.role === "user" ? (
-                        <>
-                          <span className="flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#EEF1F8] text-[#7A7F96]">
-                            <UserRound size={11} strokeWidth={2.2} aria-hidden />
-                          </span>
-                          {t("you")}
-                        </>
-                      ) : (
-                        <>
-                          <AssistantMark size={14} />
-                          {t("title")}
-                        </>
-                      )}
+              <div className="flex flex-col gap-4 px-5 py-4">
+                {items.map((item) =>
+                  item.role === "user" ? (
+                    <p
+                      key={item.id}
+                      className="max-w-[300px] self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-[var(--select-tint)] px-[14px] py-[10px] text-[14px] font-medium text-[var(--ink-primary)]"
+                    >
+                      {item.text}
                     </p>
-                    <p className="whitespace-pre-wrap text-[14px] leading-[1.45] text-[var(--ink-primary)]">{item.text}</p>
-                    {item.proposal ? (
-                      <AssistantProposalCard
-                        proposal={item.proposal}
-                        created={Boolean(item.created)}
-                        onCreated={() => markCreated(item.id)}
-                      />
-                    ) : null}
-                  </div>
-                ))}
+                  ) : (
+                    <div key={item.id} className="self-stretch">
+                      <p className="whitespace-pre-wrap text-[14px] font-medium leading-[1.5] text-[var(--ink-body)]">{item.text}</p>
+                      {item.proposal ? (
+                        <AssistantProposalCard
+                          proposal={item.proposal}
+                          created={Boolean(item.created)}
+                          onCreated={() => markCreated(item.id)}
+                        />
+                      ) : null}
+                    </div>
+                  ),
+                )}
                 {sending ? (
-                  <div className={`${CARD_CLASS} px-4 py-3`}>
-                    <p className="flex items-center gap-[6px] text-[13px] text-[var(--ink-secondary)]">
-                      <AssistantMark size={14} className="animate-pulse" />
-                      {t("thinking")}
-                    </p>
-                  </div>
+                  <p className="animate-pulse text-[14px] font-medium text-[var(--ink-secondary)]">{t("thinking")}</p>
                 ) : null}
               </div>
             )}
           </div>
 
-          <form onSubmit={onSubmit} className="shrink-0 px-4 pb-3 pt-1">
-            <div className="flex items-end gap-2 rounded-[16px] border border-[#E4E6F0] bg-white py-2 pl-4 pr-2 shadow-[0_2px_8px_rgba(76,86,160,0.06)] transition-shadow duration-[.12s] focus-within:border-[#BFCDF6] focus-within:shadow-[0_0_0_3px_rgba(37,99,235,0.12)]">
+          <form onSubmit={onSubmit} className="flex shrink-0 flex-col gap-[10px] px-4 pb-4 pt-3">
+            <div className="flex items-end gap-2 rounded-[12px] border border-[var(--border-control)] bg-white pb-[10px] pl-[14px] pr-3 pt-3 transition-[border-color,box-shadow] duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[var(--focus-ring)]">
+              <label htmlFor="assistant-message" className="sr-only">
+                {t("inputLabel")}
+              </label>
               <textarea
+                id="assistant-message"
                 ref={inputRef}
                 rows={2}
                 maxLength={4000}
@@ -437,19 +449,18 @@ export function AssistantWindow() {
                   }
                 }}
                 placeholder={t("placeholder")}
-                aria-label={t("placeholder")}
-                className="max-h-40 min-h-[40px] flex-1 resize-none bg-transparent py-[2px] text-[14px] text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
+                className="max-h-40 flex-1 resize-none border-0 bg-transparent text-[14px] font-medium text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={!draft.trim() || sending}
                 aria-label={t("send")}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--action-bg)] text-white transition-[opacity,background-color] hover:bg-[var(--action-bg-hover)] disabled:bg-[#D4D8E8] disabled:opacity-100"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[var(--action-bg)] text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)] disabled:bg-[var(--border-soft)] disabled:text-[var(--ink-muted)]"
               >
                 <ArrowUp size={16} strokeWidth={2.2} />
               </button>
             </div>
-            <p className="mt-2 px-1 text-center text-[11px] text-[#9A9AA3]">{t("disclaimer")}</p>
+            <p className="text-center text-[12px] font-medium text-[var(--ink-secondary)]">{t("disclaimer")}</p>
           </form>
         </section>
       ) : null}

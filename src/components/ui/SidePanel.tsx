@@ -83,8 +83,10 @@ export function SidePanel({
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className={`fixed top-2 bottom-2 right-2 z-40 flex w-full flex-col overflow-hidden rounded-panel border border-[var(--border-container)] bg-[var(--bg-panel)] shadow-[var(--shadow-panel)] transition-transform duration-[.22s] ease-[cubic-bezier(.32,.72,0,1)] ${
-        assistantDocked ? "" : "max-w-[480px]"
+      className={`fixed z-40 flex w-full flex-col overflow-hidden bg-[var(--bg-panel)] transition-transform duration-[.22s] ease-[cubic-bezier(.32,.72,0,1)] ${
+        assistantDocked
+          ? "top-0 right-0 bottom-0 border-l border-[var(--border-container)]"
+          : "top-2 right-2 bottom-2 max-w-[480px] rounded-panel border border-[var(--border-container)] shadow-[var(--shadow-panel)]"
       } ${entered ? "translate-x-0" : "translate-x-full"}`}
       style={assistantDocked ? { maxWidth: ASSISTANT_DOCK_WIDTH } : undefined}
     >

@@ -10,10 +10,9 @@ import { useSyncExternalStore } from "react";
 //   instead of sliding in on top of the calendar, so the calendar keeps one
 //   width.
 
-/** Width of the pinned column, in CSS px (before the app's 90% zoom). */
+/** Width of the pinned column, in CSS px (before the app's 90% zoom). The
+ *  column sits flush against the right edge; the shell's own p-2 is the gap. */
 export const ASSISTANT_DOCK_WIDTH = 460;
-/** Gap between the pinned column and the window edge, matching the shell's p-2. */
-export const ASSISTANT_DOCK_GAP = 8;
 
 let open = false;
 let docked = false;
@@ -53,7 +52,7 @@ export function setAssistantDocked(value: boolean) {
   // layout), so the calendar narrows instead of being covered.
   document.documentElement.style.setProperty(
     "--assistant-dock",
-    value ? `${ASSISTANT_DOCK_WIDTH + ASSISTANT_DOCK_GAP}px` : "0px",
+    value ? `${ASSISTANT_DOCK_WIDTH}px` : "0px",
   );
   notify();
 }

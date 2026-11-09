@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeftRight, ArrowRight, Check } from "lucide-react";
+import { Bus, User, type LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { NewRideModal, type NewRideInitialValues } from "@/components/calendar/NewRideModal";
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
@@ -19,6 +20,9 @@ function normalizePhone(raw: string): string | undefined {
   if (compact.startsWith("0")) return `+381${compact.slice(1)}`;
   return `+${compact}`;
 }
+
+// The app's unassigned vehicle/driver tile colours (see RideDetailDrawer).
+const UNASSIGNED_TILE_STYLE = { borderColor: "#C9B48A", background: "#FFF8EC", color: "#8A5A12" };
 
 function toInitialValues(p: RideProposal): NewRideInitialValues {
   return {
@@ -65,18 +69,13 @@ export function AssistantProposalCard({
   const [formOpen, setFormOpen] = useState(false);
 
   const complete = proposal.missing.length === 0;
-  const fmt = (local: string) =>
-    new Intl.DateTimeFormat(intlLocale, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }).format(
-      new Date(local),
-    );
+  const dateLabel = (local: string) =>
+    new Intl.DateTimeFormat(intlLocale, { weekday: "short", day: "numeric", month: "short" }).format(new Date(local));
+  const time = (local: string) => local.slice(11, 16);
   const sameDay = proposal.returnAt && proposal.returnAt.slice(0, 10) === proposal.departureAt.slice(0, 10);
-  const returnLabel = proposal.returnAt
-    ? sameDay
-      ? proposal.returnAt.slice(11)
-      : fmt(proposal.returnAt)
-    : null;
   const client = proposal.clientCompanyName || proposal.clientName;
-  const Arrow = proposal.isRoundTrip ? ArrowLeftRight : ArrowRight;
+  const route = [proposal.pickupCity || "?", proposal.destinationCity || "?"].join(proposal.isRoundTrip ? " ⇄ " : " → ");
+  const fullRoute = [proposal.pickupLocation, ...proposal.stops.map((s) => s.location), proposal.destinationLocation].join(" → ");
 
   async function create() {
     setSaving(true);
@@ -115,71 +114,107 @@ export function AssistantProposalCard({
     else if (!declinedAvailability) setError(t("createFailed"));
   }
 
-  const row = (label: string, value: string | null, missing = false) => (
+  const missingValue = <span className="text-[var(--ink-destructive)]">{t("missingValue")}</span>;
+
+  // Date / Departure / Return: label on top, value below (times in mono).
+  const cell = (label: string, value: ReactNode, sub?: string | null) => (
+    <div className="min-w-0">
+      <p className="text-[12.5px] font-medium text-[var(--ink-secondary)]">{label}</p>
+      <p className="mt-[2px] truncate text-[14px] font-medium text-[var(--ink-primary)]">{value}</p>
+      {sub ? <p className="truncate text-[12px] font-medium text-[var(--ink-secondary)]">{sub}</p> : null}
+    </div>
+  );
+  const mono = (value: string) => <span className="font-mono">{value}</span>;
+
+  const detail = (label: string, value: string | null, missing = false) => (
     <div className="flex gap-3 text-[13px] leading-[18px]">
-      <span className="w-[86px] shrink-0 text-[var(--ink-muted)]">{label}</span>
-      <span className={missing ? "font-medium text-[var(--ink-destructive)]" : "min-w-0 text-[var(--ink-primary)]"}>
-        {missing ? t("missingValue") : value}
+      <span className="w-[86px] shrink-0 font-medium text-[var(--ink-secondary)]">{label}</span>
+      <span className="min-w-0 font-medium text-[var(--ink-primary)]">{missing ? missingValue : value}</span>
+    </div>
+  );
+
+  // Vehicle / driver: the assigned name, or the app's unassigned tile (the
+  // same warm dashed treatment as the ride details drawer).
+  const assignment = (Icon: LucideIcon, assigned: string | null, emptyLabel: string, round: boolean) => (
+    <div className="flex min-w-0 items-center gap-[10px]">
+      <span
+        className={`flex h-8 w-8 shrink-0 items-center justify-center border ${round ? "rounded-full" : "rounded-[8px]"} ${
+          assigned ? "border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--ink-secondary)]" : "border-dashed"
+        }`}
+        style={assigned ? undefined : UNASSIGNED_TILE_STYLE}
+      >
+        <Icon size={16} strokeWidth={1.9} aria-hidden />
+      </span>
+      <span
+        className="min-w-0 truncate text-[13px] font-medium"
+        style={assigned ? { color: "var(--ink-primary)" } : { color: UNASSIGNED_TILE_STYLE.color }}
+      >
+        {assigned ?? emptyLabel}
       </span>
     </div>
   );
 
   return (
-    <div className="mt-2 rounded-[12px] bg-white p-3 shadow-[inset_0_0_0_1px_var(--border-control)]">
-      <p className="flex min-w-0 items-center gap-[6px] text-[14px] font-semibold text-[var(--ink-primary)]">
-        <span className="truncate">{proposal.pickupCity || "?"}</span>
-        <Arrow size={13} strokeWidth={2} className="shrink-0 text-[var(--ink-secondary)]" aria-hidden />
-        <span className="truncate">{proposal.destinationCity || "?"}</span>
-      </p>
-      <div className="mt-2 flex flex-col gap-[5px]">
-        {row(t("client"), client || null, !client)}
-        {proposal.clientEmail || proposal.missing.includes("clientEmail")
-          ? row(t("email"), proposal.clientEmail, proposal.missing.includes("clientEmail"))
-          : null}
-        {row(
-          t("route"),
-          [proposal.pickupLocation, ...proposal.stops.map((s) => s.location), proposal.destinationLocation].join(" → "),
-        )}
-        {row(t("departure"), proposal.departureAt ? fmt(proposal.departureAt) : null, !proposal.departureAt)}
-        {proposal.isRoundTrip ? row(t("return"), returnLabel, !proposal.returnAt) : row(t("return"), t("oneWay"))}
-        {row(
-          t("passengers"),
-          proposal.passengerCount ? String(proposal.passengerCount) : null,
-          !proposal.passengerCount,
-        )}
-        {proposal.vehicle ? row(t("vehicle"), proposal.vehicle.label) : null}
-        {proposal.driver ? row(t("driver"), proposal.driver.name) : null}
-        {proposal.distanceKm ? row(t("distance"), `~${proposal.distanceKm} km`) : null}
-        {proposal.specialRequests ? row(t("notes"), proposal.specialRequests) : null}
+    <div className="mt-3 overflow-hidden rounded-[12px] border border-[var(--border-hairline)] bg-white shadow-[var(--shadow-card)]">
+      <div className="flex flex-col gap-3 p-4">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[13.5px] font-semibold text-[var(--ink-primary)]">{t("draftTitle")}</p>
+          <span
+            className={`rounded-pill px-2 py-[2px] text-[12px] font-medium ${
+              created
+                ? "bg-[var(--status-completed-bg)] text-[var(--status-completed-text)]"
+                : "bg-[var(--status-cancelled-bg)] text-[var(--status-cancelled-text)]"
+            }`}
+          >
+            {created ? t("created") : t("notCreated")}
+          </span>
+        </div>
+
+        <div>
+          <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{route}</p>
+          <p className="mt-[2px] text-[13px] font-medium text-[var(--ink-secondary)]">{client || missingValue}</p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          {cell(t("date"), proposal.departureAt ? dateLabel(proposal.departureAt) : missingValue)}
+          {cell(t("departure"), proposal.departureAt ? mono(time(proposal.departureAt)) : missingValue)}
+          {proposal.isRoundTrip
+            ? cell(
+                t("return"),
+                proposal.returnAt ? mono(time(proposal.returnAt)) : missingValue,
+                proposal.returnAt && !sameDay ? dateLabel(proposal.returnAt) : null,
+              )
+            : cell(t("return"), t("oneWay"))}
+        </div>
+
+        <div className="flex flex-col gap-[5px]">
+          {detail(t("passengers"), proposal.passengerCount ? String(proposal.passengerCount) : null, !proposal.passengerCount)}
+          {proposal.stops.length > 0 ? detail(t("route"), fullRoute) : null}
+          {proposal.clientEmail || proposal.missing.includes("clientEmail")
+            ? detail(t("email"), proposal.clientEmail, proposal.missing.includes("clientEmail"))
+            : null}
+          {proposal.distanceKm ? detail(t("distance"), `~${proposal.distanceKm} km`) : null}
+          {proposal.specialRequests ? detail(t("notes"), proposal.specialRequests) : null}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          {assignment(Bus, proposal.vehicle?.label ?? null, t("noVehicle"), false)}
+          {assignment(User, proposal.driver?.name ?? null, t("noDriver"), true)}
+        </div>
+
+        {!created && !complete ? <p className="text-[12.5px] font-medium text-[var(--ink-secondary)]">{t("missingHint")}</p> : null}
+        {!created && error ? <p className="text-[12.5px] font-medium text-[var(--ink-destructive)]">{error}</p> : null}
       </div>
 
-      {created ? (
-        <p className="mt-3 flex items-center gap-[6px] text-[13px] font-semibold text-[#15803D]">
-          <Check size={15} strokeWidth={2.4} aria-hidden />
-          {t("created")}
-        </p>
-      ) : (
-        <>
-          {!complete ? <p className="mt-3 text-[12.5px] text-[var(--ink-secondary)]">{t("missingHint")}</p> : null}
-          {error ? <p className="mt-2 text-[12.5px] text-[var(--ink-destructive)]">{error}</p> : null}
-          <div className="mt-3 flex gap-2">
-            <button
-              type="button"
-              onClick={() => void create()}
-              disabled={!complete || saving}
-              className="h-9 flex-1 rounded-[9px] bg-[var(--action-bg)] text-[13.5px] font-semibold text-white transition-opacity disabled:opacity-45"
-            >
-              {saving ? t("creating") : t("create")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setFormOpen(true)}
-              className="h-9 rounded-[9px] px-3 text-[13.5px] font-semibold text-[var(--ink-primary)] shadow-[inset_0_0_0_1px_var(--border-control)] hover:bg-[var(--border-soft)]"
-            >
-              {t("openInForm")}
-            </button>
-          </div>
-        </>
+      {created ? null : (
+        <div className="flex gap-2 border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-3">
+          <Button compact className="flex-1" onClick={() => void create()} disabled={!complete || saving}>
+            {saving ? t("creating") : t("create")}
+          </Button>
+          <Button compact variant="secondary" onClick={() => setFormOpen(true)}>
+            {t("openInForm")}
+          </Button>
+        </div>
       )}
 
       {formOpen ? (
