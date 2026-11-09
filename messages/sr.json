@@ -625,7 +625,7 @@
       "refusal": "Ne mogu da pomognem sa tim. Pokušajte da preformulišete.",
       "proposalReady": "Evo vožnje. Proverite je i potvrdite.",
       "createdMessage": "Gotovo, vožnja je u kalendaru.",
-      "disclaimer": "Asistent može da pogreši — proverite svaki nacrt pre nego što ga kreirate.",
+      "disclaimer": "Asistent može da pogreši — proverite svaki nacrt.",
       "notConnected": "Asistent još nije povezan, pa za sada ne mogu da odgovorim. Kada bude uključen, moći ću da rezervišem vožnje i odgovaram na pitanja o rasporedu.",
       "card": {
         "client": "Klijent",
