@@ -16,7 +16,6 @@ import { LegCard, DateTimeRow } from "./newRide/RouteLegCard";
 import { RouteTimeline } from "./newRide/RouteTimeline";
 import { ReturnLegCard } from "./newRide/ReturnLegCard";
 import { DistanceCard } from "./newRide/DistanceCard";
-import { FillFromMessage, type MessageRideClient, type MessageRideDraft } from "./newRide/FillFromMessage";
 import { SHEET_INPUT_CLASS, SHEET_TEXTAREA_CLASS, SHEET_LABEL_CLASS } from "./newRide/sheetFieldClasses";
 import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
@@ -96,18 +95,6 @@ function splitPhone(phone: string): { cc: string; number: string } {
   if (!phone) return { cc: DEFAULT_PHONE_CC, number: "" };
   const match = phone.match(/^\+(\d{1,3})(.*)$/);
   return match ? { cc: match[1], number: match[2] } : { cc: DEFAULT_PHONE_CC, number: phone };
-}
-
-// A phone number as a client wrote it in a message ("064 123 4567",
-// "+381 64 1234567", "00381641234567") → the form's country code + number.
-// A local number starting with 0 is taken as Serbian (+381), the same
-// assumption the driver-message links make.
-function phoneFromMessage(raw: string): { cc: string; number: string } {
-  const compact = raw.replace(/[^\d+]/g, "");
-  if (compact.startsWith("+")) return splitPhone(compact);
-  if (compact.startsWith("00")) return splitPhone(`+${compact.slice(2)}`);
-  if (compact.startsWith("0")) return { cc: DEFAULT_PHONE_CC, number: compact.slice(1) };
-  return { cc: DEFAULT_PHONE_CC, number: compact };
 }
 
 function isValidPhoneNumber(number: string): boolean {
@@ -404,66 +391,6 @@ export function NewRideModal({
 
   const { date: departureDate, time: departureTime } = splitDateTimeLocal(form.departureAt);
 
-  // "Fill from a client's message": copies in every field the message
-  // mentioned and leaves the rest as they are. A matched existing client
-  // fills the client section from their saved record (and links the ride
-  // to it); otherwise the details come from the message itself. A date
-  // with no time gets the calendar's 09:00 out / 18:00 back defaults.
-  function applyMessageDraft(draft: MessageRideDraft, client: MessageRideClient | null) {
-    setForm((prev) => {
-      const next = { ...prev };
-      const companyName = client?.companyName ?? draft.clientCompanyName;
-      const contactName = client?.name ?? draft.clientName;
-      const email = client?.email ?? draft.clientEmail;
-      const phone = client?.phone ?? draft.clientPhone;
-      if (companyName) next.clientCompanyName = companyName;
-      if (contactName) next.clientName = contactName;
-      if (email) next.clientEmail = email;
-      if (phone) {
-        const parts = client?.phone ? splitPhone(client.phone) : phoneFromMessage(phone);
-        next.clientPhoneCc = parts.cc;
-        next.clientPhoneNumber = parts.number.replace(/\D/g, "");
-      }
-
-      if (draft.pickupCity) {
-        next.pickupCity = draft.pickupCity;
-        next.pickupLocation = draft.pickupLocation ?? "";
-      }
-      if (draft.destinationCity) {
-        next.destinationCity = draft.destinationCity;
-        next.destinationLocation = draft.destinationLocation ?? "";
-      }
-      if (draft.stops.length > 0) {
-        next.stops = draft.stops.map((stop) => ({ city: stop.city, location: stop.location ?? "" }));
-      }
-
-      const hasReturn = Boolean(draft.returnDate || draft.returnTime);
-      if (hasReturn) next.isRoundTrip = true;
-      else if (draft.isRoundTrip !== null) next.isRoundTrip = draft.isRoundTrip;
-
-      const prevDeparture = splitDateTimeLocal(prev.departureAt);
-      const outDate = draft.departureDate ?? prevDeparture.date;
-      if (draft.departureDate || draft.departureTime) {
-        next.departureAt = combineDateTimeLocal(outDate, draft.departureTime ?? (prevDeparture.time || "09:00"));
-      }
-      if (next.isRoundTrip && hasReturn) {
-        const prevReturn = splitDateTimeLocal(prev.returnAt);
-        const backDate = draft.returnDate ?? (prevReturn.date || outDate);
-        next.returnAt = combineDateTimeLocal(backDate, draft.returnTime ?? (prevReturn.time || "18:00"));
-      }
-
-      if (draft.passengerCount) next.passengerCount = String(Math.min(draft.passengerCount, MAX_PASSENGERS));
-      if (draft.specialRequests) {
-        next.specialRequests = prev.specialRequests.trim()
-          ? `${prev.specialRequests.trim()}\n${draft.specialRequests}`
-          : draft.specialRequests;
-      }
-      return next;
-    });
-    if (client) setSelectedClientId(client.id);
-    else if (draft.clientCompanyName || draft.clientEmail) setSelectedClientId(null);
-  }
-
   function setDepartureDate(date: string) {
     const wasEmpty = !departureDate;
     setForm({ ...form, departureAt: combineDateTimeLocal(date, departureTime) });
@@ -644,8 +571,6 @@ export function NewRideModal({
 
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div ref={bodyRef} className="min-h-0 flex-1 overflow-y-auto">
-          {/* New rides only — editing already has every field filled in. */}
-          {editValues ? null : <FillFromMessage onFilled={applyMessageDraft} />}
           <section className="px-6 py-5">
             <h3 className="mb-4 text-[13.5px] font-semibold text-[#18181B]">{tn("klijent")}</h3>
             <div className="grid grid-cols-2 gap-x-3 gap-y-4">

@@ -12,6 +12,7 @@ import {
   type CellRideDraft,
 } from "./ResourceTimelineGrid";
 import { MonthGrid } from "./MonthGrid";
+import { RIDES_CHANGED_EVENT } from "@/components/carrier/assistant/AssistantButton";
 import { UnassignedQueue } from "./UnassignedQueue";
 import { NewRideModal, type NewRideInitialValues } from "./NewRideModal";
 import { RideDetailDrawer } from "./RideDetailDrawer";
@@ -199,6 +200,12 @@ export function RidesCalendar() {
     const six = view === "day" ? scroller.querySelector<HTMLElement>('[data-hour="6"]') : null;
     scroller.scrollLeft = six ? six.offsetLeft - CALENDAR_RESOURCE_COLUMN_WIDTH : 0;
   }, [view, rangeKey, hasData]);
+
+  // A ride created from the assistant chat shows up without a page reload.
+  useEffect(() => {
+    window.addEventListener(RIDES_CHANGED_EVENT, load);
+    return () => window.removeEventListener(RIDES_CHANGED_EVENT, load);
+  }, [load]);
 
   useEffect(() => {
     // Standard fetch-on-mount/on-dependency-change — load() only touches

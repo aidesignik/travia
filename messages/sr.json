@@ -540,19 +540,7 @@
       "datumPovratka": "Datum povratka",
       "vreme": "Vreme",
       "removeStop": "Ukloni stanicu",
-      "phoneCountryCode": "Pozivni broj",
-      "fromMessage": {
-        "trigger": "Popuni iz poruke klijenta",
-        "title": "Nalepite poruku klijenta",
-        "placeholder": "Nalepite email, Viber ili SMS poruku klijenta. Ruta, datum, vreme, broj putnika i kontakt podaci biće popunjeni umesto vas.",
-        "submit": "Popuni formu",
-        "reading": "Čitam…",
-        "cancel": "Zatvori",
-        "hint": "Proverite podatke pre čuvanja.",
-        "filled": "Popunjeno iz poruke. Proverite podatke pre nego što kreirate vožnju.",
-        "notRead": "Nije uspelo čitanje poruke. Pokušajte ponovo ili popunite formu ručno.",
-        "tooMany": "Previše zahteva trenutno. Pokušajte ponovo malo kasnije."
-      }
+      "phoneCountryCode": "Pozivni broj"
     },
     "vehicleForm": {
       "type": "Tip",
@@ -615,6 +603,46 @@
       "submit": "Pošalji ponudu",
       "alreadyClaimed": "Drugi prevoznik je već preuzeo ovu vožnju.",
       "distanceUnavailable": "Nismo mogli automatski da izračunamo udaljenost za ovaj zahtev — unesite je ručno u polje za udaljenost."
+    },
+    "assistant": {
+      "button": "Asistent",
+      "title": "Asistent",
+      "newChat": "Nova konverzacija",
+      "close": "Zatvori",
+      "placeholder": "Pitajte ili recite šta treba da uradim…",
+      "send": "Pošalji",
+      "thinking": "Radim na tome…",
+      "emptyTitle": "Kako mogu da pomognem?",
+      "emptyBody": "Recite šta vam treba i pripremiću to. Vožnje se kreiraju tek kada ih potvrdite.",
+      "example1": "Rezerviši vožnju 18. u 9h za Mag do Novog Sada, povratak u 15h, bez usputnih stanica",
+      "example2": "Koji autobusi su slobodni ovog petka?",
+      "example3": "Prikaži vožnje za ovu nedelju",
+      "error": "Nešto nije u redu. Pokušajte ponovo.",
+      "tooMany": "Previše zahteva trenutno. Pokušajte ponovo malo kasnije.",
+      "refusal": "Ne mogu da pomognem sa tim. Pokušajte da preformulišete.",
+      "proposalReady": "Evo vožnje. Proverite je i potvrdite.",
+      "createdMessage": "Gotovo, vožnja je u kalendaru.",
+      "disclaimer": "Asistent može da pogreši. Proverite podatke pre nego što kreirate vožnju.",
+      "card": {
+        "client": "Klijent",
+        "email": "Email",
+        "route": "Ruta",
+        "departure": "Polazak",
+        "return": "Povratak",
+        "oneWay": "Jednosmerna",
+        "passengers": "Putnici",
+        "vehicle": "Vozilo",
+        "driver": "Vozač",
+        "distance": "Kilometraža",
+        "notes": "Napomena",
+        "missingValue": "nedostaje",
+        "missingHint": "Nedostaju neki podaci. Napišite ih u chatu ili otvorite vožnju u formi.",
+        "create": "Kreiraj vožnju",
+        "creating": "Kreiram…",
+        "openInForm": "Otvori u formi",
+        "created": "Vožnja je kreirana",
+        "createFailed": "Nije uspelo kreiranje vožnje. Otvorite je u formi da proverite podatke."
+      }
     }
   },
   "amenities": {

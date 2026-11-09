@@ -540,19 +540,7 @@
       "datumPovratka": "Return date",
       "vreme": "Time",
       "removeStop": "Remove stop",
-      "phoneCountryCode": "Country code",
-      "fromMessage": {
-        "trigger": "Fill from a client's message",
-        "title": "Paste the client's message",
-        "placeholder": "Paste an email, Viber or SMS message from the client. The route, date, time, number of passengers and contact details are filled in for you.",
-        "submit": "Fill in the form",
-        "reading": "Reading…",
-        "cancel": "Close",
-        "hint": "Check the details before saving.",
-        "filled": "Filled in from the message. Check the details before creating the ride.",
-        "notRead": "Couldn't read that message. Try again, or fill in the form yourself.",
-        "tooMany": "Too many requests for now. Try again in a little while."
-      }
+      "phoneCountryCode": "Country code"
     },
     "vehicleForm": {
       "type": "Type",
@@ -615,6 +603,46 @@
       "submit": "Send offer",
       "alreadyClaimed": "Another carrier already claimed this ride.",
       "distanceUnavailable": "Couldn't calculate the distance automatically for this request — enter it manually in the distance field."
+    },
+    "assistant": {
+      "button": "Assistant",
+      "title": "Assistant",
+      "newChat": "New chat",
+      "close": "Close",
+      "placeholder": "Ask or tell me what to do…",
+      "send": "Send",
+      "thinking": "Working on it…",
+      "emptyTitle": "How can I help?",
+      "emptyBody": "Tell me what you need and I'll prepare it. Rides are only created when you confirm them.",
+      "example1": "Book a ride on the 18th at 9:00 for Mag to Novi Sad, return at 15:00, no stops",
+      "example2": "Which buses are free this Friday?",
+      "example3": "Show me this week's rides",
+      "error": "Something went wrong. Please try again.",
+      "tooMany": "Too many requests for now. Try again in a little while.",
+      "refusal": "I can't help with that one. Try rephrasing it.",
+      "proposalReady": "Here's the ride. Check it and confirm.",
+      "createdMessage": "Done, the ride is in the calendar.",
+      "disclaimer": "The assistant can make mistakes. Check the details before creating a ride.",
+      "card": {
+        "client": "Client",
+        "email": "Email",
+        "route": "Route",
+        "departure": "Departure",
+        "return": "Return",
+        "oneWay": "One way",
+        "passengers": "Passengers",
+        "vehicle": "Vehicle",
+        "driver": "Driver",
+        "distance": "Distance",
+        "notes": "Notes",
+        "missingValue": "missing",
+        "missingHint": "Some details are missing. Tell me in the chat, or open it in the form.",
+        "create": "Create ride",
+        "creating": "Creating…",
+        "openInForm": "Open in form",
+        "created": "Ride created",
+        "createFailed": "Couldn't create the ride. Open it in the form to check the details."
+      }
     }
   },
   "amenities": {
