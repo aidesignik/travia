@@ -12,12 +12,12 @@ import {
   PanelRight,
   PanelRightClose,
   RotateCcw,
-  Sparkles,
   X,
   type LucideIcon,
 } from "lucide-react";
 import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import type { RideProposal } from "@/lib/assistant/tools";
+import { AssistantIcon } from "./AssistantIcon";
 import { AssistantProposalCard } from "./AssistantProposalCard";
 import {
   ASSISTANT_DOCK_WIDTH,
@@ -338,9 +338,7 @@ export function AssistantWindow() {
               title={docked ? undefined : t("dragHint")}
             >
               {docked ? null : <GripVertical size={14} strokeWidth={2} className="shrink-0 text-[var(--ink-muted)]" aria-hidden />}
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[var(--action-bg)] text-white">
-                <Sparkles size={16} strokeWidth={2} aria-hidden />
-              </span>
+              <AssistantIcon size={22} strokeWidth={1.8} />
               <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
               <span className="rounded-pill bg-[var(--action-100)] px-2 py-[2px] text-[11.5px] font-medium text-[var(--action-800)]">
                 {t("beta")}
