@@ -2,7 +2,7 @@ import { useId } from "react";
 
 // The assistant's icon: lucide's "sparkles" outline, stroked with the
 // cyan → blue gradient from the Travia logo's swoosh (public/travia-logo.svg)
-// instead of a filled tile. Used in the sidebar item and the chat header.
+// instead of a filled tile. Used for the sidebar "Assistant" item.
 export function AssistantIcon({ size = 18, strokeWidth = 1.9, className }: { size?: number; strokeWidth?: number; className?: string }) {
   const id = useId();
   const stroke = `url(#${id})`;

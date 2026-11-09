@@ -241,7 +241,7 @@ export function CarrierSidebar({
                 : "font-medium text-[#3F3F46] hover:bg-[#EBEBEB]"
             }`}
           >
-            <AssistantIcon size={17} strokeWidth={1.9} />
+            <AssistantIcon size={17} strokeWidth={2.2} />
             <span className="min-w-0 flex-1 truncate text-left">{tAssistant("title")}</span>
             <span className="shrink-0 rounded-[5px] bg-white px-[5px] py-px text-[10.5px] font-medium text-[var(--ink-secondary)] shadow-[var(--shadow-pill)]">
               {tAssistant("shortcut")}
