@@ -625,7 +625,7 @@
       "refusal": "I can't help with that one. Try rephrasing it.",
       "proposalReady": "Here's the ride. Check it and confirm.",
       "createdMessage": "Done, the ride is in the calendar.",
-      "disclaimer": "The assistant can make mistakes — review each draft before creating it.",
+      "disclaimer": "The assistant can make mistakes — review each draft.",
       "notConnected": "The assistant isn't connected yet, so I can't answer for now. Once it's switched on, I'll be able to book rides and answer questions about your schedule.",
       "card": {
         "client": "Client",

@@ -33,7 +33,8 @@ export const RIDES_CHANGED_EVENT = "travia:rides-changed";
 
 const PREFS_KEY = "travia.assistant";
 const FLOAT_WIDTH = 420;
-/** Inset of the floating window from the viewport edges; it runs full height. */
+const FLOAT_MAX_HEIGHT = 620;
+/** Minimum gap between the floating window and the viewport edges. */
 const EDGE = 16;
 /** The carrier sidebar's width; a fresh floating window opens just right of it. */
 const SIDEBAR_WIDTH = 252;
@@ -111,7 +112,7 @@ export function AssistantWindow() {
   const [enabled, setEnabled] = useState(false);
   const [docked, setDocked] = useState(false);
   const [pos, setPos] = useState<Point | null>(null);
-  const [floatHeight, setFloatHeight] = useState(0);
+  const [floatHeight, setFloatHeight] = useState(FLOAT_MAX_HEIGHT);
   const [items, setItems] = useState<ChatItem[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -183,12 +184,12 @@ export function AssistantWindow() {
     function fit() {
       const scale = cssScale(probeRef.current);
       const vp = viewportCss(scale);
-      const height = vp.height - EDGE * 2;
+      const height = Math.min(FLOAT_MAX_HEIGHT, vp.height - EDGE * 2);
       setFloatHeight(height);
       setPos((prev) => {
-        // First open: just right of the sidebar — away from the right edge,
-        // where ride details and forms slide in.
-        const fallback = { x: SIDEBAR_WIDTH + EDGE, y: EDGE };
+        // First open: bottom left, next to the sidebar — away from the right
+        // edge, where ride details and forms slide in.
+        const fallback = { x: SIDEBAR_WIDTH + EDGE, y: vp.height - height - EDGE };
         const p = prev ?? fallback;
         return {
           x: Math.min(Math.max(EDGE, p.x), Math.max(EDGE, vp.width - FLOAT_WIDTH - EDGE)),
@@ -460,7 +461,7 @@ export function AssistantWindow() {
                 <ArrowUp size={16} strokeWidth={2.2} />
               </button>
             </div>
-            <p className="text-center text-[12px] font-medium text-[var(--ink-secondary)]">{t("disclaimer")}</p>
+            <p className="truncate text-center text-[12px] font-medium text-[var(--ink-secondary)]">{t("disclaimer")}</p>
           </form>
         </section>
       ) : null}
