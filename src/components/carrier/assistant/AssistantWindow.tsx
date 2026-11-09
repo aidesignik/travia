@@ -9,6 +9,8 @@ import {
   CalendarPlus,
   GripVertical,
   List,
+  Maximize2,
+  Minus,
   PanelRight,
   PanelRightClose,
   RotateCcw,
@@ -22,8 +24,10 @@ import { AssistantProposalCard } from "./AssistantProposalCard";
 import {
   ASSISTANT_DOCK_WIDTH,
   setAssistantDocked,
+  setAssistantMinimized,
   setAssistantOpen,
   toggleAssistant,
+  useAssistantMinimized,
   useAssistantOpen,
 } from "./assistantDock";
 
@@ -36,6 +40,9 @@ const FLOAT_WIDTH = 420;
 const FLOAT_MAX_HEIGHT = 620;
 /** Minimum gap between the floating window and the viewport edges. */
 const EDGE = 16;
+/** Minimized: just the title bar (56px row + borders), narrower. */
+const BAR_HEIGHT = 58;
+const BAR_WIDTH = 300;
 /** The carrier sidebar's width; a fresh floating window opens just right of it. */
 const SIDEBAR_WIDTH = 252;
 
@@ -99,6 +106,19 @@ function viewportCss(scale: number) {
   return { width: window.innerWidth / scale, height: window.innerHeight / scale };
 }
 
+// `pos` is always the full window's top-left. Minimized, the title bar sits
+// where the window's bottom edge was (so it collapses downwards and expands
+// back upwards), which shifts the allowed range for y.
+function clampPos(p: Point, vp: { width: number; height: number }, height: number, minimized: boolean): Point {
+  const width = minimized ? BAR_WIDTH : FLOAT_WIDTH;
+  const minY = minimized ? EDGE - (height - BAR_HEIGHT) : EDGE;
+  const maxY = vp.height - height - EDGE;
+  return {
+    x: Math.min(Math.max(EDGE, p.x), Math.max(EDGE, vp.width - width - EDGE)),
+    y: Math.min(Math.max(minY, p.y), Math.max(minY, maxY)),
+  };
+}
+
 // The assistant chat window. It's opened from the sidebar's "Assistant" item
 // (or ⌘J / Ctrl+J) and floats — draggable by its title bar — or is pinned to
 // the right edge, where the calendar narrows to make room and ride details /
@@ -109,6 +129,7 @@ export function AssistantWindow() {
   const t = useTranslations("carrier.assistant");
   const router = useRouter();
   const open = useAssistantOpen();
+  const minimized = useAssistantMinimized();
   const [enabled, setEnabled] = useState(false);
   const [docked, setDocked] = useState(false);
   const [pos, setPos] = useState<Point | null>(null);
@@ -168,8 +189,8 @@ export function AssistantWindow() {
   // Pinned + open: the shell reserves the column (calendar narrows) and side
   // panels open in it. Released when the window closes or unpins.
   useEffect(() => {
-    setAssistantDocked(open && docked);
-  }, [open, docked]);
+    setAssistantDocked(open && docked && !minimized);
+  }, [open, docked, minimized]);
   useEffect(
     () => () => {
       setAssistantDocked(false);
@@ -190,17 +211,13 @@ export function AssistantWindow() {
         // First open: bottom left, next to the sidebar — away from the right
         // edge, where ride details and forms slide in.
         const fallback = { x: SIDEBAR_WIDTH + EDGE, y: vp.height - height - EDGE };
-        const p = prev ?? fallback;
-        return {
-          x: Math.min(Math.max(EDGE, p.x), Math.max(EDGE, vp.width - FLOAT_WIDTH - EDGE)),
-          y: Math.min(Math.max(EDGE, p.y), Math.max(EDGE, vp.height - height - EDGE)),
-        };
+        return clampPos(prev ?? fallback, vp, height, minimized);
       });
     }
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
-  }, [open, docked]);
+  }, [open, docked, minimized]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -210,8 +227,8 @@ export function AssistantWindow() {
   // floating window first needs its position measured).
   const showWindow = open && (docked || pos !== null);
   useEffect(() => {
-    if (showWindow) requestAnimationFrame(() => inputRef.current?.focus());
-  }, [showWindow, docked]);
+    if (showWindow && !minimized) requestAnimationFrame(() => inputRef.current?.focus());
+  }, [showWindow, docked, minimized]);
 
   async function send(text: string) {
     const message = text.trim();
@@ -274,6 +291,16 @@ export function AssistantWindow() {
     savePrefs({ docked: next, pos });
   }
 
+  // Minimizing a pinned chat un-pins it: the title bar floats like the
+  // window does (the calendar gets its width back).
+  function minimize() {
+    if (docked) {
+      setDocked(false);
+      savePrefs({ docked: false, pos });
+    }
+    setAssistantMinimized(true);
+  }
+
   // Dragging the floating window by its title bar (not its buttons).
   function onDragStart(event: ReactPointerEvent<HTMLElement>) {
     if (docked || !pos || event.button !== 0) return;
@@ -286,10 +313,8 @@ export function AssistantWindow() {
     const d = drag.current;
     if (!d) return;
     const vp = viewportCss(d.scale);
-    setPos({
-      x: Math.min(Math.max(EDGE, d.from.x + (event.clientX - d.startX) / d.scale), Math.max(EDGE, vp.width - FLOAT_WIDTH - EDGE)),
-      y: Math.min(Math.max(EDGE, d.from.y + (event.clientY - d.startY) / d.scale), Math.max(EDGE, vp.height - floatHeight - EDGE)),
-    });
+    const next = { x: d.from.x + (event.clientX - d.startX) / d.scale, y: d.from.y + (event.clientY - d.startY) / d.scale };
+    setPos(clampPos(next, vp, floatHeight, minimized));
   }
   function onDragEnd() {
     if (!drag.current) return;
@@ -305,7 +330,9 @@ export function AssistantWindow() {
   const empty = items.length === 0;
   const windowStyle = docked
     ? { top: 0, bottom: 0, right: 0, width: ASSISTANT_DOCK_WIDTH }
-    : { left: pos?.x ?? 0, top: pos?.y ?? 0, width: FLOAT_WIDTH, height: floatHeight };
+    : minimized
+      ? { left: pos?.x ?? 0, top: (pos?.y ?? 0) + floatHeight - BAR_HEIGHT, width: BAR_WIDTH, height: BAR_HEIGHT }
+      : { left: pos?.x ?? 0, top: pos?.y ?? 0, width: FLOAT_WIDTH, height: floatHeight };
 
   return (
     <>
@@ -336,6 +363,10 @@ export function AssistantWindow() {
               onPointerCancel={onDragEnd}
               className={`flex h-14 select-none items-center gap-[10px] pl-3 pr-2 ${docked ? "" : "cursor-grab active:cursor-grabbing"}`}
               title={docked ? undefined : t("dragHint")}
+              // Minimized, a double-click on the bar expands it again.
+              onDoubleClick={(event) => {
+                if (minimized && !(event.target as HTMLElement).closest("button")) setAssistantMinimized(false);
+              }}
             >
               {docked ? null : <GripVertical size={14} strokeWidth={2} className="shrink-0 text-[var(--ink-muted)]" aria-hidden />}
               <AssistantIcon size={22} strokeWidth={1.8} />
@@ -344,21 +375,39 @@ export function AssistantWindow() {
                 {t("beta")}
               </span>
               <span className="flex-1" />
-              {!empty ? (
+              {minimized ? (
+                <button
+                  type="button"
+                  onClick={() => setAssistantMinimized(false)}
+                  aria-label={t("expand")}
+                  title={t("expand")}
+                  className={HEADER_BUTTON_CLASS}
+                >
+                  <Maximize2 size={17} strokeWidth={1.8} />
+                </button>
+              ) : null}
+              {!empty && !minimized ? (
                 <button type="button" onClick={() => setItems([])} aria-label={t("newChat")} title={t("newChat")} className={HEADER_BUTTON_CLASS}>
                   <RotateCcw size={18} strokeWidth={1.8} />
                 </button>
               ) : null}
-              <button
-                type="button"
-                onClick={toggleDocked}
-                aria-label={docked ? t("unpin") : t("pin")}
-                title={docked ? t("unpin") : t("pin")}
-                aria-pressed={docked}
-                className={HEADER_BUTTON_CLASS}
-              >
-                {docked ? <PanelRightClose size={18} strokeWidth={1.8} /> : <PanelRight size={18} strokeWidth={1.8} />}
-              </button>
+              {minimized ? null : (
+                <>
+                  <button
+                    type="button"
+                    onClick={toggleDocked}
+                    aria-label={docked ? t("unpin") : t("pin")}
+                    title={docked ? t("unpin") : t("pin")}
+                    aria-pressed={docked}
+                    className={HEADER_BUTTON_CLASS}
+                  >
+                    {docked ? <PanelRightClose size={18} strokeWidth={1.8} /> : <PanelRight size={18} strokeWidth={1.8} />}
+                  </button>
+                  <button type="button" onClick={minimize} aria-label={t("minimize")} title={t("minimize")} className={HEADER_BUTTON_CLASS}>
+                    <Minus size={18} strokeWidth={1.8} />
+                  </button>
+                </>
+              )}
               <button
                 type="button"
                 onClick={() => setAssistantOpen(false)}
@@ -370,7 +419,7 @@ export function AssistantWindow() {
               </button>
             </header>
 
-            {empty ? (
+            {empty && !minimized ? (
               <div className="flex flex-col gap-[6px] px-5 pb-2 pt-4">
                 <h2 className="text-[19px] font-semibold leading-[1.3] tracking-[-0.015em] text-[var(--ink-primary)]">
                   {t("emptyTitle")}
@@ -380,87 +429,91 @@ export function AssistantWindow() {
             ) : null}
           </div>
 
-          <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
-            {empty ? (
-              <div className="flex flex-col gap-2 px-5 pt-4">
-                {suggestions.map(({ icon: Icon, label, prompt }) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => {
-                      setDraft(prompt);
-                      inputRef.current?.focus();
-                    }}
-                    className="flex min-h-11 items-center gap-3 rounded-control border border-[var(--border-hairline)] bg-white px-[14px] py-3 text-left text-[13px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]"
-                  >
-                    <Icon size={18} strokeWidth={1.9} className="shrink-0 text-[var(--action-bg)]" aria-hidden />
-                    <span className="min-w-0 flex-1">{label}</span>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4 px-5 py-4">
-                {items.map((item) =>
-                  item.role === "user" ? (
-                    <p
-                      key={item.id}
-                      className="max-w-[300px] self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-[var(--select-tint)] px-[14px] py-[10px] text-[14px] font-medium text-[var(--ink-primary)]"
-                    >
-                      {item.text}
-                    </p>
-                  ) : (
-                    <div key={item.id} className="self-stretch">
-                      <p className="whitespace-pre-wrap text-[14px] font-medium leading-[1.5] text-[var(--ink-body)]">{item.text}</p>
-                      {item.proposal ? (
-                        <AssistantProposalCard
-                          proposal={item.proposal}
-                          created={Boolean(item.created)}
-                          onCreated={() => markCreated(item.id)}
-                        />
-                      ) : null}
-                    </div>
-                  ),
+          {minimized ? null : (
+            <>
+              <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+                {empty ? (
+                  <div className="flex flex-col gap-2 px-5 pt-4">
+                    {suggestions.map(({ icon: Icon, label, prompt }) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          setDraft(prompt);
+                          inputRef.current?.focus();
+                        }}
+                        className="flex min-h-11 items-center gap-3 rounded-control border border-[var(--border-hairline)] bg-white px-[14px] py-3 text-left text-[13px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]"
+                      >
+                        <Icon size={18} strokeWidth={1.9} className="shrink-0 text-[var(--action-bg)]" aria-hidden />
+                        <span className="min-w-0 flex-1">{label}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4 px-5 py-4">
+                    {items.map((item) =>
+                      item.role === "user" ? (
+                        <p
+                          key={item.id}
+                          className="max-w-[300px] self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-[var(--select-tint)] px-[14px] py-[10px] text-[14px] font-medium text-[var(--ink-primary)]"
+                        >
+                          {item.text}
+                        </p>
+                      ) : (
+                        <div key={item.id} className="self-stretch">
+                          <p className="whitespace-pre-wrap text-[14px] font-medium leading-[1.5] text-[var(--ink-body)]">{item.text}</p>
+                          {item.proposal ? (
+                            <AssistantProposalCard
+                              proposal={item.proposal}
+                              created={Boolean(item.created)}
+                              onCreated={() => markCreated(item.id)}
+                            />
+                          ) : null}
+                        </div>
+                      ),
+                    )}
+                    {sending ? (
+                      <p className="animate-pulse text-[14px] font-medium text-[var(--ink-secondary)]">{t("thinking")}</p>
+                    ) : null}
+                  </div>
                 )}
-                {sending ? (
-                  <p className="animate-pulse text-[14px] font-medium text-[var(--ink-secondary)]">{t("thinking")}</p>
-                ) : null}
               </div>
-            )}
-          </div>
 
-          <form onSubmit={onSubmit} className="flex shrink-0 flex-col gap-[10px] px-4 pb-4 pt-3">
-            <div className="flex items-end gap-2 rounded-[12px] border border-[var(--border-control)] bg-white pb-[10px] pl-[14px] pr-3 pt-3 transition-[border-color,box-shadow] duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[var(--focus-ring)]">
-              <label htmlFor="assistant-message" className="sr-only">
-                {t("inputLabel")}
-              </label>
-              <textarea
-                id="assistant-message"
-                ref={inputRef}
-                rows={2}
-                maxLength={4000}
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  // Enter sends; Shift+Enter is a new line.
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    void send(draft);
-                  }
-                }}
-                placeholder={t("placeholder")}
-                className="max-h-40 flex-1 resize-none border-0 bg-transparent text-[14px] font-medium text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
-              />
-              <button
-                type="submit"
-                disabled={!draft.trim() || sending}
-                aria-label={t("send")}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[var(--action-bg)] text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)] disabled:bg-[var(--border-soft)] disabled:text-[var(--ink-muted)]"
-              >
-                <ArrowUp size={16} strokeWidth={2.2} />
-              </button>
-            </div>
-            <p className="truncate text-center text-[12px] font-medium text-[var(--ink-secondary)]">{t("disclaimer")}</p>
-          </form>
+              <form onSubmit={onSubmit} className="flex shrink-0 flex-col gap-[10px] px-4 pb-4 pt-3">
+                <div className="flex items-end gap-2 rounded-[12px] border border-[var(--border-control)] bg-white pb-[10px] pl-[14px] pr-3 pt-3 transition-[border-color,box-shadow] duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[var(--focus-ring)]">
+                  <label htmlFor="assistant-message" className="sr-only">
+                    {t("inputLabel")}
+                  </label>
+                  <textarea
+                    id="assistant-message"
+                    ref={inputRef}
+                    rows={2}
+                    maxLength={4000}
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Enter sends; Shift+Enter is a new line.
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        void send(draft);
+                      }
+                    }}
+                    placeholder={t("placeholder")}
+                    className="max-h-40 flex-1 resize-none border-0 bg-transparent text-[14px] font-medium text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!draft.trim() || sending}
+                    aria-label={t("send")}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[var(--action-bg)] text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)] disabled:bg-[var(--border-soft)] disabled:text-[var(--ink-muted)]"
+                  >
+                    <ArrowUp size={16} strokeWidth={2.2} />
+                  </button>
+                </div>
+                <p className="truncate text-center text-[12px] font-medium text-[var(--ink-secondary)]">{t("disclaimer")}</p>
+              </form>
+            </>
+          )}
         </section>
       ) : null}
     </>
