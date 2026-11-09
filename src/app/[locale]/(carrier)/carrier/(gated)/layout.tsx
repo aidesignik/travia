@@ -115,7 +115,13 @@ export default async function CarrierGatedLayout({
         driverCount={drivers.length}
         expiringItems={sidebarExpiringItems}
       />
-      <div className="flex h-dvh min-w-0 flex-col p-2">
+      {/* --assistant-dock: room reserved on the right while the assistant
+          chat is pinned there (set by assistantDock.ts), so the calendar
+          narrows instead of being covered. */}
+      <div
+        className="flex h-dvh min-w-0 flex-col p-2 transition-[padding] duration-200 ease-out"
+        style={{ paddingRight: "calc(0.5rem + var(--assistant-dock, 0px))" }}
+      >
         <div className="surface-shell flex h-full min-h-0 flex-col overflow-hidden rounded-[12px]">
           <TopBar />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
