@@ -132,8 +132,8 @@ export function AssistantButton() {
   // Pinned + open: the shell reserves the column (calendar narrows) and side
   // panels open in it. Released when the window closes or unpins.
   useEffect(() => {
-    setAssistantDocked(enabled && open && docked);
-  }, [enabled, open, docked]);
+    setAssistantDocked(open && docked);
+  }, [open, docked]);
   useEffect(() => () => setAssistantDocked(false), []);
 
   // Keep the floating window inside the viewport (first open, and resizes).
@@ -169,8 +169,6 @@ export function AssistantButton() {
     if (open) requestAnimationFrame(() => inputRef.current?.focus());
   }, [open, docked]);
 
-  if (!enabled) return null;
-
   async function send(text: string) {
     const message = text.trim();
     if (!message || sending) return;
@@ -178,8 +176,15 @@ export function AssistantButton() {
     const conversation = [...items, userItem];
     setItems(conversation);
     setDraft("");
-    setSending(true);
 
+    // No API key on the server yet: the window works, but answers with a note
+    // instead of calling the model.
+    if (!enabled) {
+      setItems((prev) => [...prev, { id: nextId.current++, role: "assistant", text: t("notConnected") }]);
+      return;
+    }
+
+    setSending(true);
     const now = new Date();
     const res = await fetch("/api/carrier/assistant", {
       method: "POST",
