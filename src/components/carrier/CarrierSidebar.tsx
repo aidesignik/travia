@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { Bus, CircleHelp } from "lucide-react";
+import { Bus, CircleHelp, Sparkles } from "lucide-react";
 import {
   CalendarIcon as CalendarOutline,
   InboxIcon as InboxOutline,
@@ -16,7 +16,6 @@ import {
   UserIcon as UserSolid,
 } from "@heroicons/react/24/solid";
 import { Link, usePathname } from "@/i18n/navigation";
-import { AssistantMark } from "@/components/carrier/assistant/AssistantMark";
 import { toggleAssistant, useAssistantOpen } from "@/components/carrier/assistant/assistantDock";
 
 const ICON_SIZE_CLASS = "h-[17px] w-[17px] shrink-0";
@@ -230,21 +229,20 @@ export function CarrierSidebar({
 
         <div className="mt-auto flex shrink-0 flex-col gap-[2px] border-t border-[#E6E6E6] pt-[10px]">
           {/* Opens the assistant chat window (AssistantWindow, in the layout).
-              A soft blue→violet wash sets it apart from the page links; while
-              the chat is open it looks like the active nav item. */}
+              Looks like the active nav item while the chat is open. */}
           <button
             type="button"
             onClick={toggleAssistant}
             aria-expanded={assistantOpen}
-            className={`${NAV_ITEM_CLASS} font-medium text-[#27272A] ${
+            className={`${NAV_ITEM_CLASS} ${
               assistantOpen
                 ? "bg-[var(--surface-card-bg)] font-semibold text-[#0D0D0D] shadow-[var(--shadow-surface-card)]"
-                : "bg-[linear-gradient(90deg,rgba(37,99,235,0.08),rgba(139,92,246,0.10))] hover:bg-[linear-gradient(90deg,rgba(37,99,235,0.13),rgba(139,92,246,0.15))]"
+                : "font-medium text-[#3F3F46] hover:bg-[#EBEBEB]"
             }`}
           >
-            <AssistantMark size={17} />
+            <Sparkles size={17} strokeWidth={1.9} className="shrink-0 text-[var(--action-bg)]" aria-hidden />
             <span className="min-w-0 flex-1 truncate text-left">{tAssistant("title")}</span>
-            <span className="shrink-0 rounded-[5px] bg-white/80 px-[5px] py-px text-[10.5px] font-medium text-[#7A7F96] shadow-[var(--shadow-pill)]">
+            <span className="shrink-0 rounded-[5px] bg-white px-[5px] py-px text-[10.5px] font-medium text-[var(--ink-secondary)] shadow-[var(--shadow-pill)]">
               {tAssistant("shortcut")}
             </span>
           </button>
