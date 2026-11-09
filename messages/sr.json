@@ -605,7 +605,6 @@
       "distanceUnavailable": "Nismo mogli automatski da izračunamo udaljenost za ovaj zahtev — unesite je ručno u polje za udaljenost."
     },
     "assistant": {
-      "button": "Asistent",
       "title": "Asistent",
       "newChat": "Nova konverzacija",
       "close": "Zatvori",
@@ -642,7 +641,13 @@
         "openInForm": "Otvori u formi",
         "created": "Vožnja je kreirana",
         "createFailed": "Nije uspelo kreiranje vožnje. Otvorite je u formi da proverite podatke."
-      }
+      },
+      "launcherOpen": "Otvori asistenta",
+      "launcherClose": "Zatvori asistenta",
+      "pin": "Zakači desno",
+      "unpin": "Otkači (plutajući prozor)",
+      "dragHint": "Prevucite da pomerite",
+      "backToAssistant": "Nazad na asistenta"
     }
   },
   "amenities": {

@@ -605,7 +605,6 @@
       "distanceUnavailable": "Couldn't calculate the distance automatically for this request — enter it manually in the distance field."
     },
     "assistant": {
-      "button": "Assistant",
       "title": "Assistant",
       "newChat": "New chat",
       "close": "Close",
@@ -642,7 +641,13 @@
         "openInForm": "Open in form",
         "created": "Ride created",
         "createFailed": "Couldn't create the ride. Open it in the form to check the details."
-      }
+      },
+      "launcherOpen": "Open the assistant",
+      "launcherClose": "Close the assistant",
+      "pin": "Pin to the right",
+      "unpin": "Unpin (float the window)",
+      "dragHint": "Drag to move",
+      "backToAssistant": "Back to the assistant"
     }
   },
   "amenities": {
