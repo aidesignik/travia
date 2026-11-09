@@ -8,6 +8,9 @@ import type { CalendarRide } from "./types";
 // Each day shows at most this many lanes of rides; a day with more gets
 // "+N more", which opens it in the day view.
 const MAX_LANES = 2;
+// Horizontal alignment: weekday names, day numbers (10px cell padding + the
+// badge's 6px) and "+N more" all start 16px in, the toolbar's padding (p-4),
+// so they line up with the date switcher above.
 // Week row geometry: padding above the date badge, the badge, one ride
 // lane, the "+N more" link, and the gap between them. Rows are never
 // shorter than what two lanes plus the link need.
@@ -160,7 +163,7 @@ export function MonthGrid({
         {weekdays.map((name, i) => (
           <div
             key={i}
-            className="border-r border-[#F1F1EE] px-3 py-3 text-[13px] font-medium capitalize text-[#6E6E68] last:border-r-0"
+            className="border-r border-[#F1F1EE] px-4 py-3 text-[13px] font-medium capitalize text-[#6E6E68] last:border-r-0"
           >
             {name}
           </div>
@@ -210,7 +213,7 @@ export function MonthGrid({
                       // Only days of this month join a drag.
                       if (inMonth) setSelection((prev) => (prev ? { ...prev, end: idx } : prev));
                     }}
-                    className={`min-w-0 select-none px-[6px] pt-[4px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
+                    className={`min-w-0 select-none px-[10px] pt-[4px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
                       !inMonth
                         ? "bg-[#FAFAF8]"
                         : inSelection
@@ -274,7 +277,7 @@ export function MonthGrid({
                     key={`more-${col}`}
                     type="button"
                     onClick={() => onOpenDay(cells[week * 7 + col])}
-                    className="z-10 ml-[6px] h-[16px] self-start justify-self-start rounded-[6px] px-[6px] text-[12px] font-semibold leading-[16px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
+                    className="z-10 ml-[10px] h-[16px] self-start justify-self-start rounded-[6px] px-[6px] text-[12px] font-semibold leading-[16px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
                     style={{ gridRow: visibleLanes + 2, gridColumn: col + 1, pointerEvents: selection ? "none" : undefined }}
                   >
                     {t("moreRides", { count: hidden })}
