@@ -540,7 +540,19 @@
       "datumPovratka": "Datum povratka",
       "vreme": "Vreme",
       "removeStop": "Ukloni stanicu",
-      "phoneCountryCode": "Pozivni broj"
+      "phoneCountryCode": "Pozivni broj",
+      "fromMessage": {
+        "trigger": "Popuni iz poruke klijenta",
+        "title": "Nalepite poruku klijenta",
+        "placeholder": "Nalepite email, Viber ili SMS poruku klijenta. Ruta, datum, vreme, broj putnika i kontakt podaci biće popunjeni umesto vas.",
+        "submit": "Popuni formu",
+        "reading": "Čitam…",
+        "cancel": "Zatvori",
+        "hint": "Proverite podatke pre čuvanja.",
+        "filled": "Popunjeno iz poruke. Proverite podatke pre nego što kreirate vožnju.",
+        "notRead": "Nije uspelo čitanje poruke. Pokušajte ponovo ili popunite formu ručno.",
+        "tooMany": "Previše zahteva trenutno. Pokušajte ponovo malo kasnije."
+      }
     },
     "vehicleForm": {
       "type": "Tip",

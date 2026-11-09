@@ -58,13 +58,16 @@ export function RouteTimeline({
   const stopRefs = useRef<Array<RouteFieldHandle | null>>([]);
   const prevStopCount = useRef(stops.length);
 
-  // "Dodaj stanicu" focuses the new stop's field (§5.1).
+  // "Dodaj stanicu" focuses the new stop's field (§5.1) — only a blank one
+  // just added by hand, not stops that arrive already filled in (e.g. from
+  // "Fill from a client's message").
+  const lastStopBlank = stops.length > 0 && !stops[stops.length - 1].city;
   useEffect(() => {
-    if (stops.length > prevStopCount.current) {
+    if (stops.length > prevStopCount.current && lastStopBlank) {
       stopRefs.current[stops.length - 1]?.focus();
     }
     prevStopCount.current = stops.length;
-  }, [stops.length]);
+  }, [stops.length, lastStopBlank]);
 
   return (
     <div>

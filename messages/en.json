@@ -540,7 +540,19 @@
       "datumPovratka": "Return date",
       "vreme": "Time",
       "removeStop": "Remove stop",
-      "phoneCountryCode": "Country code"
+      "phoneCountryCode": "Country code",
+      "fromMessage": {
+        "trigger": "Fill from a client's message",
+        "title": "Paste the client's message",
+        "placeholder": "Paste an email, Viber or SMS message from the client. The route, date, time, number of passengers and contact details are filled in for you.",
+        "submit": "Fill in the form",
+        "reading": "Reading…",
+        "cancel": "Close",
+        "hint": "Check the details before saving.",
+        "filled": "Filled in from the message. Check the details before creating the ride.",
+        "notRead": "Couldn't read that message. Try again, or fill in the form yourself.",
+        "tooMany": "Too many requests for now. Try again in a little while."
+      }
     },
     "vehicleForm": {
       "type": "Type",
