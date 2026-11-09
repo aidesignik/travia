@@ -654,6 +654,8 @@
       },
       "pin": "Zakači sa strane",
       "unpin": "Otkači",
+      "minimize": "Smanji",
+      "expand": "Proširi",
       "dragHint": "Prevucite da pomerite",
       "beta": "Beta",
       "shortcut": "⌘J",

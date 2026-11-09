@@ -4,6 +4,8 @@ import { useSyncExternalStore } from "react";
 
 // Shared assistant window state.
 // - open: the sidebar's "Assistant" item toggles it; AssistantWindow renders it.
+// - minimized: the window is collapsed to its title bar (still draggable and
+//   closable). The sidebar item / ⌘J restore it rather than closing it.
 // - docked: whether the chat is pinned to the right edge. Shared with
 //   SidePanel: while pinned, ride details and the ride/vehicle/driver forms
 //   open in that same right column (over the chat, with a way back to it)
@@ -15,6 +17,7 @@ import { useSyncExternalStore } from "react";
 export const ASSISTANT_DOCK_WIDTH = 460;
 
 let open = false;
+let minimized = false;
 let docked = false;
 const listeners = new Set<() => void>();
 
@@ -28,13 +31,31 @@ function subscribe(listener: () => void) {
 }
 
 export function setAssistantOpen(value: boolean) {
-  if (open === value) return;
+  if (open === value && !minimized) return;
   open = value;
+  // Opening or closing always leaves the window expanded for next time.
+  minimized = false;
   notify();
 }
 
 export function toggleAssistant() {
-  setAssistantOpen(!open);
+  // A minimized window is restored, not closed.
+  if (open && minimized) setAssistantMinimized(false);
+  else setAssistantOpen(!open);
+}
+
+export function setAssistantMinimized(value: boolean) {
+  if (minimized === value) return;
+  minimized = value;
+  notify();
+}
+
+export function useAssistantMinimized(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => minimized,
+    () => false,
+  );
 }
 
 export function useAssistantOpen(): boolean {

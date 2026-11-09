@@ -654,6 +654,8 @@
       },
       "pin": "Dock to side",
       "unpin": "Undock",
+      "minimize": "Minimize",
+      "expand": "Expand",
       "dragHint": "Drag to move",
       "beta": "Beta",
       "shortcut": "⌘J",
