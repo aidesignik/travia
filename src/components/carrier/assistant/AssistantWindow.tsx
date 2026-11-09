@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import type { RideProposal } from "@/lib/assistant/tools";
-import { AssistantIcon } from "./AssistantIcon";
 import { AssistantProposalCard } from "./AssistantProposalCard";
 import {
   ASSISTANT_DOCK_WIDTH,
@@ -361,15 +360,23 @@ export function AssistantWindow() {
               onPointerMove={onDragMove}
               onPointerUp={onDragEnd}
               onPointerCancel={onDragEnd}
-              className={`flex h-14 select-none items-center gap-[10px] pl-3 pr-2 ${docked ? "" : "cursor-grab active:cursor-grabbing"}`}
+              className={`group relative flex h-14 select-none items-center gap-[10px] pl-5 pr-2 ${docked ? "" : "cursor-grab active:cursor-grabbing"}`}
               title={docked ? undefined : t("dragHint")}
               // Minimized, a double-click on the bar expands it again.
               onDoubleClick={(event) => {
                 if (minimized && !(event.target as HTMLElement).closest("button")) setAssistantMinimized(false);
               }}
             >
-              {docked ? null : <GripVertical size={14} strokeWidth={2} className="shrink-0 text-[var(--ink-muted)]" aria-hidden />}
-              <AssistantIcon size={18} strokeWidth={1.9} />
+              {/* The drag handle only shows while hovering the title bar, in the
+                  left gutter, so the title stays aligned with the content below. */}
+              {docked ? null : (
+                <GripVertical
+                  size={14}
+                  strokeWidth={2}
+                  className="absolute left-1 top-1/2 -translate-y-1/2 text-[var(--ink-muted)] opacity-0 transition-opacity duration-[.12s] ease-out group-hover:opacity-100"
+                  aria-hidden
+                />
+              )}
               <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
               <span className="inline-flex h-5 items-center rounded-pill bg-[var(--action-100)] px-2 text-[11.5px] font-medium leading-none text-[var(--action-800)]">
                 {/* Nudged up half a pixel: the font's metrics sit capitals slightly low. */}
