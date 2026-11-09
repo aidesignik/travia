@@ -622,6 +622,7 @@
       "proposalReady": "Evo vožnje. Proverite je i potvrdite.",
       "createdMessage": "Gotovo, vožnja je u kalendaru.",
       "disclaimer": "Asistent može da pogreši. Proverite podatke pre nego što kreirate vožnju.",
+      "notConnected": "Asistent još nije povezan, pa za sada ne mogu da odgovorim. Kada bude uključen, moći ću da rezervišem vožnje i odgovaram na pitanja o rasporedu.",
       "card": {
         "client": "Klijent",
         "email": "Email",
