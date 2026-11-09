@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { Bus, CircleHelp, Sparkles } from "lucide-react";
+import { Bus, CircleHelp } from "lucide-react";
 import {
   CalendarIcon as CalendarOutline,
   InboxIcon as InboxOutline,
@@ -16,6 +16,7 @@ import {
   UserIcon as UserSolid,
 } from "@heroicons/react/24/solid";
 import { Link, usePathname } from "@/i18n/navigation";
+import { AssistantIcon } from "@/components/carrier/assistant/AssistantIcon";
 import { toggleAssistant, useAssistantOpen } from "@/components/carrier/assistant/assistantDock";
 
 const ICON_SIZE_CLASS = "h-[17px] w-[17px] shrink-0";
@@ -240,7 +241,7 @@ export function CarrierSidebar({
                 : "font-medium text-[#3F3F46] hover:bg-[#EBEBEB]"
             }`}
           >
-            <Sparkles size={17} strokeWidth={1.9} className="shrink-0 text-[var(--action-bg)]" aria-hidden />
+            <AssistantIcon size={17} strokeWidth={1.9} />
             <span className="min-w-0 flex-1 truncate text-left">{tAssistant("title")}</span>
             <span className="shrink-0 rounded-[5px] bg-white px-[5px] py-px text-[10.5px] font-medium text-[var(--ink-secondary)] shadow-[var(--shadow-pill)]">
               {tAssistant("shortcut")}
