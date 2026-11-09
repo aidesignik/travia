@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { CarrierSidebar } from "@/components/carrier/CarrierSidebar";
 import { TopBar } from "@/components/carrier/TopBar";
+import { AssistantWindow } from "@/components/carrier/assistant/AssistantWindow";
 import { vehicleExpiringItems, driverExpiringItems, sortExpiringItems, expiredDocMessageKey } from "@/lib/expiryStatus";
 
 const DOC_LABEL_KEY = {
@@ -127,6 +128,9 @@ export default async function CarrierGatedLayout({
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         </div>
       </div>
+      {/* Opened from the sidebar's Assistant item (or ⌘J); fixed, so it
+          takes no room in the grid. */}
+      <AssistantWindow />
     </div>
   );
 }

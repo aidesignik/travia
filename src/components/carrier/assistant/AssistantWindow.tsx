@@ -3,11 +3,19 @@
 import { useEffect, useRef, useState, type FormEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { ArrowUp, ChevronDown, GripVertical, PanelRightClose, PanelRightOpen, RotateCcw, Sparkles, X } from "lucide-react";
+import { ArrowUp, GripVertical, PanelRightClose, PanelRightOpen, RotateCcw, UserRound, X } from "lucide-react";
 import { toDateOnlyString } from "@/lib/pickerDateFormat";
 import type { RideProposal } from "@/lib/assistant/tools";
 import { AssistantProposalCard } from "./AssistantProposalCard";
-import { ASSISTANT_DOCK_GAP, ASSISTANT_DOCK_WIDTH, setAssistantDocked } from "./assistantDock";
+import { AssistantMark } from "./AssistantMark";
+import {
+  ASSISTANT_DOCK_GAP,
+  ASSISTANT_DOCK_WIDTH,
+  setAssistantDocked,
+  setAssistantOpen,
+  toggleAssistant,
+  useAssistantOpen,
+} from "./assistantDock";
 
 // Fired when a ride is created from the chat, so whatever's on screen (the
 // calendar) can reload.
@@ -15,10 +23,21 @@ export const RIDES_CHANGED_EVENT = "travia:rides-changed";
 
 const PREFS_KEY = "travia.assistant";
 const FLOAT_WIDTH = 400;
-const FLOAT_MAX_HEIGHT = 600;
+const FLOAT_MAX_HEIGHT = 620;
 const EDGE = 16;
-const LAUNCHER_SIZE = 56;
-const LAUNCHER_OFFSET = 24;
+/** The carrier sidebar's width; a fresh floating window opens just right of it. */
+const SIDEBAR_WIDTH = 252;
+
+// Soft blue/violet wash behind the whole window, with white cards on top.
+const WINDOW_BACKGROUND = [
+  "radial-gradient(120% 45% at 100% 0%, rgba(139,92,246,0.10) 0%, rgba(139,92,246,0) 70%)",
+  "radial-gradient(110% 45% at 0% 100%, rgba(37,99,235,0.10) 0%, rgba(37,99,235,0) 70%)",
+  "linear-gradient(180deg, #FCFCFF 0%, #F4F6FE 100%)",
+].join(", ");
+const CARD_CLASS =
+  "rounded-[14px] bg-white shadow-[0_0_0_1px_rgba(24,24,27,0.04),0_1px_2px_rgba(16,24,40,0.04),0_6px_18px_rgba(76,86,160,0.07)]";
+const ICON_BUTTON_CLASS =
+  "flex h-8 w-8 items-center justify-center rounded-[8px] text-[#71717A] transition-colors duration-[.12s] hover:bg-white/80 hover:text-[var(--ink-primary)]";
 
 interface ChatItem {
   id: number;
@@ -74,18 +93,17 @@ function viewportCss(scale: number) {
   return { width: window.innerWidth / scale, height: window.innerHeight / scale };
 }
 
-// The assistant: a floating button (bottom right, on every carrier page) that
-// opens a chat window. The window floats and can be dragged anywhere by its
-// title bar, or pinned to the right edge — then the calendar narrows to make
-// room, and ride details / ride forms open in that same column (SidePanel
-// reads the pinned state). Window mode and position are remembered per
-// browser; the conversation lives here (the shell persists across pages)
-// until "New chat".
-export function AssistantButton() {
+// The assistant chat window. It's opened from the sidebar's "Assistant" item
+// (or ⌘J / Ctrl+J) and floats — draggable by its title bar — or is pinned to
+// the right edge, where the calendar narrows to make room and ride details /
+// ride forms open in that same column (SidePanel reads the pinned state).
+// Window mode and position are remembered per browser; the conversation
+// lives here (the shell persists across pages) until "New chat".
+export function AssistantWindow() {
   const t = useTranslations("carrier.assistant");
   const router = useRouter();
+  const open = useAssistantOpen();
   const [enabled, setEnabled] = useState(false);
-  const [open, setOpen] = useState(false);
   const [docked, setDocked] = useState(false);
   const [pos, setPos] = useState<Point | null>(null);
   const [floatHeight, setFloatHeight] = useState(FLOAT_MAX_HEIGHT);
@@ -94,7 +112,7 @@ export function AssistantButton() {
   const [sending, setSending] = useState(false);
   const nextId = useRef(1);
   const windowRef = useRef<HTMLElement>(null);
-  const launcherRef = useRef<HTMLButtonElement>(null);
+  const probeRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const drag = useRef<{ startX: number; startY: number; from: Point; scale: number } | null>(null);
@@ -121,6 +139,18 @@ export function AssistantButton() {
     };
   }, []);
 
+  // ⌘J / Ctrl+J opens and closes the assistant from anywhere.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "j") {
+        event.preventDefault();
+        toggleAssistant();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   function savePrefs(next: { docked: boolean; pos: Point | null }) {
     try {
       window.localStorage.setItem(PREFS_KEY, JSON.stringify({ docked: next.docked, ...(next.pos ?? {}) }));
@@ -134,21 +164,26 @@ export function AssistantButton() {
   useEffect(() => {
     setAssistantDocked(open && docked);
   }, [open, docked]);
-  useEffect(() => () => setAssistantDocked(false), []);
+  useEffect(
+    () => () => {
+      setAssistantDocked(false);
+      setAssistantOpen(false);
+    },
+    [],
+  );
 
   // Keep the floating window inside the viewport (first open, and resizes).
   useEffect(() => {
     if (!open || docked) return;
     function fit() {
-      const scale = cssScale(launcherRef.current ?? windowRef.current);
+      const scale = cssScale(probeRef.current);
       const vp = viewportCss(scale);
       const height = Math.min(FLOAT_MAX_HEIGHT, vp.height - EDGE * 2);
       setFloatHeight(height);
       setPos((prev) => {
-        const fallback = {
-          x: vp.width - FLOAT_WIDTH - LAUNCHER_OFFSET,
-          y: vp.height - height - LAUNCHER_OFFSET - LAUNCHER_SIZE - 12,
-        };
+        // First open: bottom left, next to the sidebar — away from the right
+        // edge, where ride details and forms slide in.
+        const fallback = { x: SIDEBAR_WIDTH + EDGE, y: vp.height - height - EDGE };
         const p = prev ?? fallback;
         return {
           x: Math.min(Math.max(EDGE, p.x), Math.max(EDGE, vp.width - FLOAT_WIDTH - EDGE)),
@@ -165,9 +200,12 @@ export function AssistantButton() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [items, sending]);
 
+  // Focus the composer once the window is actually on screen (a fresh
+  // floating window first needs its position measured).
+  const showWindow = open && (docked || pos !== null);
   useEffect(() => {
-    if (open) requestAnimationFrame(() => inputRef.current?.focus());
-  }, [open, docked]);
+    if (showWindow) requestAnimationFrame(() => inputRef.current?.focus());
+  }, [showWindow, docked]);
 
   async function send(text: string) {
     const message = text.trim();
@@ -254,61 +292,49 @@ export function AssistantButton() {
   }
 
   const examples = [t("example1"), t("example2"), t("example3")];
-  const showWindow = open && (docked || pos !== null);
   const windowStyle = docked
     ? { top: ASSISTANT_DOCK_GAP, bottom: ASSISTANT_DOCK_GAP, right: ASSISTANT_DOCK_GAP, width: ASSISTANT_DOCK_WIDTH }
     : { left: pos?.x ?? 0, top: pos?.y ?? 0, width: FLOAT_WIDTH, height: floatHeight };
 
   return (
     <>
-      {/* The launcher; hidden while the chat is pinned (the column is the chat). */}
-      {open && docked ? null : (
-        <button
-          ref={launcherRef}
-          type="button"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? t("launcherClose") : t("launcherOpen")}
-          aria-expanded={open}
-          className="fixed z-[45] flex items-center justify-center rounded-full bg-[var(--action-bg)] text-white shadow-[0_2px_4px_rgba(29,38,74,0.1),0_10px_24px_rgba(37,99,235,0.35)] transition-[background-color,scale] duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)] active:scale-95"
-          style={{ right: LAUNCHER_OFFSET, bottom: LAUNCHER_OFFSET, width: LAUNCHER_SIZE, height: LAUNCHER_SIZE }}
-        >
-          {open ? <ChevronDown size={24} strokeWidth={2.2} aria-hidden /> : <Sparkles size={22} strokeWidth={2} aria-hidden />}
-        </button>
-      )}
+      {/* Measures the page zoom before the window has rendered. */}
+      <div ref={probeRef} aria-hidden className="pointer-events-none invisible fixed left-0 top-0 h-0 w-[100px]" />
 
       {showWindow ? (
         <section
           ref={windowRef}
           role="dialog"
           aria-label={t("title")}
-          className={`fixed flex flex-col overflow-hidden border border-[var(--border-container)] bg-[var(--bg-panel)] ${
+          onKeyDown={(event) => {
+            if (event.key === "Escape" && !docked) setAssistantOpen(false);
+          }}
+          className={`fixed flex flex-col overflow-hidden border border-white ${
             docked
-              ? "z-30 rounded-panel shadow-[var(--shadow-surface-card)]"
-              : "z-[45] rounded-[16px] shadow-[var(--shadow-panel)]"
+              ? "z-30 rounded-panel shadow-[0_0_0_1px_rgba(24,24,27,0.06),var(--shadow-surface-card)]"
+              : "z-[45] rounded-[18px] shadow-[0_0_0_1px_rgba(24,24,27,0.06),0_24px_60px_rgba(40,48,110,0.18),0_4px_12px_rgba(40,48,110,0.08)]"
           }`}
-          style={windowStyle}
+          style={{ ...windowStyle, background: WINDOW_BACKGROUND }}
         >
           <header
             onPointerDown={onDragStart}
             onPointerMove={onDragMove}
             onPointerUp={onDragEnd}
             onPointerCancel={onDragEnd}
-            className={`flex h-[52px] shrink-0 select-none items-center gap-1 border-b border-[#F0F0F2] pl-3 pr-2 ${
+            className={`flex h-[54px] shrink-0 select-none items-center gap-1 border-b border-[rgba(24,24,27,0.06)] pl-3 pr-2 ${
               docked ? "" : "cursor-grab active:cursor-grabbing"
             }`}
             title={docked ? undefined : t("dragHint")}
           >
-            {docked ? null : <GripVertical size={16} strokeWidth={1.9} className="shrink-0 text-[var(--ink-muted)]" aria-hidden />}
-            <Sparkles size={16} strokeWidth={2} className="ml-1 shrink-0 text-[var(--action-bg)]" aria-hidden />
-            <h2 className="ml-1 flex-1 text-[15px] font-semibold text-[var(--ink-primary)]">{t("title")}</h2>
+            {docked ? null : <GripVertical size={15} strokeWidth={1.9} className="shrink-0 text-[#A1A1AA]" aria-hidden />}
+            <AssistantMark size={18} className="ml-1" />
+            <h2 className="ml-[6px] text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
+            <span className="ml-[6px] rounded-[5px] border border-[#D9DCF2] px-[5px] py-px text-[10px] font-semibold uppercase tracking-[0.06em] text-[#5B5FA8]">
+              {t("beta")}
+            </span>
+            <span className="flex-1" />
             {items.length > 0 ? (
-              <button
-                type="button"
-                onClick={() => setItems([])}
-                aria-label={t("newChat")}
-                title={t("newChat")}
-                className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[#71717A] hover:bg-[#F4F4F5]"
-              >
+              <button type="button" onClick={() => setItems([])} aria-label={t("newChat")} title={t("newChat")} className={ICON_BUTTON_CLASS}>
                 <RotateCcw size={15} strokeWidth={1.9} />
               </button>
             ) : null}
@@ -318,16 +344,16 @@ export function AssistantButton() {
               aria-label={docked ? t("unpin") : t("pin")}
               title={docked ? t("unpin") : t("pin")}
               aria-pressed={docked}
-              className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[#71717A] hover:bg-[#F4F4F5]"
+              className={ICON_BUTTON_CLASS}
             >
               {docked ? <PanelRightClose size={16} strokeWidth={1.9} /> : <PanelRightOpen size={16} strokeWidth={1.9} />}
             </button>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={() => setAssistantOpen(false)}
               aria-label={t("close")}
               title={t("close")}
-              className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[#71717A] hover:bg-[#F4F4F5]"
+              className={ICON_BUTTON_CLASS}
             >
               <X size={17} strokeWidth={1.9} />
             </button>
@@ -335,9 +361,9 @@ export function AssistantButton() {
 
           <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-4" aria-live="polite">
             {items.length === 0 ? (
-              <div className="pt-2">
+              <div className={`${CARD_CLASS} p-4`}>
                 <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{t("emptyTitle")}</p>
-                <p className="mt-1 text-[13.5px] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
+                <p className="mt-1 text-[13.5px] leading-[1.45] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
                 <div className="mt-4 flex flex-col gap-2">
                   {examples.map((example) => (
                     <button
@@ -347,7 +373,7 @@ export function AssistantButton() {
                         setDraft(example);
                         inputRef.current?.focus();
                       }}
-                      className="rounded-[10px] px-3 py-[9px] text-left text-[13.5px] text-[var(--ink-primary)] shadow-[inset_0_0_0_1px_var(--border-control)] hover:bg-[var(--border-soft)]"
+                      className="rounded-[10px] border border-[#E6E8F2] bg-white px-3 py-[10px] text-left text-[13px] leading-[1.4] text-[#52525B] transition-colors duration-[.12s] hover:border-[#C9D3F5] hover:bg-[#F7F9FF] hover:text-[var(--ink-primary)]"
                     >
                       {example}
                     </button>
@@ -356,40 +382,47 @@ export function AssistantButton() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                {items.map((item) =>
-                  item.role === "user" ? (
-                    <div
-                      key={item.id}
-                      className="max-w-[85%] self-end whitespace-pre-wrap rounded-[14px] rounded-br-[4px] bg-[var(--action-bg)] px-3 py-2 text-[14px] text-white"
-                    >
-                      {item.text}
-                    </div>
-                  ) : (
-                    <div key={item.id} className="max-w-[94%] self-start">
-                      <div className="whitespace-pre-wrap rounded-[14px] rounded-bl-[4px] bg-[var(--border-soft)] px-3 py-2 text-[14px] text-[var(--ink-primary)]">
-                        {item.text}
-                      </div>
-                      {item.proposal ? (
-                        <AssistantProposalCard
-                          proposal={item.proposal}
-                          created={Boolean(item.created)}
-                          onCreated={() => markCreated(item.id)}
-                        />
-                      ) : null}
-                    </div>
-                  ),
-                )}
+                {items.map((item) => (
+                  <div key={item.id} className={`${CARD_CLASS} px-4 py-3`}>
+                    <p className="mb-[6px] flex items-center gap-[6px] text-[11.5px] font-medium text-[#8B8B93]">
+                      {item.role === "user" ? (
+                        <>
+                          <span className="flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#EEF1F8] text-[#7A7F96]">
+                            <UserRound size={11} strokeWidth={2.2} aria-hidden />
+                          </span>
+                          {t("you")}
+                        </>
+                      ) : (
+                        <>
+                          <AssistantMark size={14} />
+                          {t("title")}
+                        </>
+                      )}
+                    </p>
+                    <p className="whitespace-pre-wrap text-[14px] leading-[1.45] text-[var(--ink-primary)]">{item.text}</p>
+                    {item.proposal ? (
+                      <AssistantProposalCard
+                        proposal={item.proposal}
+                        created={Boolean(item.created)}
+                        onCreated={() => markCreated(item.id)}
+                      />
+                    ) : null}
+                  </div>
+                ))}
                 {sending ? (
-                  <div className="self-start rounded-[14px] rounded-bl-[4px] bg-[var(--border-soft)] px-3 py-2 text-[14px] text-[var(--ink-secondary)]">
-                    {t("thinking")}
+                  <div className={`${CARD_CLASS} px-4 py-3`}>
+                    <p className="flex items-center gap-[6px] text-[13px] text-[var(--ink-secondary)]">
+                      <AssistantMark size={14} className="animate-pulse" />
+                      {t("thinking")}
+                    </p>
                   </div>
                 ) : null}
               </div>
             )}
           </div>
 
-          <form onSubmit={onSubmit} className="shrink-0 border-t border-[#F0F0F2] p-3">
-            <div className="flex items-end gap-2 rounded-[12px] px-3 py-2 shadow-[inset_0_0_0_1px_var(--border-control)] focus-within:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)]">
+          <form onSubmit={onSubmit} className="shrink-0 px-4 pb-3 pt-1">
+            <div className="flex items-end gap-2 rounded-[16px] border border-[#E4E6F0] bg-white py-2 pl-4 pr-2 shadow-[0_2px_8px_rgba(76,86,160,0.06)] transition-shadow duration-[.12s] focus-within:border-[#BFCDF6] focus-within:shadow-[0_0_0_3px_rgba(37,99,235,0.12)]">
               <textarea
                 ref={inputRef}
                 rows={2}
@@ -405,18 +438,18 @@ export function AssistantButton() {
                 }}
                 placeholder={t("placeholder")}
                 aria-label={t("placeholder")}
-                className="max-h-40 min-h-[40px] flex-1 resize-none bg-transparent text-[14px] text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
+                className="max-h-40 min-h-[40px] flex-1 resize-none bg-transparent py-[2px] text-[14px] text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={!draft.trim() || sending}
                 aria-label={t("send")}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--action-bg)] text-white transition-opacity disabled:opacity-40"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--action-bg)] text-white transition-[opacity,background-color] hover:bg-[var(--action-bg-hover)] disabled:bg-[#D4D8E8] disabled:opacity-100"
               >
                 <ArrowUp size={16} strokeWidth={2.2} />
               </button>
             </div>
-            <p className="mt-2 px-1 text-[11.5px] text-[var(--ink-muted)]">{t("disclaimer")}</p>
+            <p className="mt-2 px-1 text-center text-[11px] text-[#9A9AA3]">{t("disclaimer")}</p>
           </form>
         </section>
       ) : null}

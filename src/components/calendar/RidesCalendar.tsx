@@ -12,7 +12,7 @@ import {
   type CellRideDraft,
 } from "./ResourceTimelineGrid";
 import { MonthGrid } from "./MonthGrid";
-import { RIDES_CHANGED_EVENT } from "@/components/carrier/assistant/AssistantButton";
+import { RIDES_CHANGED_EVENT } from "@/components/carrier/assistant/AssistantWindow";
 import { UnassignedQueue } from "./UnassignedQueue";
 import { NewRideModal, type NewRideInitialValues } from "./NewRideModal";
 import { RideDetailDrawer } from "./RideDetailDrawer";
