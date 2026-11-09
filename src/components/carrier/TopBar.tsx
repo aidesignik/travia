@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { NotificationsButton } from "@/components/carrier/NotificationsButton";
 import { CompanyMenu } from "@/components/carrier/CompanyMenu";
 import { TopBarSearch } from "./TopBarSearch";
-import { AssistantButton } from "./assistant/AssistantButton";
 
-// Persistent, page-agnostic — search, the assistant, notifications, company
+// Persistent, page-agnostic — search, notifications, company
 // switcher only.
 // Never a page title or a primary action; those live in each page's own
 // title row.
@@ -26,7 +25,6 @@ export async function TopBar() {
       <div className="flex w-full items-center justify-between gap-4 pt-[var(--content-padding)] pr-[var(--content-padding)] pl-[var(--content-padding)]">
         <TopBarSearch />
         <div className="flex shrink-0 items-center gap-[8px]">
-          <AssistantButton />
           <NotificationsButton />
           <CompanyMenu companyName={companyName} logoUrl={carrier?.logoUrl ?? null} email={session?.user.email ?? null} />
         </div>

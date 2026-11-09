@@ -643,11 +643,12 @@
         "created": "Vožnja je kreirana",
         "createFailed": "Nije uspelo kreiranje vožnje. Otvorite je u formi da proverite podatke."
       },
-      "launcherOpen": "Otvori asistenta",
-      "launcherClose": "Zatvori asistenta",
       "pin": "Zakači desno",
       "unpin": "Otkači (plutajući prozor)",
       "dragHint": "Prevucite da pomerite",
+      "beta": "Beta",
+      "you": "Vi",
+      "shortcut": "⌘J",
       "backToAssistant": "Nazad na asistenta"
     }
   },

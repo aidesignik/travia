@@ -643,11 +643,12 @@
         "created": "Ride created",
         "createFailed": "Couldn't create the ride. Open it in the form to check the details."
       },
-      "launcherOpen": "Open the assistant",
-      "launcherClose": "Close the assistant",
       "pin": "Pin to the right",
       "unpin": "Unpin (float the window)",
       "dragHint": "Drag to move",
+      "beta": "Beta",
+      "you": "You",
+      "shortcut": "⌘J",
       "backToAssistant": "Back to the assistant"
     }
   },
