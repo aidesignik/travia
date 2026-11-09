@@ -369,10 +369,11 @@ export function AssistantWindow() {
               }}
             >
               {docked ? null : <GripVertical size={14} strokeWidth={2} className="shrink-0 text-[var(--ink-muted)]" aria-hidden />}
-              <AssistantIcon size={22} strokeWidth={1.8} />
+              <AssistantIcon size={18} strokeWidth={1.9} />
               <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
-              <span className="rounded-pill bg-[var(--action-100)] px-2 py-[2px] text-[11.5px] font-medium text-[var(--action-800)]">
-                {t("beta")}
+              <span className="inline-flex h-5 items-center rounded-pill bg-[var(--action-100)] px-2 text-[11.5px] font-medium leading-none text-[var(--action-800)]">
+                {/* Nudged up half a pixel: the font's metrics sit capitals slightly low. */}
+                <span className="-translate-y-[0.5px]">{t("beta")}</span>
               </span>
               <span className="flex-1" />
               {minimized ? (
