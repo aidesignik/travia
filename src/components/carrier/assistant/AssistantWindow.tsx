@@ -13,7 +13,7 @@ import {
   Minus,
   PanelRight,
   PanelRightClose,
-  RotateCcw,
+  SquarePen,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -395,9 +395,13 @@ export function AssistantWindow() {
                 </button>
               ) : null}
               {!empty && !minimized ? (
-                <button type="button" onClick={() => setItems([])} aria-label={t("newChat")} title={t("newChat")} className={HEADER_BUTTON_CLASS}>
-                  <RotateCcw size={18} strokeWidth={1.8} />
-                </button>
+                <>
+                  <button type="button" onClick={() => setItems([])} aria-label={t("newChat")} title={t("newChat")} className={HEADER_BUTTON_CLASS}>
+                    <SquarePen size={18} strokeWidth={1.8} />
+                  </button>
+                  {/* Separates the chat action from the window controls. */}
+                  <span aria-hidden className="h-5 w-px shrink-0 bg-[var(--border-strong)]" />
+                </>
               ) : null}
               {minimized ? null : (
                 <>
