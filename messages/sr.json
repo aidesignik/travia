@@ -691,7 +691,12 @@
         "tooMany": "Beleška može imati najviše 20 fajlova",
         "uploadFailed": "Otpremanje nije uspelo — pokušajte ponovo",
         "saveFailed": "Čuvanje nije uspelo — proverite vezu"
-      }
+      },
+      "viewImage": "Prikaži {name}",
+      "imageOf": "{current} od {total}",
+      "previousImage": "Prethodna slika",
+      "nextImage": "Sledeća slika",
+      "closePreview": "Zatvori pregled"
     }
   },
   "amenities": {

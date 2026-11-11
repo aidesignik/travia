@@ -691,7 +691,12 @@
         "tooMany": "A note can hold up to 20 files",
         "uploadFailed": "Upload failed — try again",
         "saveFailed": "Couldn't save — check your connection"
-      }
+      },
+      "viewImage": "View {name}",
+      "imageOf": "{current} of {total}",
+      "previousImage": "Previous image",
+      "nextImage": "Next image",
+      "closePreview": "Close preview"
     }
   },
   "amenities": {

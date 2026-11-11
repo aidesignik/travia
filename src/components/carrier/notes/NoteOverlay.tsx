@@ -7,6 +7,7 @@ import type { NoteAttachmentDTO, NoteDTO } from "@/lib/notes";
 import { MAX_NOTE_FILE_BYTES, NOTE_ACCEPT, isNoteImage, resolveNoteFileType } from "@/lib/uploads/noteFileTypes";
 import { NOTE_BODY_MAX, NOTE_TITLE_MAX } from "@/lib/validation/note.schema";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { NoteImageViewer } from "./NoteImageViewer";
 
 const AUTOSAVE_MS = 700;
 
@@ -52,6 +53,8 @@ export function NoteOverlay({
   const [dragging, setDragging] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  // Index of the image open in the full-screen preview, if any.
+  const [viewing, setViewing] = useState<number | null>(null);
 
   const noteId = useRef<string | null>(initialNote?.id ?? null);
   const creating = useRef<Promise<string> | null>(null);
@@ -159,11 +162,11 @@ export function NoteOverlay({
   // Esc closes (the delete confirmation handles its own Esc first).
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && !confirmDelete) void close();
+      if (event.key === "Escape" && !confirmDelete && viewing === null) void close();
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [close, confirmDelete]);
+  }, [close, confirmDelete, viewing]);
 
   // Focus the title for a new note, the end of the text otherwise; give
   // focus back to whatever opened the overlay when it closes.
@@ -329,27 +332,35 @@ export function NoteOverlay({
                 setBody(e.target.value);
               }}
               placeholder={t("bodyPlaceholder")}
-              className="mt-3 block min-h-[150px] w-full resize-none overflow-hidden border-0 bg-transparent p-0 text-[15px] font-medium leading-[1.6] text-[var(--ink-body)] placeholder:text-[var(--ink-muted)] focus:outline-none"
+              className={`mt-3 block w-full resize-none ${attachments.length > 0 ? "min-h-[48px]" : "min-h-[150px]"} overflow-hidden border-0 bg-transparent p-0 text-[15px] font-medium leading-[1.6] text-[var(--ink-body)] placeholder:text-[var(--ink-muted)] focus:outline-none`}
             />
 
+            {/* Images sit in the note at full width, in the order they were
+                added; very tall ones are capped and shown whole. Clicking one
+                opens the full-screen preview. */}
             {images.length > 0 ? (
-              <div className="mt-5 grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(132px,1fr))]">
-                {images.map((image) => (
-                  <div key={image.id} className="group relative aspect-[4/3] overflow-hidden rounded-[10px] border border-[var(--border-hairline)] bg-[var(--bg-subtle)]">
-                    <a href={image.url} target="_blank" rel="noopener noreferrer" title={image.fileName}>
+              <div className="mt-5 flex flex-col gap-3">
+                {images.map((image, i) => (
+                  <figure key={image.id} className="group relative m-0 overflow-hidden rounded-[10px] border border-[var(--border-hairline)] bg-[var(--bg-subtle)]">
+                    <button
+                      type="button"
+                      onClick={() => setViewing(i)}
+                      aria-label={t("viewImage", { name: image.fileName })}
+                      className="block w-full cursor-zoom-in"
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={image.url} alt={image.fileName} className="h-full w-full object-cover" />
-                    </a>
+                      <img src={image.url} alt={image.fileName} className="mx-auto block max-h-[460px] w-auto max-w-full object-contain" />
+                    </button>
                     <button
                       type="button"
                       onClick={() => void removeAttachment(image)}
                       aria-label={t("removeFile", { name: image.fileName })}
                       title={t("removeFile", { name: image.fileName })}
-                      className="absolute right-[6px] top-[6px] flex h-7 w-7 items-center justify-center rounded-full bg-[rgba(24,24,27,0.6)] text-white opacity-0 transition-opacity duration-[.12s] group-hover:opacity-100 focus-visible:opacity-100"
+                      className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(24,24,27,0.6)] text-white opacity-0 transition-opacity duration-[.12s] group-hover:opacity-100 focus-visible:opacity-100"
                     >
-                      <X size={15} strokeWidth={2} />
+                      <X size={16} strokeWidth={2} />
                     </button>
-                  </div>
+                  </figure>
                 ))}
               </div>
             ) : null}
@@ -415,6 +426,10 @@ export function NoteOverlay({
           ) : null}
         </section>
       </div>
+
+      {viewing !== null ? (
+        <NoteImageViewer images={images} index={Math.min(viewing, images.length - 1)} onIndexChange={setViewing} onClose={() => setViewing(null)} />
+      ) : null}
 
       {confirmDelete ? (
         <ConfirmDialog
