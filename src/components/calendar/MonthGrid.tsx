@@ -157,8 +157,12 @@ export function MonthGrid({
     }
   }
 
+  // At least the visible height, but free to grow: on short screens (e.g. a
+  // Windows laptop at 125–150% scaling) the weeks' minimum heights don't fit,
+  // and a fixed-height box would let them spill under the unassigned queue
+  // that follows. Growing makes the calendar scroll instead.
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex min-h-full flex-col">
       <div className="sticky top-0 z-20 grid grid-cols-7 border-b border-[#EFEFEC] bg-white">
         {weekdays.map((name, i) => (
           <div
@@ -170,7 +174,9 @@ export function MonthGrid({
         ))}
       </div>
       <div
-        className="grid min-h-0 flex-1"
+        // flex: 1 0 auto — sized from the rows' minimums (so the box above
+        // can grow to fit them), stretched to fill any spare height.
+        className="grid flex-[1_0_auto]"
         style={{ gridTemplateRows: `repeat(${weeks}, minmax(${MIN_ROW_HEIGHT}px, 1fr))` }}
       >
         {Array.from({ length: weeks }, (_, week) => {
