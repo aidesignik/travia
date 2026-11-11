@@ -38,10 +38,6 @@
     "close": "Zatvori",
     "chooseFiles": "Izaberi fajlove",
     "search": "Pretraga",
-    "searchRides": "Pretraga vožnji",
-    "searchRequests": "Pretraga zahteva",
-    "searchVehicles": "Pretraga vozila",
-    "searchDrivers": "Pretraga vozača",
     "notifications": "Obaveštenja",
     "notificationsUnread": "Obaveštenja, {count} nepročitano",
     "noNotifications": "Još nema obaveštenja",
@@ -701,9 +697,8 @@
     },
     "help": {
       "title": "Pomoć",
-      "searchPlaceholder": "Pretražite pitanja",
+      "searchPlaceholder": "Pretražite pomoć",
       "searchLabel": "Pretraga pomoći",
-      "clearSearch": "Obriši pretragu",
       "noResults": "Nijedno pitanje ne odgovara pojmu „{query}”.",
       "noResultsHint": "Probajte drugim rečima ili nam pišite — rado ćemo pomoći.",
       "contactTitle": "I dalje vam treba pomoć?",
@@ -838,6 +833,24 @@
           ]
         }
       ]
+    },
+    "search": {
+      "label": "Pretraga Travije",
+      "placeholder": "Pretražite vožnje, vozače, vozila…",
+      "clear": "Obriši pretragu",
+      "rides": "Vožnje",
+      "requests": "Zahtevi",
+      "vehicles": "Vozila",
+      "drivers": "Vozači",
+      "notes": "Beleške",
+      "help": "Pomoć",
+      "seats": "{count, plural, one {# sedište} few {# sedišta} other {# sedišta}}",
+      "searching": "Pretraga…",
+      "failed": "Pretraga trenutno ne radi — pokušajte ponovo.",
+      "noResults": "Nema rezultata za „{query}”.",
+      "hintMove": "↑↓ za kretanje",
+      "hintOpen": "Enter za otvaranje",
+      "hintClose": "Esc za zatvaranje"
     }
   },
   "amenities": {

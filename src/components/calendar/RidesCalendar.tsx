@@ -136,6 +136,10 @@ export function RidesCalendar() {
   const { showNewRide, closeNewRide } = useNewRide();
   const { confirm: confirmAvailability, dialog: availabilityDialog } = useAvailabilityConfirmDialog();
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null);
+  // A ride to open once its week has loaded — from a link such as the top
+  // bar's search results (?ride=<id>&date=<YYYY-MM-DD>).
+  const [pendingRideId, setPendingRideId] = useState<string | null>(null);
+  const loadedKey = useRef<string | null>(null);
   const [draggingRideId, setDraggingRideId] = useState<string | null>(null);
   const [dragOverTarget, setDragOverTarget] = useState<DragOverTarget | null>(null);
   // Set by clicking (or click-dragging across) an empty calendar cell —
@@ -158,6 +162,7 @@ export function RidesCalendar() {
       const res = await fetch(`/api/carrier/calendar?${params}`, { signal: controller.signal });
       if (res.ok) {
         setData(await res.json());
+        loadedKey.current = rangeKey;
       } else {
         console.error("Failed to load calendar", res.status, await res.text().catch(() => ""));
       }
@@ -246,6 +251,32 @@ export function RidesCalendar() {
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
   }
+  // Deep link: jump to the ride's date, open it once loaded, and drop the
+  // parameters from the URL so a reload doesn't reopen it.
+  const rideParam = searchParams.get("ride");
+  const dateParam = searchParams.get("date");
+  useEffect(() => {
+    if (!rideParam) return;
+    const day = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? new Date(`${dateParam}T00:00:00`) : null;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (day && !Number.isNaN(day.getTime())) setAnchor(startOfDay(day));
+    setPendingRideId(rideParam);
+    const params = new URLSearchParams(searchParams);
+    params.delete("ride");
+    params.delete("date");
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname);
+    // Only when the link itself changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rideParam, dateParam]);
+
+  useEffect(() => {
+    if (!pendingRideId || loading || loadedKey.current !== rangeKey) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (allRides.some((r) => r.id === pendingRideId)) setSelectedRideId(pendingRideId);
+    setPendingRideId(null);
+  }, [pendingRideId, loading, rangeKey, allRides]);
+
   const draggingRide = draggingRideId ? allRides.find((r) => r.id === draggingRideId) ?? null : null;
   const selectedRide = selectedRideId ? allRides.find((r) => r.id === selectedRideId) ?? null : null;
 
