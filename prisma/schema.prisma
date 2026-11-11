@@ -158,6 +158,7 @@ model Carrier {
   drivers  Driver[]
   rides    Ride[]
   blocks   Block[]
+  notes    Note[]
 }
 
 model Vehicle {
@@ -386,6 +387,38 @@ model Document {
 
   @@unique([rideId, type])
   @@index([rideId])
+}
+
+// A carrier's own notes (the Notes page): free text plus any images or
+// documents attached to it. Private to the carrier; deleting a note deletes
+// its attachments (rows here, files in note storage via the API).
+model Note {
+  id        String   @id @default(cuid())
+  carrierId String
+  carrier   Carrier  @relation(fields: [carrierId], references: [id], onDelete: Cascade)
+  title     String   @default("")
+  body      String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attachments NoteAttachment[]
+
+  @@index([carrierId, updatedAt])
+}
+
+model NoteAttachment {
+  id          String   @id @default(cuid())
+  noteId      String
+  note        Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  // The name the user uploaded, shown in the note and used on download.
+  fileName    String
+  // The file's name in note storage (`{noteId}-{random}.{ext}`).
+  storedName  String   @unique
+  contentType String
+  size        Int
+  createdAt   DateTime @default(now())
+
+  @@index([noteId])
 }
 
 // Fixed-window rate limiting for auth endpoints (login, register, forgot
