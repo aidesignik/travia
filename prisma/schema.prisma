@@ -398,12 +398,14 @@ model Note {
   carrier   Carrier  @relation(fields: [carrierId], references: [id], onDelete: Cascade)
   title     String   @default("")
   body      String   @default("")
+  // Order in the grid, set by dragging (lowest first). New notes go first.
+  position  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   attachments NoteAttachment[]
 
-  @@index([carrierId, updatedAt])
+  @@index([carrierId, position])
 }
 
 model NoteAttachment {

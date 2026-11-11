@@ -1,6 +1,6 @@
 import { auth } from "@/auth/auth";
 import { prisma } from "@/lib/prisma";
-import { serializeNote } from "@/lib/notes";
+import { NOTE_ORDER, serializeNote } from "@/lib/notes";
 import { PageContent } from "@/components/carrier/PageContent";
 import { NotesBoard } from "@/components/carrier/notes/NotesBoard";
 
@@ -10,7 +10,7 @@ export default async function NotesPage() {
   const notes = await prisma.note.findMany({
     where: { carrierId: carrier.id },
     include: { attachments: true },
-    orderBy: { updatedAt: "desc" },
+    orderBy: NOTE_ORDER,
   });
 
   return (

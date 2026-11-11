@@ -1,4 +1,8 @@
-import type { Note, NoteAttachment } from "@prisma/client";
+import type { Note, NoteAttachment, Prisma } from "@prisma/client";
+
+// How notes are listed: the order the carrier dragged them into (lowest
+// position first), newest edit first among equal positions.
+export const NOTE_ORDER: Prisma.NoteOrderByWithRelationInput[] = [{ position: "asc" }, { updatedAt: "desc" }];
 
 export interface NoteAttachmentDTO {
   id: string;
