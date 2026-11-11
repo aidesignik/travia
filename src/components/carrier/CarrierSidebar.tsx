@@ -8,12 +8,14 @@ import {
   InboxIcon as InboxOutline,
   BookmarkIcon as BookmarkOutline,
   UserIcon as UserOutline,
+  DocumentTextIcon as NotesOutline,
 } from "@heroicons/react/24/outline";
 import {
   CalendarIcon as CalendarSolid,
   InboxIcon as InboxSolid,
   BookmarkIcon as BookmarkSolid,
   UserIcon as UserSolid,
+  DocumentTextIcon as NotesSolid,
 } from "@heroicons/react/24/solid";
 import { Link, usePathname } from "@/i18n/navigation";
 import { AssistantIcon } from "@/components/carrier/assistant/AssistantIcon";
@@ -160,6 +162,16 @@ export function CarrierSidebar({
           <UserSolid className={ICON_SIZE_CLASS} style={{ color: ACTIVE_COLOR }} />
         ) : (
           <UserOutline className={ICON_SIZE_CLASS} strokeWidth={1.9} style={{ color: INACTIVE_COLOR }} />
+        ),
+    },
+    {
+      href: "/carrier/notes",
+      labelKey: "notes",
+      renderIcon: (active) =>
+        active ? (
+          <NotesSolid className={ICON_SIZE_CLASS} style={{ color: ACTIVE_COLOR }} />
+        ) : (
+          <NotesOutline className={ICON_SIZE_CLASS} strokeWidth={1.9} style={{ color: INACTIVE_COLOR }} />
         ),
     },
   ];

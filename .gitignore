@@ -57,6 +57,10 @@ yarn-error.log*
 /storage/vehicle-docs/*
 !/storage/vehicle-docs/.gitkeep
 
+# note attachments
+/storage/notes/*
+!/storage/notes/.gitkeep
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
