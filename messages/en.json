@@ -698,6 +698,146 @@
       "previousImage": "Previous image",
       "nextImage": "Next image",
       "closePreview": "Close preview"
+    },
+    "help": {
+      "title": "Help",
+      "searchPlaceholder": "Search questions",
+      "searchLabel": "Search help",
+      "clearSearch": "Clear search",
+      "noResults": "No questions match “{query}”.",
+      "noResultsHint": "Try other words, or email us — we're happy to help.",
+      "contactTitle": "Still need help?",
+      "contactBody": "Email our support team and we'll get back to you as soon as we can.",
+      "emailLabel": "Support email",
+      "copyEmail": "Copy email",
+      "copied": "Copied",
+      "copyFailed": "Couldn't copy — select the address instead.",
+      "writeEmail": "Write an email",
+      "contactTip": "Tip: include the date and client of the ride you're asking about.",
+      "sections": [
+        {
+          "id": "start",
+          "title": "Getting started",
+          "items": [
+            {
+              "q": "How do I set up my company?",
+              "a": "Open the company menu in the top right and choose Company settings. Add your company details and logo, plus your price per km and fixed fee. Travia uses those prices to suggest a price when you send an offer."
+            },
+            {
+              "q": "What should I add first?",
+              "a": "Add your vehicles under Fleet and your drivers under Drivers. They then appear as rows in the calendar, ready to be assigned to rides."
+            },
+            {
+              "q": "Can I use Travia in Serbian?",
+              "a": "Yes. Open the company menu in the top right and switch the language between English and Serbian."
+            }
+          ]
+        },
+        {
+          "id": "rides",
+          "title": "Calendar & rides",
+          "items": [
+            {
+              "q": "How do I add a ride?",
+              "a": "Click New ride on the Calendar page, or click an empty spot in the calendar — or click and drag across hours or days — to start a ride at that time. Fill in the client, route, date and passengers, assign a vehicle and driver now or later, and create the ride."
+            },
+            {
+              "q": "How do I assign a vehicle or driver to a ride?",
+              "a": "Open the ride and choose Assign vehicle or Assign driver, or drag a ride from Unassigned rides onto a vehicle's or driver's row. Travia suggests only those who are free at that time; if someone is already booked you'll see a warning and can still choose Assign anyway."
+            },
+            {
+              "q": "What's the difference between the day, week and month views?",
+              "a": "Day and week show each ride by the hour, so you can see exactly who drives when. Month gives an overview of the whole month, including trips that last several days. Use the arrows or Today to move around, and switch the rows between vehicles and drivers."
+            },
+            {
+              "q": "How do I send the ride details to a driver?",
+              "a": "Open the ride and use Send to driver. Travia prepares a message with the route, time, vehicle, passengers and a map link to the pickup, which you can copy into WhatsApp, Viber or a text message."
+            },
+            {
+              "q": "Can I edit, duplicate or cancel a ride?",
+              "a": "Yes — open the ride. Edit ride changes its details, Duplicate ride is handy for regular trips, and Cancel ride keeps it on record as cancelled. Remove from calendar deletes the ride permanently and can't be undone."
+            },
+            {
+              "q": "How is the distance calculated?",
+              "a": "Travia calculates it automatically from the pickup and destination. If an address can't be found, enter the distance yourself in the distance field."
+            },
+            {
+              "q": "Can I send documents to a client?",
+              "a": "Yes. In a ride's Documents section, choose Email to client, pick the vehicle and driver documents the client needs, and send them to their email address."
+            }
+          ]
+        },
+        {
+          "id": "requests",
+          "title": "Requests & offers",
+          "items": [
+            {
+              "q": "What are incoming requests?",
+              "a": "Requests are trips clients are looking for a carrier for. Open one under Requests and send an offer with a vehicle, driver and your price — Travia suggests a price from the distance and your rates. Once another carrier claims a request, it's no longer available."
+            }
+          ]
+        },
+        {
+          "id": "fleet",
+          "title": "Drivers & fleet",
+          "items": [
+            {
+              "q": "How do document reminders work?",
+              "a": "Add expiry dates to your drivers' documents (ID card, driver's license, CPC and medical certificate) and registration and technical inspection dates to your vehicles. Anything expired, or expiring within 30 days, shows up under Needs attention in the left menu."
+            },
+            {
+              "q": "Which files can I upload for vehicles and drivers?",
+              "a": "Photos and document scans in PNG, JPG or WEBP, up to 3 MB each. Each vehicle can have up to 10 photos."
+            },
+            {
+              "q": "How do I mark a driver as unavailable?",
+              "a": "Open the driver under Drivers, turn off Available and save. Unavailable drivers aren't suggested for new rides."
+            }
+          ]
+        },
+        {
+          "id": "notes",
+          "title": "Notes",
+          "items": [
+            {
+              "q": "What can I keep in Notes?",
+              "a": "Anything you need to remember — text, photos and documents (PDF, Word, Excel, TXT or CSV), up to 4 MB per file and 20 files per note. Notes save automatically as you type."
+            },
+            {
+              "q": "Can I change the order of my notes?",
+              "a": "Yes. Drag a note to where you want it — the order is saved. With the keyboard, select a note and press Alt and an arrow key. New notes always appear first."
+            }
+          ]
+        },
+        {
+          "id": "assistant",
+          "title": "AI Assistant",
+          "items": [
+            {
+              "q": "What does the Assistant do?",
+              "a": "Describe a ride in plain language — for example who, where, when and how many passengers — and the Assistant prepares it as a draft. Nothing is created until you review the draft and confirm it. Open it from Assistant in the left menu, or press ⌘J (Ctrl+J on Windows)."
+            },
+            {
+              "q": "Can the Assistant make mistakes?",
+              "a": "Yes. It's in beta, so always check the date, time, route and passengers in each draft before you create the ride. Edit details opens a draft in the full ride form."
+            }
+          ]
+        },
+        {
+          "id": "account",
+          "title": "Account & data",
+          "items": [
+            {
+              "q": "Who can see my company's data?",
+              "a": "Only your company's account. Your rides, vehicles, drivers, notes and uploaded files are private to your company and aren't visible to other carriers."
+            },
+            {
+              "q": "How do I log out?",
+              "a": "Open the company menu in the top right and choose Log out."
+            }
+          ]
+        }
+      ]
     }
   },
   "amenities": {

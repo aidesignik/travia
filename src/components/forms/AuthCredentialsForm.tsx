@@ -10,6 +10,7 @@ import {
   readTripSearchState,
   tripStateToRequestBody,
 } from "@/lib/tripQueryParams";
+import { SUPPORT_EMAIL } from "@/lib/support";
 
 // Inputs, the submit button and the Google button all share one control
 // size (52px tall, 12px radius), so the card reads as a single column.
@@ -233,7 +234,7 @@ export function AuthCredentialsForm({ variant = "login" }: { variant?: "login" |
 
       <p className="m-0 mt-4 text-[12px] text-zinc-400">
         {t("auth.needHelpPrefix")}{" "}
-        <a href="mailto:support@travia.live" className="text-[var(--ink)] hover:underline">
+        <a href={`mailto:${SUPPORT_EMAIL}`} className="text-[var(--ink)] hover:underline">
           {t("auth.contactSupportLink")}
         </a>
       </p>

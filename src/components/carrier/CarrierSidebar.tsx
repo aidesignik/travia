@@ -54,6 +54,24 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+// The Help page (questions and answers, plus the support email), pinned
+// at the bottom of the sidebar. lucide's CircleHelp for both states, the
+// active one tinted like Fleet's.
+const HELP_ITEM: NavItem = {
+  href: "/carrier/help",
+  labelKey: "help",
+  renderIcon: (active) => (
+    <CircleHelp
+      size={17}
+      strokeWidth={1.9}
+      color={active ? ACTIVE_COLOR : INACTIVE_COLOR}
+      fill={active ? ACTIVE_COLOR : "none"}
+      fillOpacity={active ? 0.16 : undefined}
+      className="shrink-0"
+    />
+  ),
+};
+
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   const t = useTranslations("nav");
   const showCount = item.count !== undefined && item.count > 0;
@@ -259,10 +277,7 @@ export function CarrierSidebar({
               {tAssistant("shortcut")}
             </span>
           </button>
-          <a href="mailto:support@travia.live" className={`${NAV_ITEM_CLASS} font-medium text-[#3F3F46] hover:bg-[#EBEBEB]`}>
-            <CircleHelp size={17} strokeWidth={1.9} color="#6E6E76" className="shrink-0" />
-            <span className="min-w-0 flex-1 truncate">{tNav("help")}</span>
-          </a>
+          <NavLink item={HELP_ITEM} active={isActive(pathname, HELP_ITEM.href)} />
         </div>
       </div>
     </aside>
