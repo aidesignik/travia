@@ -38,10 +38,6 @@
     "close": "Close",
     "chooseFiles": "Choose files",
     "search": "Search",
-    "searchRides": "Search rides",
-    "searchRequests": "Search requests",
-    "searchVehicles": "Search vehicles",
-    "searchDrivers": "Search drivers",
     "notifications": "Notifications",
     "notificationsUnread": "Notifications, {count} unread",
     "noNotifications": "No notifications yet",
@@ -701,9 +697,8 @@
     },
     "help": {
       "title": "Help",
-      "searchPlaceholder": "Search questions",
+      "searchPlaceholder": "Search help",
       "searchLabel": "Search help",
-      "clearSearch": "Clear search",
       "noResults": "No questions match “{query}”.",
       "noResultsHint": "Try other words, or email us — we're happy to help.",
       "contactTitle": "Still need help?",
@@ -838,6 +833,24 @@
           ]
         }
       ]
+    },
+    "search": {
+      "label": "Search Travia",
+      "placeholder": "Search rides, drivers, vehicles…",
+      "clear": "Clear search",
+      "rides": "Rides",
+      "requests": "Requests",
+      "vehicles": "Vehicles",
+      "drivers": "Drivers",
+      "notes": "Notes",
+      "help": "Help",
+      "seats": "{count, plural, one {# seat} other {# seats}}",
+      "searching": "Searching…",
+      "failed": "Search isn't working right now — try again.",
+      "noResults": "No results for “{query}”.",
+      "hintMove": "↑↓ to move",
+      "hintOpen": "Enter to open",
+      "hintClose": "Esc to close"
     }
   },
   "amenities": {

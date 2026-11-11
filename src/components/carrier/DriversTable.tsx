@@ -48,9 +48,14 @@ export function DriversTable({
     // Consume the one-time deep-link signal (e.g. from the sidebar's
     // "Needs attention" list) so the side panel opens instead of a full
     // page, then strip it from the URL.
-    if (initialEditingId) router.replace(pathname);
+    // Also when the link changes while this page is already open (e.g. a
+    // search result for another one).
+    if (!initialEditingId) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setEditingDriverId(initialEditingId);
+    router.replace(pathname);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialEditingId]);
 
   function onSaved() {
     setEditingDriverId(null);

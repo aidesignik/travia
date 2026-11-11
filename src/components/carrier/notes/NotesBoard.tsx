@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Plus, StickyNote } from "lucide-react";
 import type { NoteDTO } from "@/lib/notes";
 import { PageHeader } from "@/components/carrier/PageHeader";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { NotesGrid } from "./NotesGrid";
 import { NoteOverlay } from "./NoteOverlay";
 
@@ -24,6 +26,18 @@ export function NotesBoard({ initialNotes }: { initialNotes: NoteDTO[] }) {
   useEffect(() => {
     notesRef.current = notes;
   });
+
+  // ?note=<id> (e.g. from the top bar's search) opens that note, then the
+  // parameter is dropped so a reload doesn't reopen it.
+  const router = useRouter();
+  const pathname = usePathname();
+  const noteParam = useSearchParams().get("note");
+  useEffect(() => {
+    if (!noteParam) return;
+    const note = notesRef.current.find((n) => n.id === noteParam);
+    if (note) setOverlay({ key: Date.now(), initial: note });
+    router.replace(pathname);
+  }, [noteParam, pathname, router]);
 
   // Editing a note keeps its place; a new one goes first.
   const upsert = (note: NoteDTO) =>

@@ -1,49 +1,26 @@
 "use client";
 
 import { useId, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Check, ChevronDown, Copy, Mail, Search, X } from "lucide-react";
+import { Check, ChevronDown, Copy, Mail } from "lucide-react";
 import { PageHeader } from "@/components/carrier/PageHeader";
 import { SUPPORT_EMAIL } from "@/lib/support";
+import { filterHelp, type HelpItem, type HelpSection } from "@/lib/helpSearch";
+import { useHelpQuery } from "./helpQuery";
 
-interface HelpItem {
-  q: string;
-  a: string;
-}
-
-interface HelpSection {
-  id: string;
-  title: string;
-  items: HelpItem[];
-}
-
-// Case- and accent-insensitive, so "vozac" finds "vozač".
-function normalize(text: string) {
-  return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
-}
-
-// The Help page: questions and answers grouped by topic, with a search that
-// narrows them down, and a card with the support email (copy or write).
+// The Help page: questions and answers grouped by topic, and a card with the
+// support email (copy or write). The top bar's search filters the questions
+// here (see helpQuery; ?q= on first load) — the page has no search field of
+// its own.
 export function HelpCenter() {
   const t = useTranslations("carrier.help");
   const sections = t.raw("sections") as HelpSection[];
-  const [query, setQuery] = useState("");
+  const urlQuery = useSearchParams().get("q") ?? "";
+  const query = (useHelpQuery() ?? urlQuery).trim();
   const [open, setOpen] = useState<Set<string>>(() => new Set());
-
-  const search = normalize(query.trim());
-  const visible = useMemo(() => {
-    if (!search) return sections;
-    const words = search.split(/\s+/);
-    return sections
-      .map((section) => ({
-        ...section,
-        items: section.items.filter((item) => {
-          const text = normalize(`${item.q} ${item.a} ${section.title}`);
-          return words.every((word) => text.includes(word));
-        }),
-      }))
-      .filter((section) => section.items.length > 0);
-  }, [sections, search]);
+  const searching = query.length > 0;
+  const visible = useMemo(() => filterHelp(sections, query), [sections, query]);
 
   const toggle = (key: string) =>
     setOpen((prev) => {
@@ -62,37 +39,9 @@ export function HelpCenter() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-6 lg:order-1">
-          <div className="relative max-w-[560px]">
-            <Search
-              size={17}
-              strokeWidth={1.9}
-              aria-hidden
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--ink-muted)]"
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t("searchPlaceholder")}
-              aria-label={t("searchLabel")}
-              className="h-[42px] w-full rounded-[10px] border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] pl-10 pr-10 text-[14px] text-[var(--ink-primary)] shadow-[var(--shadow-search)] transition-[border-color,box-shadow] duration-[.12s] ease-out placeholder:text-[var(--ink-disabled)] focus:border-[var(--action-bg)] focus:shadow-[var(--focus-ring)] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
-            />
-            {query ? (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                aria-label={t("clearSearch")}
-                title={t("clearSearch")}
-                className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-[7px] text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--menu-item-hover)] hover:text-[var(--ink-secondary)]"
-              >
-                <X size={15} strokeWidth={2} />
-              </button>
-            ) : null}
-          </div>
-
           {visible.length === 0 ? (
             <div className="rounded-[12px] border border-dashed border-[var(--border-strong)] bg-[var(--surface-card-bg)] px-6 py-10 text-center">
-              <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{t("noResults", { query: query.trim() })}</p>
+              <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{t("noResults", { query })}</p>
               <p className="mt-1 text-[13.5px] text-[var(--ink-secondary)]">{t("noResultsHint")}</p>
             </div>
           ) : (
@@ -106,17 +55,17 @@ export function HelpCenter() {
                 </h2>
                 <div className="overflow-hidden rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] shadow-[var(--shadow-surface-card)]">
                   {section.items.map((item, index) => {
-                    // Keyed by the question so it stays open while the
-                    // search narrows the list; a search opens every match.
+                    // A search opens every match; otherwise each question
+                    // opens on click.
                     const key = `${section.id}:${item.q}`;
                     return (
                       <Question
                         key={key}
                         item={item}
                         first={index === 0}
-                        open={search ? true : open.has(key)}
+                        open={searching || open.has(key)}
                         onToggle={() => toggle(key)}
-                        disabled={Boolean(search)}
+                        disabled={searching}
                       />
                     );
                   })}
