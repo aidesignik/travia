@@ -667,6 +667,7 @@
       "newNote": "New note",
       "emptyTitle": "No notes yet",
       "emptyBody": "Keep anything you need to remember here — notes, photos and documents. Click “New note” to start.",
+      "reorderHint": "Drag a note to move it, or press Alt and an arrow key.",
       "untitled": "Untitled",
       "fileCount": "{count, plural, one {# file} other {# files}}",
       "edited": "Edited {date}",
