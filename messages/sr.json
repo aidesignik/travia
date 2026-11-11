@@ -698,6 +698,146 @@
       "previousImage": "Prethodna slika",
       "nextImage": "Sledeća slika",
       "closePreview": "Zatvori pregled"
+    },
+    "help": {
+      "title": "Pomoć",
+      "searchPlaceholder": "Pretražite pitanja",
+      "searchLabel": "Pretraga pomoći",
+      "clearSearch": "Obriši pretragu",
+      "noResults": "Nijedno pitanje ne odgovara pojmu „{query}”.",
+      "noResultsHint": "Probajte drugim rečima ili nam pišite — rado ćemo pomoći.",
+      "contactTitle": "I dalje vam treba pomoć?",
+      "contactBody": "Pišite našoj podršci i javićemo vam se što pre.",
+      "emailLabel": "Email podrške",
+      "copyEmail": "Kopiraj email",
+      "copied": "Kopirano",
+      "copyFailed": "Kopiranje nije uspelo — označite adresu.",
+      "writeEmail": "Napišite email",
+      "contactTip": "Savet: navedite datum i klijenta vožnje na koju se pitanje odnosi.",
+      "sections": [
+        {
+          "id": "start",
+          "title": "Prvi koraci",
+          "items": [
+            {
+              "q": "Kako da podesim svoju kompaniju?",
+              "a": "Otvorite meni kompanije u gornjem desnom uglu i izaberite Podešavanja kompanije. Unesite podatke o kompaniji i logo, kao i cenu po km i fiksnu naknadu. Travia na osnovu tih cena predlaže cenu kada šaljete ponudu."
+            },
+            {
+              "q": "Šta prvo da dodam?",
+              "a": "Dodajte vozila u odeljku Vozni park i vozače u odeljku Vozači. Zatim se pojavljuju kao redovi u kalendaru, spremni da ih dodelite vožnjama."
+            },
+            {
+              "q": "Mogu li da koristim Traviju na engleskom?",
+              "a": "Da. Otvorite meni kompanije u gornjem desnom uglu i promenite jezik između srpskog i engleskog."
+            }
+          ]
+        },
+        {
+          "id": "rides",
+          "title": "Kalendar i vožnje",
+          "items": [
+            {
+              "q": "Kako da dodam vožnju?",
+              "a": "Kliknite Nova vožnja na stranici Kalendar, ili kliknite na prazno mesto u kalendaru — ili kliknite i prevucite preko sati ili dana — da započnete vožnju u to vreme. Unesite klijenta, rutu, datum i broj putnika, dodelite vozilo i vozača odmah ili kasnije, i kreirajte vožnju."
+            },
+            {
+              "q": "Kako da dodelim vozilo ili vozača vožnji?",
+              "a": "Otvorite vožnju i izaberite Dodeli vozilo ili Dodeli vozača, ili prevucite vožnju iz Nedodeljenih vožnji na red vozila ili vozača. Travia predlaže samo one koji su slobodni u to vreme; ako je neko već zauzet, videćete upozorenje, a klikom na Ipak dodeli možete ga svejedno dodeliti."
+            },
+            {
+              "q": "Koja je razlika između dnevnog, nedeljnog i mesečnog prikaza?",
+              "a": "Dnevni i nedeljni prikaz pokazuju vožnje po satima, pa tačno vidite ko vozi kada. Mesečni daje pregled celog meseca, uključujući višednevne vožnje. Strelicama ili dugmetom Danas se krećete kroz kalendar, a redove možete prebaciti između vozila i vozača."
+            },
+            {
+              "q": "Kako da pošaljem detalje vožnje vozaču?",
+              "a": "Otvorite vožnju i izaberite Pošalji vozaču. Travia priprema poruku sa rutom, vremenom, vozilom, putnicima i linkom do mesta polaska na mapi, koju možete kopirati u WhatsApp, Viber ili SMS."
+            },
+            {
+              "q": "Mogu li da izmenim, dupliram ili otkažem vožnju?",
+              "a": "Da — otvorite vožnju. Izmeni vožnju menja detalje, Dupliraj vožnju je zgodno za redovne vožnje, a Otkaži vožnju je čuva u evidenciji kao otkazanu. Ukloni iz kalendara trajno briše vožnju i to se ne može poništiti."
+            },
+            {
+              "q": "Kako se računa razdaljina?",
+              "a": "Travia je računa automatski na osnovu mesta polaska i odredišta. Ako adresa ne može da se pronađe, unesite razdaljinu ručno u polje za razdaljinu."
+            },
+            {
+              "q": "Mogu li da pošaljem dokumenta klijentu?",
+              "a": "Da. U odeljku Dokumenti na vožnji izaberite Pošalji e-poštom, označite dokumenta vozila i vozača koja su klijentu potrebna i pošaljite ih na njegovu email adresu."
+            }
+          ]
+        },
+        {
+          "id": "requests",
+          "title": "Zahtevi i ponude",
+          "items": [
+            {
+              "q": "Šta su dolazni zahtevi?",
+              "a": "Zahtevi su vožnje za koje klijenti traže prevoznika. Otvorite zahtev u odeljku Zahtevi i pošaljite ponudu sa vozilom, vozačem i svojom cenom — Travia predlaže cenu na osnovu razdaljine i vaših tarifa. Kada drugi prevoznik preuzme zahtev, on više nije dostupan."
+            }
+          ]
+        },
+        {
+          "id": "fleet",
+          "title": "Vozači i vozni park",
+          "items": [
+            {
+              "q": "Kako rade podsetnici za dokumenta?",
+              "a": "Unesite datume isteka za dokumenta vozača (lična karta, vozačka dozvola, CPC i lekarsko uverenje) i datume registracije i tehničkog pregleda za vozila. Sve što je isteklo, ili ističe u narednih 30 dana, prikazuje se u odeljku Potrebna pažnja u levom meniju."
+            },
+            {
+              "q": "Koje fajlove mogu da otpremim za vozila i vozače?",
+              "a": "Fotografije i skenirana dokumenta u formatu PNG, JPG ili WEBP, do 3 MB po fajlu. Svako vozilo može imati do 10 fotografija."
+            },
+            {
+              "q": "Kako da označim vozača kao nedostupnog?",
+              "a": "Otvorite vozača u odeljku Vozači, isključite Dostupan i sačuvajte. Nedostupni vozači se ne predlažu za nove vožnje."
+            }
+          ]
+        },
+        {
+          "id": "notes",
+          "title": "Beleške",
+          "items": [
+            {
+              "q": "Šta mogu da čuvam u Beleškama?",
+              "a": "Sve što treba da zapamtite — tekst, fotografije i dokumenta (PDF, Word, Excel, TXT ili CSV), do 4 MB po fajlu i 20 fajlova po belešci. Beleške se čuvaju automatski dok kucate."
+            },
+            {
+              "q": "Mogu li da promenim redosled beleški?",
+              "a": "Da. Prevucite belešku tamo gde želite — redosled se čuva. Tastaturom: označite belešku i pritisnite Alt i strelicu. Nove beleške se uvek pojavljuju prve."
+            }
+          ]
+        },
+        {
+          "id": "assistant",
+          "title": "AI asistent",
+          "items": [
+            {
+              "q": "Šta radi Asistent?",
+              "a": "Opišite vožnju običnim rečima — na primer ko, gde, kada i koliko putnika — i Asistent je priprema kao nacrt. Ništa se ne kreira dok ne pregledate nacrt i ne potvrdite ga. Otvorite ga preko stavke Asistent u levom meniju ili pritiskom na ⌘J (Ctrl+J na Windowsu)."
+            },
+            {
+              "q": "Može li Asistent da pogreši?",
+              "a": "Može. U beta je fazi, pa uvek proverite datum, vreme, rutu i broj putnika u svakom nacrtu pre nego što kreirate vožnju. Klikom na Izmeni detalje nacrt otvarate u punom obrascu vožnje."
+            }
+          ]
+        },
+        {
+          "id": "account",
+          "title": "Nalog i podaci",
+          "items": [
+            {
+              "q": "Ko može da vidi podatke moje kompanije?",
+              "a": "Samo nalog vaše kompanije. Vaše vožnje, vozila, vozači, beleške i otpremljeni fajlovi su privatni i drugi prevoznici ih ne vide."
+            },
+            {
+              "q": "Kako da se odjavim?",
+              "a": "Otvorite meni kompanije u gornjem desnom uglu i izaberite Odjava."
+            }
+          ]
+        }
+      ]
     }
   },
   "amenities": {
