@@ -121,6 +121,9 @@ export function MonthGrid({
   // mouseup anywhere (a window listener, so releasing outside the grid
   // still ends it cleanly).
   const [selection, setSelection] = useState<{ start: number; end: number } | null>(null);
+  // A ride that wraps onto later weeks is drawn as one bar per week; hovering
+  // any of them highlights all of them, so it reads as a single ride.
+  const [hoveredRideId, setHoveredRideId] = useState<string | null>(null);
   useEffect(() => {
     if (!selection) return;
     function finish() {
@@ -272,6 +275,8 @@ export function MonthGrid({
                       onClick={() => onRideClick(s.ride.id)}
                       continuesBefore={s.continuesBefore}
                       continuesAfter={s.continuesAfter}
+                      hovered={!selection && hoveredRideId === s.ride.id}
+                      onHoverChange={(on) => setHoveredRideId((cur) => (on ? s.ride.id : cur === s.ride.id ? null : cur))}
                     />
                   </div>
                 ))}
