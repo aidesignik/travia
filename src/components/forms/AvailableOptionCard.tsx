@@ -30,19 +30,19 @@ export function AvailableOptionCard({
   return (
     <>
       <Card
-        className="flex cursor-pointer flex-col justify-between transition-shadow hover:shadow-md"
+        className="flex cursor-pointer flex-col justify-between transition-shadow hover:shadow-[var(--shadow-card)]"
         onClick={() => setOpen(true)}
       >
         <div>
-          <p className="font-medium text-zinc-900">{option.carrierName}</p>
-          <p className="text-sm text-zinc-600">{option.carrierCity}</p>
-          <p className="mt-2 text-sm text-zinc-700">
+          <p className="font-medium text-[var(--ink-primary)]">{option.carrierName}</p>
+          <p className="text-sm text-[var(--ink-secondary)]">{option.carrierCity}</p>
+          <p className="mt-2 text-sm text-[var(--ink-body)]">
             {t(`vehicleType.${option.type}`)} {option.model} · {option.seats}{" "}
             {t("client.availableOptions.seats")}
           </p>
-          {amenitiesLabel ? <p className="mt-1 text-xs text-zinc-500">{amenitiesLabel}</p> : null}
+          {amenitiesLabel ? <p className="mt-1 text-xs text-[var(--ink-muted)]">{amenitiesLabel}</p> : null}
           {option.estimatedPrice !== null ? (
-            <p className="mt-3 text-lg font-semibold text-zinc-900">
+            <p className="mt-3 text-lg font-semibold text-[var(--ink-primary)]">
               ~{option.estimatedPrice.toLocaleString()} RSD
             </p>
           ) : null}
@@ -60,18 +60,18 @@ export function AvailableOptionCard({
           onClick={() => setOpen(false)}
         >
           <div
-            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-lg bg-white p-6 shadow-xl"
+            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-control bg-white p-6 shadow-[var(--shadow-panel)]"
             onClick={stopPropagation}
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-zinc-900">{option.carrierName}</h3>
-                <p className="text-sm text-zinc-600">{option.carrierCity}</p>
+                <h3 className="text-lg font-semibold text-[var(--ink-primary)]">{option.carrierName}</h3>
+                <p className="text-sm text-[var(--ink-secondary)]">{option.carrierCity}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="shrink-0 text-[var(--ink-muted)] hover:text-zinc-700"
+                className="shrink-0 text-[var(--ink-muted)] hover:text-[var(--ink-body)]"
                 aria-label={t("common.close")}
               >
                 ✕
@@ -79,21 +79,21 @@ export function AvailableOptionCard({
             </div>
 
             {option.carrierDescription ? (
-              <p className="mt-3 text-sm text-zinc-700">{option.carrierDescription}</p>
+              <p className="mt-3 text-sm text-[var(--ink-body)]">{option.carrierDescription}</p>
             ) : null}
 
-            <div className="mt-4 border-t border-zinc-200 pt-4">
-              <p className="font-medium text-zinc-900">
+            <div className="mt-4 border-t border-[var(--border-control)] pt-4">
+              <p className="font-medium text-[var(--ink-primary)]">
                 {t(`vehicleType.${option.type}`)} {option.model}
                 {option.year ? ` (${option.year})` : ""}
               </p>
-              <p className="mt-1 text-sm text-zinc-600">
+              <p className="mt-1 text-sm text-[var(--ink-secondary)]">
                 {option.seats} {t("client.availableOptions.seats")}
               </p>
-              {amenitiesLabel ? <p className="mt-1 text-sm text-zinc-600">{amenitiesLabel}</p> : null}
+              {amenitiesLabel ? <p className="mt-1 text-sm text-[var(--ink-secondary)]">{amenitiesLabel}</p> : null}
             </div>
 
-            <div className="mt-4 border-t border-zinc-200 pt-4">
+            <div className="mt-4 border-t border-[var(--border-control)] pt-4">
               {option.photos.length > 0 ? (
                 <div className="grid grid-cols-2 gap-2">
                   {option.photos.map((url) => (
@@ -104,17 +104,17 @@ export function AvailableOptionCard({
                       key={url}
                       src={url}
                       alt={`${option.type} ${option.model}`}
-                      className="h-32 w-full rounded-md border border-zinc-200 object-cover"
+                      className="h-32 w-full rounded-chip border border-[var(--border-control)] object-cover"
                     />
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-zinc-500">{t("client.availableOptions.noPhotos")}</p>
+                <p className="text-sm text-[var(--ink-muted)]">{t("client.availableOptions.noPhotos")}</p>
               )}
             </div>
 
             {option.estimatedPrice !== null ? (
-              <p className="mt-4 text-xl font-semibold text-zinc-900">
+              <p className="mt-4 text-xl font-semibold text-[var(--ink-primary)]">
                 ~{option.estimatedPrice.toLocaleString()} RSD
               </p>
             ) : null}

@@ -67,7 +67,7 @@ export async function Navbar({
               <LocaleSwitcher variant="menu" />
               <a
                 href="mailto:sales@travia.example"
-                className={`hidden h-9 items-center whitespace-nowrap rounded-[8px] px-[10px] text-[14px] font-medium leading-5 sm:flex text-[var(--ink-2)] transition-colors hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)] ${
+                className={`hidden h-9 items-center whitespace-nowrap rounded-control px-[10px] text-[14px] font-medium leading-5 sm:flex text-[var(--ink-2)] transition-colors hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)] ${
                   showCta || showLoginButton ? "ml-1" : "ml-2"
                 }`}
               >
@@ -76,7 +76,7 @@ export async function Navbar({
               {showCta ? (
                 <Link
                   href="/register/carrier"
-                  className="ml-2 flex h-9 items-center whitespace-nowrap rounded-[8px] bg-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-white transition-colors hover:bg-[var(--ink-hover)]"
+                  className="ml-2 flex h-9 items-center whitespace-nowrap rounded-control bg-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-white transition-colors hover:bg-[var(--ink-hover)]"
                 >
                   {tNav("getStartedFree")}
                 </Link>
@@ -84,7 +84,7 @@ export async function Navbar({
               {showLoginButton ? (
                 <Link
                   href="/login"
-                  className="ml-2 flex h-9 items-center whitespace-nowrap rounded-[8px] border border-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-[var(--ink)] transition-colors hover:bg-[var(--bg-subtle)]"
+                  className="ml-2 flex h-9 items-center whitespace-nowrap rounded-control border border-[var(--ink)] px-[14px] text-[14px] font-semibold leading-5 text-[var(--ink)] transition-colors hover:bg-[var(--bg-subtle)]"
                 >
                   {tNav("login")}
                 </Link>
@@ -123,7 +123,7 @@ export async function Navbar({
               {MARKETPLACE_ENABLED && session?.user.role !== "CARRIER" ? (
                 <Link
                   href="/register/carrier"
-                  className="rounded-md bg-[var(--bg-subtle)] px-3 py-1.5 text-sm font-medium text-[var(--ink-primary)] hover:bg-[var(--border-soft)]"
+                  className="rounded-chip bg-[var(--bg-subtle)] px-3 py-1.5 text-sm font-medium text-[var(--ink-primary)] hover:bg-[var(--border-soft)]"
                 >
                   {tNav("forCarriers")}
                 </Link>

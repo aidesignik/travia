@@ -559,13 +559,13 @@ export function NewRideModal({
   return (
     <>
     <SidePanel onClose={onClose} label={panelTitle}>
-      <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#F0F0F2] py-0 pl-6 pr-5">
-        <h2 className="text-[18px] font-semibold tracking-[-0.015em] text-[#18181B]">{panelTitle}</h2>
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--border-hairline)] py-0 pl-6 pr-5">
+        <h2 className="text-[18px] font-semibold tracking-[-0.015em] text-[var(--ink-primary)]">{panelTitle}</h2>
         <button
           type="button"
           onClick={onClose}
           aria-label={t("common.close")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[#71717A] transition-colors duration-[.12s] ease-out hover:bg-[#F4F4F5]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-control text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
         >
           <X size={17} strokeWidth={1.9} />
         </button>
@@ -574,7 +574,7 @@ export function NewRideModal({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div ref={bodyRef} className="min-h-0 flex-1 overflow-y-auto">
           <section className="px-6 py-5">
-            <h3 className="mb-4 text-[13.5px] font-semibold text-[#18181B]">{tn("klijent")}</h3>
+            <h3 className="mb-4 text-[14px] font-semibold text-[var(--ink-primary)]">{tn("klijent")}</h3>
             <div className="grid grid-cols-2 gap-x-3 gap-y-4">
               <div>
                 <label htmlFor={`${uid}-firma`} className={SHEET_LABEL_CLASS}>{tn("firma")}</label>
@@ -613,13 +613,13 @@ export function NewRideModal({
                   onChange={(e) => setForm({ ...form, clientName: e.target.value })}
                 />
                 {submitAttempted && !form.clientName ? (
-                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error mt-[4px] text-[13px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </div>
               <div>
                 <label htmlFor={`${uid}-telefon`} className={SHEET_LABEL_CLASS}>{tn("telefon")}</label>
-                <div className="mt-[6px] flex h-10 items-stretch rounded-[8px] border border-[var(--border-control)] focus-within:border-[var(--action-bg)] focus-within:shadow-[0_0_0_3px_var(--action-100)]">
-                  <div className="flex shrink-0 items-center gap-[2px] rounded-l-[7px] bg-[var(--bg-subtle)] pl-3 pr-2">
+                <div className="mt-[6px] flex h-10 items-stretch rounded-control border border-[var(--border-control)] focus-within:border-[var(--action-bg)] focus-within:shadow-[0_0_0_3px_var(--action-100)]">
+                  <div className="flex shrink-0 items-center gap-[2px] rounded-l-chip bg-[var(--bg-subtle)] pl-3 pr-2">
                     <span className="text-[14px] text-[var(--ink-secondary)]">+</span>
                     <input
                       aria-label={tn("phoneCountryCode")}
@@ -643,7 +643,7 @@ export function NewRideModal({
                   />
                 </div>
                 {(phoneTouched || submitAttempted) && form.clientPhoneNumber && !isValidPhoneNumber(form.clientPhoneNumber) ? (
-                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("invalidPhone")}</p>
+                  <p className="field-error mt-[4px] text-[13px] text-[var(--ink-destructive)]">{tn("invalidPhone")}</p>
                 ) : null}
               </div>
               <div>
@@ -656,19 +656,19 @@ export function NewRideModal({
                   onChange={(e) => setForm({ ...form, clientEmail: e.target.value })}
                 />
                 {submitAttempted && !form.clientEmail ? (
-                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error mt-[4px] text-[13px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : submitAttempted && !isValidEmail(form.clientEmail) ? (
-                  <p className="field-error mt-[4px] text-[12.5px] text-[var(--ink-destructive)]">{t("auth.invalidEmail")}</p>
+                  <p className="field-error mt-[4px] text-[13px] text-[var(--ink-destructive)]">{t("auth.invalidEmail")}</p>
                 ) : null}
               </div>
             </div>
           </section>
 
-          <div className="mx-6 h-px bg-[#F0F0F2]" />
+          <div className="mx-6 h-px bg-[var(--border-hairline)]" />
 
           <section className="px-6 py-5">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 className="text-[13.5px] font-semibold text-[#18181B]">{tn("ruta")}</h3>
+              <h3 className="text-[14px] font-semibold text-[var(--ink-primary)]">{tn("ruta")}</h3>
               <SegmentedControl
                 options={[
                   { value: "round" as const, label: tn("povratna") },
@@ -713,7 +713,7 @@ export function NewRideModal({
                   dateError={submitAttempted && !form.departureAt}
                 />
                 {submitAttempted && !form.departureAt ? (
-                  <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{tn("required")}</p>
+                  <p className="field-error pl-[28px] text-[13px] text-[var(--ink-destructive)]">{tn("required")}</p>
                 ) : null}
               </LegCard>
 
@@ -756,7 +756,7 @@ export function NewRideModal({
 
               {distanceVisible ? (
                 <Card className="!p-4">
-                  <label htmlFor={`${uid}-cena`} className="mb-[10px] block text-[13.5px] font-semibold text-[#18181B]">
+                  <label htmlFor={`${uid}-cena`} className="mb-[10px] block text-[14px] font-semibold text-[var(--ink-primary)]">
                     {tn("cena")}
                   </label>
                   <div className="relative">
@@ -767,7 +767,7 @@ export function NewRideModal({
                       min={0}
                       step="0.01"
                       placeholder="0.00"
-                      className="h-12 w-full rounded-[8px] px-3 text-[20px] font-semibold text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] shadow-[inset_0_0_0_1px_var(--border-control)] transition-shadow duration-[.12s] ease-out focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)]"
+                      className="h-12 w-full rounded-control px-3 text-[20px] font-semibold text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] shadow-[inset_0_0_0_1px_var(--border-control)] transition-shadow duration-[.12s] ease-out focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)]"
                       value={form.price}
                       onChange={(e) => setForm({ ...form, price: e.target.value })}
                     />
@@ -794,10 +794,10 @@ export function NewRideModal({
             </div>
           </section>
 
-          <div className="mx-6 h-px bg-[#F0F0F2]" />
+          <div className="mx-6 h-px bg-[var(--border-hairline)]" />
 
           <section className="px-6 py-5">
-            <h3 className="mb-4 text-[13.5px] font-semibold text-[#18181B]">{tn("detalji")}</h3>
+            <h3 className="mb-4 text-[14px] font-semibold text-[var(--ink-primary)]">{tn("detalji")}</h3>
             <div className="flex flex-col gap-4">
               <div>
                 <span className={SHEET_LABEL_CLASS}>{tn("brojPutnika")}</span>
@@ -814,7 +814,7 @@ export function NewRideModal({
               <div>
                 <div className="mb-[6px] flex items-baseline gap-2">
                   <label htmlFor={`${uid}-zahtevi`} className={SHEET_LABEL_CLASS}>{tn("posebniZahtevi")}</label>
-                  <span className="text-[12.5px] text-[var(--ink-muted)]">{tn("opciono")}</span>
+                  <span className="text-[13px] text-[var(--ink-muted)]">{tn("opciono")}</span>
                 </div>
                 <textarea
                   id={`${uid}-zahtevi`}
@@ -827,20 +827,20 @@ export function NewRideModal({
             </div>
           </section>
 
-          <div className="mx-6 h-px bg-[#F0F0F2]" />
+          <div className="mx-6 h-px bg-[var(--border-hairline)]" />
 
           <section className="px-6 py-5">
             <div className="mb-4 flex items-baseline justify-between gap-2">
               <div className="flex items-baseline gap-2">
-                <h3 className="text-[13.5px] font-semibold text-[#18181B]">{tn("dodela")}</h3>
-                <span className="text-[12.5px] text-[var(--ink-muted)]">{tn("opciono")}</span>
+                <h3 className="text-[14px] font-semibold text-[var(--ink-primary)]">{tn("dodela")}</h3>
+                <span className="text-[13px] text-[var(--ink-muted)]">{tn("opciono")}</span>
               </div>
               <span
-                className={`shrink-0 text-right text-[12.5px] ${
+                className={`shrink-0 text-right text-[13px] ${
                   form.departureAt && (!form.isRoundTrip || form.returnAt)
                     ? busyCount > 0
-                      ? "text-[#9A5B0F]"
-                      : "text-[#16A34A]"
+                      ? "text-[var(--warning-ink)]"
+                      : "text-[var(--accent-completed)]"
                     : "text-[var(--ink-muted)]"
                 }`}
               >
@@ -878,17 +878,17 @@ export function NewRideModal({
             </div>
           </section>
 
-          {error ? <p className="px-6 pb-4 text-[13.5px] text-[var(--ink-destructive)]">{error}</p> : null}
+          {error ? <p className="px-6 pb-4 text-[14px] text-[var(--ink-destructive)]">{error}</p> : null}
         </div>
 
-        <div className="flex h-[72px] shrink-0 items-center gap-3 bg-white py-0 pl-6 pr-5 shadow-[0_-1px_0_#F0F0F2,0_-8px_16px_-8px_rgba(24,24,27,.06)]">
+        <div className="flex h-[72px] shrink-0 items-center gap-3 bg-white py-0 pl-6 pr-5 shadow-[var(--shadow-footer)]">
           <div className="min-w-0 flex-1">
             {routeCities.length > 0 ? (
               <>
-                <p className="text-[14px] font-semibold tabular-nums text-[#18181B]">
+                <p className="text-[14px] font-semibold tabular-nums text-[var(--ink-primary)]">
                   {distanceKm !== null ? `${Math.round(distanceKm)} km` : "—"}
                 </p>
-                <p className="truncate text-[12.5px] text-[#71717A]">
+                <p className="truncate text-[13px] text-[var(--ink-muted)]">
                   {routeCities.length > 1 ? routeCities.join(" → ") : "—"}
                 </p>
               </>

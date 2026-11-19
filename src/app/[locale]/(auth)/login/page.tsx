@@ -16,7 +16,7 @@ export default async function LoginPage() {
   return (
     <AuthCardScreen>
       <h1
-        className="m-0 text-balance text-[clamp(28px,3vw,36px)] font-semibold leading-[1.08] tracking-[-0.03em] text-zinc-900"
+        className="m-0 text-balance text-[clamp(28px,3vw,36px)] font-semibold leading-[1.08] tracking-[-0.03em] text-[var(--ink-primary)]"
         style={{ fontFamily: "var(--font-sora)" }}
       >
         {t("loginCardTitle")}
@@ -24,11 +24,11 @@ export default async function LoginPage() {
       <div className="mt-8">
         <AuthCredentialsForm variant="login" />
       </div>
-      <p className="m-0 mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] text-zinc-600">
+      <p className="m-0 mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-[16px] text-[var(--ink-secondary)]">
         {t("noAccount")}
         <Link
           href="/register/carrier"
-          className="inline-flex items-center gap-1.5 font-semibold text-zinc-900 hover:underline"
+          className="inline-flex items-center gap-1.5 font-semibold text-[var(--ink-primary)] hover:underline"
         >
           {t("tryFreeLink")}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />

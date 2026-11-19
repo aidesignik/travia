@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Check, Copy, MessageSquareText } from "lucide-react";
 import { messagingLinks, toInternationalDigits } from "@/lib/driverMessage";
+import { BRAND_COLORS } from "@/lib/brandColors";
 
 const PILL_CLASS =
   "inline-flex h-8 items-center gap-[6px] rounded-full border border-[var(--border-control)] bg-white px-3 text-[13px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]";
@@ -32,21 +33,21 @@ export function DriverMessageActions({ phone, message }: { phone: string; messag
 
   return (
     <div className="pl-12">
-      <p className="m-0 mb-[6px] flex items-center gap-[6px] text-[12.5px] text-[var(--ink-muted)]">
+      <p className="m-0 mb-[6px] flex items-center gap-[6px] text-[13px] text-[var(--ink-muted)]">
         <MessageSquareText size={14} strokeWidth={1.9} aria-hidden="true" />
         {t("sendLabel")}
       </p>
       <div className="flex flex-wrap items-center gap-2">
         <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" className={PILL_CLASS}>
-          <span className="h-2 w-2 rounded-full bg-[#25D366]" aria-hidden="true" />
+          <span className="h-2 w-2 rounded-full" style={{ background: BRAND_COLORS.whatsapp }} aria-hidden="true" />
           WhatsApp
         </a>
         <a href={links.viber} className={PILL_CLASS}>
-          <span className="h-2 w-2 rounded-full bg-[#7360F2]" aria-hidden="true" />
+          <span className="h-2 w-2 rounded-full" style={{ background: BRAND_COLORS.viber }} aria-hidden="true" />
           Viber
         </a>
         <a href={links.sms} className={PILL_CLASS}>
-          <span className="h-2 w-2 rounded-full bg-[#2563EB]" aria-hidden="true" />
+          <span className="h-2 w-2 rounded-full bg-[var(--action-bg)]" aria-hidden="true" />
           SMS
         </a>
         <button
@@ -57,7 +58,7 @@ export function DriverMessageActions({ phone, message }: { phone: string; messag
           className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-control)] bg-white text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]"
         >
           {copied ? (
-            <Check size={14} strokeWidth={2} className="text-[#16a34a]" aria-hidden="true" />
+            <Check size={14} strokeWidth={2} className="text-[var(--accent-completed)]" aria-hidden="true" />
           ) : (
             <Copy size={14} strokeWidth={1.9} aria-hidden="true" />
           )}

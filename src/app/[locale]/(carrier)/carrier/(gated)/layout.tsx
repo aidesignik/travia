@@ -45,8 +45,8 @@ export default async function CarrierGatedLayout({
         <Navbar />
         <div className="mx-auto max-w-5xl px-4 py-10">
           <Card>
-            <p className="font-medium text-zinc-900">{t(status)}</p>
-            <p className="mt-2 text-sm text-zinc-600">{t("pendingNotice")}</p>
+            <p className="font-medium text-[var(--ink-primary)]">{t(status)}</p>
+            <p className="mt-2 text-sm text-[var(--ink-secondary)]">{t("pendingNotice")}</p>
             <Link
               href="/carrier/onboarding"
               className="mt-4 inline-block text-sm font-medium underline"
@@ -123,7 +123,7 @@ export default async function CarrierGatedLayout({
         className="flex h-dvh min-w-0 flex-col p-2 transition-[padding] duration-200 ease-out"
         style={{ paddingRight: "calc(0.5rem + var(--assistant-dock, 0px))" }}
       >
-        <div className="surface-shell flex h-full min-h-0 flex-col overflow-hidden rounded-[12px]">
+        <div className="surface-shell flex h-full min-h-0 flex-col overflow-hidden rounded-panel">
           <TopBar />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         </div>

@@ -102,7 +102,7 @@ export function BookingsListSection({
         />
       </div>
       {filtered.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("carrier.table.noFilterResults")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("carrier.table.noFilterResults")}</p>
       ) : (
         <BookingsTable bookings={filtered} vehicles={vehicles} drivers={drivers} initialSelectedId={initialSelectedId} />
       )}

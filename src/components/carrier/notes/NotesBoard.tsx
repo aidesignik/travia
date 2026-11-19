@@ -91,12 +91,12 @@ export function NotesBoard({ initialNotes }: { initialNotes: NoteDTO[] }) {
     <>
       <PageHeader title={t("title")} actions={newButton} />
       {notes.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-[14px] border border-dashed border-[var(--border-strong)] bg-[var(--surface-card-bg)] px-6 py-16 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-[12px] bg-[var(--select-tint)] text-[var(--action-bg)]">
+        <div className="flex flex-col items-center justify-center rounded-panel border border-dashed border-[var(--border-strong)] bg-[var(--surface-card-bg)] px-6 py-16 text-center">
+          <span className="flex h-12 w-12 items-center justify-center rounded-panel bg-[var(--select-tint)] text-[var(--action-bg)]">
             <StickyNote size={22} strokeWidth={1.8} aria-hidden />
           </span>
           <p className="mt-4 text-[16px] font-semibold text-[var(--ink-primary)]">{t("emptyTitle")}</p>
-          <p className="mt-1 max-w-[420px] text-[13.5px] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
+          <p className="mt-1 max-w-[420px] text-[14px] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
         </div>
       ) : (
         <NotesGrid notes={notes} onOpen={openNote} onMove={moveNote} onCommit={saveOrder} />

@@ -15,7 +15,7 @@ export function Badge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-[5px] whitespace-nowrap rounded-full px-[11px] py-[5px] text-[11.5px] font-semibold text-[var(--chip-ink)] ${colorByTone[tone]}`}
+      className={`inline-flex items-center gap-[5px] whitespace-nowrap rounded-full px-[11px] py-[5px] text-[12px] font-semibold text-[var(--chip-ink)] ${colorByTone[tone]}`}
     >
       {children}
     </span>

@@ -166,11 +166,11 @@ export function MonthGrid({
   // that follows. Growing makes the calendar scroll instead.
   return (
     <div className="flex min-h-full flex-col">
-      <div className="sticky top-0 z-20 grid grid-cols-7 border-b border-[#EFEFEC] bg-white">
+      <div className="sticky top-0 z-20 grid grid-cols-7 border-b border-[var(--border-hairline)] bg-white">
         {weekdays.map((name, i) => (
           <div
             key={i}
-            className="border-r border-[#F1F1EE] px-4 py-3 text-[13px] font-medium capitalize text-[#6E6E68] last:border-r-0"
+            className="border-r border-[var(--border-hairline)] px-4 py-3 text-[13px] font-medium capitalize text-[var(--ink-eyebrow)] last:border-r-0"
           >
             {name}
           </div>
@@ -195,7 +195,7 @@ export function MonthGrid({
           return (
             <div
               key={week}
-              className={`relative grid min-h-0 grid-cols-7 content-start overflow-hidden ${isLastWeek ? "" : "border-b border-[#F1F1EE]"}`}
+              className={`relative grid min-h-0 grid-cols-7 content-start overflow-hidden ${isLastWeek ? "" : "border-b border-[var(--border-hairline)]"}`}
               style={{
                 gridTemplateRows: `${CELL_PADDING + DATE_BADGE}px repeat(${visibleLanes}, ${ENTRY}px)${hasMore ? ` ${MORE_LINK}px` : ""}`,
                 rowGap: GAP,
@@ -222,9 +222,9 @@ export function MonthGrid({
                       // Only days of this month join a drag.
                       if (inMonth) setSelection((prev) => (prev ? { ...prev, end: idx } : prev));
                     }}
-                    className={`min-w-0 select-none px-[10px] pt-[4px] ${col === 6 ? "" : "border-r border-[#F1F1EE]"} ${
+                    className={`min-w-0 select-none px-[10px] pt-[4px] ${col === 6 ? "" : "border-r border-[var(--border-hairline)]"} ${
                       !inMonth
-                        ? "bg-[#FAFAF8]"
+                        ? "bg-[var(--bg-subtle)]"
                         : inSelection
                           ? "cursor-pointer bg-[var(--calendar-selection)]"
                           : "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30"
@@ -242,8 +242,8 @@ export function MonthGrid({
                         isToday
                           ? "bg-[var(--action-bg)] text-white"
                           : inMonth
-                            ? "text-[#1B1B19] hover:bg-[var(--border-soft)]"
-                            : "cursor-default text-[#B4B4AE]"
+                            ? "text-[var(--ink-primary)] hover:bg-[var(--border-soft)]"
+                            : "cursor-default text-[var(--ink-disabled)]"
                       }`}
                     >
                       {day.getDate()}
@@ -288,7 +288,7 @@ export function MonthGrid({
                     key={`more-${col}`}
                     type="button"
                     onClick={() => onOpenDay(cells[week * 7 + col])}
-                    className="z-10 ml-[10px] h-[16px] self-start justify-self-start rounded-[6px] px-[6px] text-[12px] font-semibold leading-[16px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
+                    className="z-10 ml-[10px] h-[16px] self-start justify-self-start rounded-chip px-[6px] text-[12px] font-semibold leading-[16px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]"
                     style={{ gridRow: visibleLanes + 2, gridColumn: col + 1, pointerEvents: selection ? "none" : undefined }}
                   >
                     {t("moreRides", { count: hidden })}

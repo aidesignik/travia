@@ -24,7 +24,7 @@ export default async function ClientBookingsPage() {
         <div className="space-y-3">
           {bookings.map((booking) => (
             <Link key={booking.id} href={`/bookings/${booking.id}`}>
-              <Card className="flex items-center justify-between transition-shadow hover:shadow-md">
+              <Card className="flex items-center justify-between transition-shadow hover:shadow-[var(--shadow-card)]">
                 <div>
                   <p className="font-medium text-[var(--ink-primary)]">{formatRoute(booking)}</p>
                   <p className="text-sm text-[var(--ink-secondary)]">

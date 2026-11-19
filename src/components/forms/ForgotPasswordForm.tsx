@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/Input";
 
 // 42px controls, sized for the split-screen layout this page still uses
 // (the login and sign-up cards use their own 52px controls).
-const CONTROL_STYLE = { height: 42, borderRadius: 10 } as const;
+const CONTROL_STYLE = { height: 42, borderRadius: "var(--radius-control)" } as const;
 
 export function ForgotPasswordForm() {
   const t = useTranslations();
@@ -37,7 +37,7 @@ export function ForgotPasswordForm() {
   if (sent) {
     return (
       <div className="flex flex-col gap-3">
-        <p className="text-[15px] text-zinc-700">{t("auth.forgotPasswordSentBody")}</p>
+        <p className="text-[16px] text-[var(--ink-body)]">{t("auth.forgotPasswordSentBody")}</p>
         <Link href="/login" className="text-[14px] font-medium text-[var(--ink)] hover:underline">
           {t("auth.backToLogin")}
         </Link>

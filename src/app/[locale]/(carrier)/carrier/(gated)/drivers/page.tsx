@@ -35,7 +35,7 @@ export default async function DriversPage({
         actions={<AddDriverButton vehicles={vehicles} autoOpen={params.new === "1"} />}
       />
       {drivers.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("carrier.noDrivers")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("carrier.noDrivers")}</p>
       ) : (
         <DriversListSection
           drivers={drivers.map((driver) => ({

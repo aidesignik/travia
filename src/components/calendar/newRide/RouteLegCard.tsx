@@ -19,16 +19,16 @@ export function LegCard({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-[12px] p-4 shadow-[inset_0_0_0_1px_#EEEEF0]">
+    <div className="rounded-panel p-4 shadow-[inset_0_0_0_1px_var(--border-hairline)]">
       <div className="flex flex-col gap-[14px]">
         <div className="flex items-center gap-2">
           {direction === "outbound" ? (
-            <ArrowRight size={15} strokeWidth={1.9} className="shrink-0 text-[#3F3F46]" />
+            <ArrowRight size={15} strokeWidth={1.9} className="shrink-0 text-[var(--ink-body)]" />
           ) : (
-            <ArrowLeft size={15} strokeWidth={1.9} className="shrink-0 text-[#3F3F46]" />
+            <ArrowLeft size={15} strokeWidth={1.9} className="shrink-0 text-[var(--ink-body)]" />
           )}
-          <span className="flex-1 text-[13.5px] font-semibold text-[#18181B]">{title}</span>
-          <span className="shrink-0 text-[12.5px] tabular-nums text-[#71717A]">{km}</span>
+          <span className="flex-1 text-[14px] font-semibold text-[var(--ink-primary)]">{title}</span>
+          <span className="shrink-0 text-[13px] tabular-nums text-[var(--ink-muted)]">{km}</span>
         </div>
         {children}
       </div>

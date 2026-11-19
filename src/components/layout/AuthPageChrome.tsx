@@ -29,7 +29,7 @@ export function AuthPageChrome({
           container is inset on all three edges, not just flush to the
           viewport bottom — min-h is reduced by that same amount and must
           stay in sync with AuthSplitScreen's own min-h (see its comment). */}
-      <div className="mx-4 mb-4 min-h-[calc(100vh-76px)] rounded-[24px] bg-[#F3F1EA] md:mx-6 md:mb-6 md:min-h-[calc(100vh-84px)]">
+      <div className="mx-4 mb-4 min-h-[calc(100vh-76px)] rounded-window bg-[var(--auth-surface)] md:mx-6 md:mb-6 md:min-h-[calc(100vh-84px)]">
         {children}
       </div>
     </div>

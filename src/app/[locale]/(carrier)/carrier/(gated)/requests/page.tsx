@@ -20,9 +20,9 @@ export default async function CarrierRequestsPage() {
     <PageContent>
       <PageHeader title={t("requestsTitle")} context={`${requests.length}`} />
       {requests.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("noIncomingRequests")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("noIncomingRequests")}</p>
       ) : (
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[14px] border border-[var(--border-container)] bg-white">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-panel border border-[var(--border-container)] bg-white">
           <div className="min-h-0 flex-1 overflow-y-auto">
             {requests.map((req) => (
               <Link
@@ -32,13 +32,13 @@ export default async function CarrierRequestsPage() {
               >
                 <div className="min-w-0">
                   <p className="truncate text-[14px] font-medium text-[var(--ink-primary)]">{formatRoute(req)}</p>
-                  <p className="truncate text-[12.5px] text-[var(--ink-secondary)]">
+                  <p className="truncate text-[13px] text-[var(--ink-secondary)]">
                     {formatShortDate(new Date(req.departureAt))}
                     {" · "}
                     {req.passengerCount} pax · {clientDisplayName(req.client)}
                   </p>
                 </div>
-                <StatusDot color="#F97316" label={req.status} />
+                <StatusDot color="var(--accent-pending)" label={req.status} />
               </Link>
             ))}
           </div>

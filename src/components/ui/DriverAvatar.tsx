@@ -80,9 +80,9 @@ export function DriverAvatar({
         fontSize,
         fontWeight,
         background: variant === "solid" ? fg : bg,
-        color: variant === "solid" ? "#FFFFFF" : fg,
+        color: variant === "solid" ? "white" : fg,
         letterSpacing: "0.02em",
-        boxShadow: ring ? "0 0 0 1.5px #FFFFFF" : undefined,
+        boxShadow: ring ? "0 0 0 1.5px white" : undefined,
       }}
       className={`flex shrink-0 items-center justify-center rounded-full ${className ?? ""}`}
     >

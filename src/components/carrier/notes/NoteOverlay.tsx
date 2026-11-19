@@ -21,7 +21,7 @@ interface PendingFile {
 }
 
 const ICON_BUTTON_CLASS =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]";
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)] hover:text-[var(--ink-primary)]";
 
 function formatSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -332,7 +332,7 @@ export function NoteOverlay({
                 setBody(e.target.value);
               }}
               placeholder={t("bodyPlaceholder")}
-              className={`mt-3 block w-full resize-none ${attachments.length > 0 ? "min-h-[48px]" : "min-h-[150px]"} overflow-hidden border-0 bg-transparent p-0 text-[15px] font-medium leading-[1.6] text-[var(--ink-body)] placeholder:text-[var(--ink-muted)] focus:outline-none`}
+              className={`mt-3 block w-full resize-none ${attachments.length > 0 ? "min-h-[48px]" : "min-h-[150px]"} overflow-hidden border-0 bg-transparent p-0 text-[16px] font-medium leading-[1.6] text-[var(--ink-body)] placeholder:text-[var(--ink-muted)] focus:outline-none`}
             />
 
             {/* Images sit in the note at full width, in the order they were
@@ -341,7 +341,7 @@ export function NoteOverlay({
             {images.length > 0 ? (
               <div className="mt-5 flex flex-col gap-3">
                 {images.map((image, i) => (
-                  <figure key={image.id} className="group relative m-0 overflow-hidden rounded-[10px] border border-[var(--border-hairline)] bg-[var(--bg-subtle)]">
+                  <figure key={image.id} className="group relative m-0 overflow-hidden rounded-control border border-[var(--border-hairline)] bg-[var(--bg-subtle)]">
                     <button
                       type="button"
                       onClick={() => setViewing(i)}
@@ -368,13 +368,13 @@ export function NoteOverlay({
             {files.length > 0 || pending.length > 0 ? (
               <ul className="mt-5 flex flex-col gap-2">
                 {files.map((file) => (
-                  <li key={file.id} className="flex items-center gap-3 rounded-[10px] border border-[var(--border-hairline)] px-3 py-[10px]">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] bg-[var(--select-tint)] text-[var(--action-bg)]">
+                  <li key={file.id} className="flex items-center gap-3 rounded-control border border-[var(--border-hairline)] px-3 py-[10px]">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-[var(--select-tint)] text-[var(--action-bg)]">
                       <FileText size={18} strokeWidth={1.8} aria-hidden />
                     </span>
                     <a href={file.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1">
                       <span className="block truncate text-[14px] font-medium text-[var(--ink-primary)] hover:underline">{file.fileName}</span>
-                      <span className="block text-[12.5px] text-[var(--ink-secondary)]">{formatSize(file.size)}</span>
+                      <span className="block text-[13px] text-[var(--ink-secondary)]">{formatSize(file.size)}</span>
                     </a>
                     <a href={`${file.url}?download`} aria-label={t("downloadFile", { name: file.fileName })} title={t("downloadFile", { name: file.fileName })} className={ICON_BUTTON_CLASS}>
                       <Download size={17} strokeWidth={1.8} />
@@ -385,13 +385,13 @@ export function NoteOverlay({
                   </li>
                 ))}
                 {pending.map((p) => (
-                  <li key={p.key} className="flex items-center gap-3 rounded-[10px] border border-dashed border-[var(--border-strong)] px-3 py-[10px]">
+                  <li key={p.key} className="flex items-center gap-3 rounded-control border border-dashed border-[var(--border-strong)] px-3 py-[10px]">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center text-[var(--ink-secondary)]">
                       {p.error ? <FileText size={18} strokeWidth={1.8} aria-hidden /> : <Loader2 size={18} strokeWidth={1.8} className="animate-spin" aria-hidden />}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-[14px] font-medium text-[var(--ink-primary)]">{p.name}</span>
-                      <span className={`block text-[12.5px] ${p.error ? "text-[var(--ink-destructive)]" : "text-[var(--ink-secondary)]"}`}>
+                      <span className={`block text-[13px] ${p.error ? "text-[var(--ink-destructive)]" : "text-[var(--ink-secondary)]"}`}>
                         {p.error ?? t("uploading")}
                       </span>
                     </span>
@@ -410,17 +410,17 @@ export function NoteOverlay({
             <button
               type="button"
               onClick={() => fileInput.current?.click()}
-              className="flex h-9 shrink-0 items-center gap-2 rounded-[9px] border border-[var(--border-strong)] bg-white px-3 text-[13.5px] font-semibold text-[var(--ink-strong)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]"
+              className="flex h-9 shrink-0 items-center gap-2 rounded-control border border-[var(--border-strong)] bg-white px-3 text-[14px] font-semibold text-[var(--ink-strong)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]"
             >
               <Paperclip size={16} strokeWidth={1.9} aria-hidden />
               {t("addFiles")}
             </button>
-            <span className="min-w-0 truncate text-[12.5px] text-[var(--ink-secondary)]">{t("filesHint")}</span>
+            <span className="min-w-0 truncate text-[13px] text-[var(--ink-secondary)]">{t("filesHint")}</span>
             <input ref={fileInput} type="file" multiple accept={NOTE_ACCEPT} onChange={onPick} className="hidden" />
           </footer>
 
           {dragging ? (
-            <div className="pointer-events-none absolute inset-2 flex items-center justify-center rounded-[10px] border-2 border-dashed border-[var(--action-bg)] bg-[rgba(239,244,255,0.92)] text-[15px] font-semibold text-[var(--action-800)]">
+            <div className="pointer-events-none absolute inset-2 flex items-center justify-center rounded-control border-2 border-dashed border-[var(--action-bg)] bg-[rgba(239,244,255,0.92)] text-[16px] font-semibold text-[var(--action-800)]">
               {t("dropHint")}
             </div>
           ) : null}

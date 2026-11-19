@@ -158,9 +158,9 @@ export function RequestForm({ initial }: { initial?: RequestFormInitial }) {
       />
 
       {form.stops.map((stop, index) => (
-        <div key={index} className="space-y-2 rounded-md border border-dashed border-zinc-300 p-3">
+        <div key={index} className="space-y-2 rounded-chip border border-dashed border-[var(--border-strong)] p-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-500">
+            <span className="text-xs font-medium text-[var(--ink-muted)]">
               {t("stop")} {index + 1}
             </span>
             <button
@@ -183,7 +183,7 @@ export function RequestForm({ initial }: { initial?: RequestFormInitial }) {
       ))}
 
       {form.stops.length < 5 ? (
-        <button type="button" onClick={addStop} className="text-sm font-medium text-zinc-700 underline">
+        <button type="button" onClick={addStop} className="text-sm font-medium text-[var(--ink-body)] underline">
           + {t("addStop")}
         </button>
       ) : null}
@@ -228,9 +228,9 @@ export function RequestForm({ initial }: { initial?: RequestFormInitial }) {
       ) : null}
 
       {calculatingDistance ? (
-        <p className="text-xs text-zinc-500">{tRideForm("calculatingDistance")}</p>
+        <p className="text-xs text-[var(--ink-muted)]">{tRideForm("calculatingDistance")}</p>
       ) : distanceKm !== null ? (
-        <p className="text-xs text-zinc-500">{tRideForm("estimatedDistance", { km: Math.round(distanceKm) })}</p>
+        <p className="text-xs text-[var(--ink-muted)]">{tRideForm("estimatedDistance", { km: Math.round(distanceKm) })}</p>
       ) : distanceError ? (
         <p className="text-xs text-[var(--ink-destructive)]">{tRideForm("distanceUnavailableShort")}</p>
       ) : null}

@@ -85,7 +85,7 @@ export function RouteTimeline({
           />
         </div>
         {originError ? (
-          <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{requiredLabel}</p>
+          <p className="field-error pl-[28px] text-[13px] text-[var(--ink-destructive)]">{requiredLabel}</p>
         ) : null}
 
         {stops.map((stop, index) => (
@@ -134,7 +134,7 @@ export function RouteTimeline({
           />
         </div>
         {destinationError ? (
-          <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{requiredLabel}</p>
+          <p className="field-error pl-[28px] text-[13px] text-[var(--ink-destructive)]">{requiredLabel}</p>
         ) : null}
       </div>
 
@@ -142,7 +142,7 @@ export function RouteTimeline({
         <button
           type="button"
           onClick={onAddStop}
-          className="ml-[28px] mt-[10px] flex h-7 items-center gap-[6px] rounded-[7px] px-2 text-[13px] font-medium text-[#2563EB] transition-colors duration-[.12s] ease-out hover:bg-[#EFF6FF]"
+          className="ml-[28px] mt-[10px] flex h-7 items-center gap-[6px] rounded-chip px-2 text-[13px] font-medium text-[var(--action-bg)] transition-colors duration-[.12s] ease-out hover:bg-[var(--select-tint)]"
         >
           + {addStopLabel}
         </button>

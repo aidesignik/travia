@@ -215,7 +215,7 @@ export function CarrierProfileForm({ carrier, email }: Props) {
             <button> nested inside a <label> is invalid HTML that browsers
             handle inconsistently (clicks can get redirected to the label's
             associated control instead of the button). */}
-        <span className="block text-sm font-medium text-zinc-700">{t("auth.logoUrl")}</span>
+        <span className="block text-sm font-medium text-[var(--ink-body)]">{t("auth.logoUrl")}</span>
         <div className="flex items-center gap-4">
           {form.logoUrl ? (
             <div className="shrink-0 space-y-1 text-center">
@@ -223,7 +223,7 @@ export function CarrierProfileForm({ carrier, email }: Props) {
               <img
                 src={form.logoUrl}
                 alt=""
-                className="h-16 w-16 rounded-md border border-zinc-200 object-contain"
+                className="h-16 w-16 rounded-chip border border-[var(--border-control)] object-contain"
               />
               <button
                 type="button"
@@ -240,9 +240,9 @@ export function CarrierProfileForm({ carrier, email }: Props) {
               accept="image/png,image/jpeg,image/webp"
               disabled={logoUploading}
               onChange={onLogoSelected}
-              className="text-sm text-zinc-700 file:mr-3 file:rounded-md file:border file:border-zinc-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-zinc-700 hover:file:bg-zinc-50"
+              className="text-sm text-[var(--ink-body)] file:mr-3 file:rounded-chip file:border file:border-[var(--border-strong)] file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-[var(--ink-body)] hover:file:bg-[var(--bg-subtle)]"
             />
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[var(--ink-muted)]">
               {logoUploading ? t("common.loading") : t("auth.logoUploadHint")}
             </p>
             {logoError ? <p className="text-xs text-[var(--ink-destructive)]">{logoError}</p> : null}
@@ -260,7 +260,7 @@ export function CarrierProfileForm({ carrier, email }: Props) {
               : t("common.save")}
         </Button>
         {saved ? (
-          <span className="text-sm text-emerald-600">
+          <span className="text-sm text-[var(--status-completed-text)]">
             {t("carrier.profileSaved")}
           </span>
         ) : null}

@@ -14,7 +14,7 @@ export function SegmentedControl<T extends string>({
   className?: string;
 }) {
   return (
-    <div className={`inline-flex h-8 items-center rounded-[8px] bg-[#F4F4F5] p-[3px] ${className}`}>
+    <div className={`inline-flex h-8 items-center rounded-control bg-[var(--border-soft)] p-[3px] ${className}`}>
       {options.map((option) => {
         const active = option.value === value;
         return (
@@ -23,10 +23,10 @@ export function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(option.value)}
             aria-pressed={active}
-            className={`flex h-full items-center rounded-[6px] px-3 text-[13px] font-medium transition-colors duration-[.12s] ease-out ${
+            className={`flex h-full items-center rounded-chip px-3 text-[13px] font-medium transition-colors duration-[.12s] ease-out ${
               active
-                ? "bg-white text-[#18181B] shadow-[0_1px_2px_rgba(24,24,27,.08),0_0_0_1px_rgba(24,24,27,.04)]"
-                : "text-[#71717A]"
+                ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
+                : "text-[var(--ink-muted)]"
             }`}
           >
             {option.label}

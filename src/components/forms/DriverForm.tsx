@@ -27,13 +27,13 @@ function ColorPicker({ value, onChange }: { value: DriverColorKey | undefined; o
             style={{
               background: DRIVER_COLORS[key].bg,
               boxShadow: selected
-                ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${DRIVER_COLORS[key].fg}`
+                ? `0 0 0 2px white, 0 0 0 4px ${DRIVER_COLORS[key].fg}`
                 : "0 0 0 1px rgba(0,0,0,.08)",
             }}
           />
         );
       })}
-      {!value ? <p className="w-full text-[12.5px] text-[var(--ink-muted)]">{t("carrier.driverForm.colorAuto")}</p> : null}
+      {!value ? <p className="w-full text-[13px] text-[var(--ink-muted)]">{t("carrier.driverForm.colorAuto")}</p> : null}
     </div>
   );
 }
@@ -67,17 +67,17 @@ function DocSideUpload({
 
   return (
     <div className="space-y-1">
-      <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">{label}</p>
+      <p className="text-[13px] font-semibold text-[var(--ink-muted)]">{label}</p>
       {url ? (
         <div className="space-y-1 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={url} alt="" className="h-24 w-full rounded-[10px] border border-[var(--border-hairline)] object-cover" />
-          <button type="button" onClick={onRemove} className="text-[12.5px] font-semibold text-[var(--ink-destructive)] hover:underline">
+          <img src={url} alt="" className="h-24 w-full rounded-control border border-[var(--border-hairline)] object-cover" />
+          <button type="button" onClick={onRemove} className="text-[13px] font-semibold text-[var(--ink-destructive)] hover:underline">
             {t("common.remove")}
           </button>
         </div>
       ) : (
-        <label className="flex cursor-pointer items-center justify-center rounded-[10px] border-[1.5px] border-dashed border-[var(--border-strong)] p-[11px] text-center text-[12.5px] font-semibold text-[var(--action-bg)]">
+        <label className="flex cursor-pointer items-center justify-center rounded-control border-[1.5px] border-dashed border-[var(--border-strong)] p-[11px] text-center text-[13px] font-semibold text-[var(--action-bg)]">
           {label}
           <input
             type="file"
@@ -151,7 +151,7 @@ function DriverDocumentSection({
   }
 
   return (
-    <div className="space-y-3 rounded-[10px] border border-[var(--border-hairline)] p-3">
+    <div className="space-y-3 rounded-control border border-[var(--border-hairline)] p-3">
       <p className="text-[14px] font-bold text-[var(--ink-primary)]">{title}</p>
       <div>
         <label htmlFor={`${uid}-expiry`} className={SHEET_LABEL_CLASS}>{t("carrier.driverForm.expiryDate")}</label>
@@ -167,7 +167,7 @@ function DriverDocumentSection({
           }}
         />
       </div>
-      {suggested ? <p className="text-[12.5px] text-[#9A3412]">{t("carrier.driverForm.expirySuggested")}</p> : null}
+      {suggested ? <p className="text-[13px] text-[var(--warning-ink)]">{t("carrier.driverForm.expirySuggested")}</p> : null}
       <div className="grid grid-cols-2 gap-3">
         <DocSideUpload
           label={t("carrier.driverForm.front")}
@@ -184,8 +184,8 @@ function DriverDocumentSection({
           onRemove={() => onBackChange("")}
         />
       </div>
-      {uploadingSide ? <p className="text-[12.5px] text-[var(--ink-muted)]">{t("common.loading")}</p> : null}
-      {error ? <p className="text-[12.5px] text-[var(--ink-destructive)]">{error}</p> : null}
+      {uploadingSide ? <p className="text-[13px] text-[var(--ink-muted)]">{t("common.loading")}</p> : null}
+      {error ? <p className="text-[13px] text-[var(--ink-destructive)]">{error}</p> : null}
     </div>
   );
 }
@@ -377,7 +377,7 @@ export function DriverForm({
       <div>
         <span className={SHEET_LABEL_CLASS}>{t("carrier.driverForm.assignedVehicles")}</span>
         {vehicles.length === 0 ? (
-          <p className="mt-[6px] text-[13.5px] text-[var(--ink-muted)]">{t("carrier.noVehicles")}</p>
+          <p className="mt-[6px] text-[14px] text-[var(--ink-muted)]">{t("carrier.noVehicles")}</p>
         ) : (
           <div className="mt-[6px] flex flex-wrap gap-3">
             {vehicles.map((vehicle) => (
@@ -440,7 +440,7 @@ export function DriverForm({
         />
       </div>
 
-      {error ? <p className="text-[13.5px] text-[var(--ink-destructive)]">{error}</p> : null}
+      {error ? <p className="text-[14px] text-[var(--ink-destructive)]">{error}</p> : null}
 
       <div className="flex items-center gap-[10px]">
         <Button type="submit" disabled={loading}>

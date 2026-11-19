@@ -7,7 +7,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-const CONTROL_STYLE = { height: 42, borderRadius: 10 } as const;
+const CONTROL_STYLE = { height: 42, borderRadius: "var(--radius-control)" } as const;
 
 export function ResetPasswordForm() {
   const t = useTranslations();
@@ -27,7 +27,7 @@ export function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="flex flex-col gap-3">
-        <p className="text-[15px] text-[var(--ink-destructive)]">{t("auth.resetPasswordInvalidToken")}</p>
+        <p className="text-[16px] text-[var(--ink-destructive)]">{t("auth.resetPasswordInvalidToken")}</p>
         <Link href="/forgot-password" className="text-[14px] font-medium text-[var(--ink)] hover:underline">
           {t("auth.requestNewLink")}
         </Link>
@@ -38,7 +38,7 @@ export function ResetPasswordForm() {
   if (success) {
     return (
       <div className="flex flex-col gap-3">
-        <p className="text-[15px] text-zinc-700">{t("auth.resetPasswordSuccess")}</p>
+        <p className="text-[16px] text-[var(--ink-body)]">{t("auth.resetPasswordSuccess")}</p>
         <Link href="/login" className="text-[14px] font-medium text-[var(--ink)] hover:underline">
           {t("auth.backToLogin")}
         </Link>

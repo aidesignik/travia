@@ -76,7 +76,7 @@ export function RideDocumentsSection({ rideId, clientEmail }: { rideId: string; 
               <button
                 type="button"
                 onClick={() => toggleTrigger("header")}
-                className="flex items-center gap-[5px] text-[12.5px] font-semibold text-[var(--action-bg)] hover:underline"
+                className="flex items-center gap-[5px] text-[13px] font-semibold text-[var(--action-bg)] hover:underline"
               >
                 <Mail size={13} strokeWidth={2} />
                 {t("carrier.emailDocuments.trigger")}
@@ -103,12 +103,12 @@ export function RideDocumentsSection({ rideId, clientEmail }: { rideId: string; 
           const Icon = ready ? FileCheck : FileText;
           return (
             <div key={type} className="flex h-10 items-center gap-3">
-              <Icon size={16} strokeWidth={1.9} color={ready ? "#16A34A" : "#6B6B72"} className="shrink-0" />
+              <Icon size={16} strokeWidth={1.9} color={ready ? "var(--accent-completed)" : "var(--ink-secondary)"} className="shrink-0" />
               <span className="min-w-0 flex-1 truncate text-[14px] text-[var(--ink-body)]">
                 {t(`documents.${type}`)}
               </span>
               {doc?.emailedAt ? (
-                <span className="shrink-0 text-[11.5px] text-[var(--ink-muted)]" title={doc.emailedTo ?? undefined}>
+                <span className="shrink-0 text-[12px] text-[var(--ink-muted)]" title={doc.emailedTo ?? undefined}>
                   {t("carrier.emailDocuments.sentBadge")}
                 </span>
               ) : null}
@@ -119,7 +119,7 @@ export function RideDocumentsSection({ rideId, clientEmail }: { rideId: string; 
                       type="button"
                       onClick={() => toggleTrigger(type)}
                       aria-label={t("carrier.emailDocuments.trigger")}
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-control text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
                     >
                       <Mail size={16} strokeWidth={1.9} />
                     </button>
@@ -137,7 +137,7 @@ export function RideDocumentsSection({ rideId, clientEmail }: { rideId: string; 
                   <a
                     href={`/api/documents/${doc.id}/download`}
                     aria-label={t("common.download")}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-control text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
                   >
                     <Download size={16} strokeWidth={1.9} />
                   </a>

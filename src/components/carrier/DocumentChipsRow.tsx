@@ -14,7 +14,7 @@ const CHIP_CLASS = "inline-flex items-center whitespace-nowrap rounded-full px-[
 export function DocumentChipsRow({ chips, t }: { chips: DocumentChipData[]; t: Translate }) {
   if (chips.length === 0) {
     return (
-      <span className={CHIP_CLASS} style={{ background: "#FBEBC2", color: "#5C3B06" }}>
+      <span className={CHIP_CLASS} style={{ background: "var(--warning-bg)", color: "var(--warning-text)" }}>
         {t("carrier.table.noDocuments")}
       </span>
     );
@@ -23,8 +23,8 @@ export function DocumentChipsRow({ chips, t }: { chips: DocumentChipData[]; t: T
   const worst = worstDocumentChip(chips);
   if (!worst) {
     return (
-      <span className="inline-flex items-center gap-[6px] text-[13px] text-[#6B6B72]">
-        <Check size={14} strokeWidth={2.6} color="#16A34A" />
+      <span className="inline-flex items-center gap-[6px] text-[13px] text-[var(--ink-secondary)]">
+        <Check size={14} strokeWidth={2.6} color="var(--accent-completed)" />
         {t("carrier.docChip.allValid")}
       </span>
     );
@@ -33,14 +33,14 @@ export function DocumentChipsRow({ chips, t }: { chips: DocumentChipData[]; t: T
   const label = t(`carrier.docChip.${worst.docKind}`);
   if (worst.status === "expiringSoon") {
     return (
-      <span className={CHIP_CLASS} style={{ background: "#FBEBC2", color: "#5C3B06" }}>
+      <span className={CHIP_CLASS} style={{ background: "var(--warning-bg)", color: "var(--warning-text)" }}>
         {t("carrier.docChip.expiringSoonFull", { label, days: worst.daysLeft })}
       </span>
     );
   }
 
   return (
-    <span className={CHIP_CLASS} style={{ background: "#FBDADB", color: "#7F1D1D" }}>
+    <span className={CHIP_CLASS} style={{ background: "var(--danger-bg)", color: "var(--danger-text)" }}>
       {t(expiredDocMessageKey(worst.docKind), { label })} · {t("carrier.docChip.daysAgo", { days: worst.daysAgo })}
     </span>
   );

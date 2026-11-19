@@ -94,7 +94,7 @@ export function SidePanel({
         <button
           type="button"
           onClick={onClose}
-          className="flex h-9 shrink-0 items-center gap-[6px] border-b border-[#F0F0F2] bg-[var(--bg-subtle)] px-4 text-[13px] font-semibold text-[var(--action-bg)] hover:bg-[var(--select-tint)]"
+          className="flex h-9 shrink-0 items-center gap-[6px] border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 text-[13px] font-semibold text-[var(--action-bg)] hover:bg-[var(--select-tint)]"
         >
           <ArrowLeft size={14} strokeWidth={2.2} aria-hidden />
           {t("backToAssistant")}

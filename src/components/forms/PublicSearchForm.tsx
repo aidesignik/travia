@@ -51,20 +51,20 @@ export function PublicSearchForm({ defaults }: { defaults: TripSearchState }) {
       <button
         type="button"
         onClick={() => setExpanded(true)}
-        className="flex w-full items-center justify-between gap-3 rounded-md border border-zinc-200 px-4 py-3 text-left hover:border-zinc-300 hover:bg-zinc-50"
+        className="flex w-full items-center justify-between gap-3 rounded-chip border border-[var(--border-control)] px-4 py-3 text-left hover:border-[var(--border-strong)] hover:bg-[var(--bg-subtle)]"
       >
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-          <span className="truncate font-medium text-zinc-900">
+          <span className="truncate font-medium text-[var(--ink-primary)]">
             {defaults.pickupCity} → {defaults.destinationCity}
           </span>
           <span className="text-[var(--ink-muted)]">·</span>
-          <span className="text-zinc-600">{formatDepartureShort(defaults.departureAt)}</span>
+          <span className="text-[var(--ink-secondary)]">{formatDepartureShort(defaults.departureAt)}</span>
           <span className="text-[var(--ink-muted)]">·</span>
-          <span className="text-zinc-600">
+          <span className="text-[var(--ink-secondary)]">
             {defaults.passengerCount} {t("paxSuffix")}
           </span>
         </div>
-        <span className="shrink-0 text-xs font-medium text-zinc-500 underline">{t("editSearch")}</span>
+        <span className="shrink-0 text-xs font-medium text-[var(--ink-muted)] underline">{t("editSearch")}</span>
       </button>
     );
   }
@@ -81,9 +81,9 @@ export function PublicSearchForm({ defaults }: { defaults: TripSearchState }) {
       />
 
       {form.stops.map((stop, index) => (
-        <div key={index} className="space-y-2 rounded-md border border-dashed border-zinc-300 p-3">
+        <div key={index} className="space-y-2 rounded-chip border border-dashed border-[var(--border-strong)] p-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-500">
+            <span className="text-xs font-medium text-[var(--ink-muted)]">
               {t("stop")} {index + 1}
             </span>
             <button
@@ -106,7 +106,7 @@ export function PublicSearchForm({ defaults }: { defaults: TripSearchState }) {
       ))}
 
       {form.stops.length < 5 ? (
-        <button type="button" onClick={addStop} className="text-sm font-medium text-zinc-700 underline">
+        <button type="button" onClick={addStop} className="text-sm font-medium text-[var(--ink-body)] underline">
           + {t("addStop")}
         </button>
       ) : null}

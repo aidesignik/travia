@@ -62,8 +62,8 @@ export function FilterDropdown({
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex items-center gap-[6px] rounded-[8px] border font-medium transition-colors duration-[.12s] ease-out ${
-          size === "lg" ? "h-10 px-[14px] text-[13.5px]" : "h-8 px-3 text-[13px]"
+        className={`flex items-center gap-[6px] rounded-control border font-medium transition-colors duration-[.12s] ease-out ${
+          size === "lg" ? "h-10 px-[14px] text-[14px]" : "h-8 px-3 text-[13px]"
         } ${
           active
             ? "border-[var(--action-bg)] bg-[var(--select-tint)] text-[var(--action-bg)]"
@@ -74,7 +74,7 @@ export function FilterDropdown({
         <ChevronDown size={13} strokeWidth={1.9} />
       </button>
       {open ? (
-        <div role="menu" className="absolute left-0 z-[60] mt-1 w-56 rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]">
+        <div role="menu" className="absolute left-0 z-[60] mt-1 w-56 rounded-panel border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]">
           <button
             type="button"
             role="menuitem"
@@ -82,7 +82,7 @@ export function FilterDropdown({
               onChange(null);
               setOpen(false);
             }}
-            className={`block w-full truncate px-3 text-left text-[13.5px] leading-9 hover:bg-[var(--border-soft)] ${
+            className={`block w-full truncate px-3 text-left text-[14px] leading-9 hover:bg-[var(--border-soft)] ${
               active ? "text-[var(--ink-body)]" : "font-medium text-[var(--ink-primary)]"
             }`}
           >
@@ -97,7 +97,7 @@ export function FilterDropdown({
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className={`block w-full truncate px-3 text-left text-[13.5px] leading-9 hover:bg-[var(--border-soft)] ${
+              className={`block w-full truncate px-3 text-left text-[14px] leading-9 hover:bg-[var(--border-soft)] ${
                 opt.value === value ? "font-medium text-[var(--ink-primary)]" : "text-[var(--ink-body)]"
               }`}
             >

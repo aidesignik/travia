@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { BRAND_COLORS } from "@/lib/brandColors";
 
 // The assistant's icon: lucide's "sparkles" outline, stroked with the
 // cyan → blue gradient from the Travia logo's swoosh (public/travia-logo.svg)
@@ -23,8 +24,8 @@ export function AssistantIcon({ size = 18, strokeWidth = 1.9, className }: { siz
         {/* userSpaceOnUse: the small strokes have zero-width bounding boxes,
             which a bounding-box gradient can't paint. */}
         <linearGradient id={id} x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#2BB4FF" />
-          <stop offset="1" stopColor="#2F55FF" />
+          <stop offset="0" stopColor={BRAND_COLORS.assistantGradientStart} />
+          <stop offset="1" stopColor={BRAND_COLORS.assistantGradientEnd} />
         </linearGradient>
       </defs>
       <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />

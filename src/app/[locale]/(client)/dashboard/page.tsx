@@ -27,13 +27,13 @@ export default async function ClientDashboardPage() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/requests">
-          <Card className="transition-shadow hover:shadow-md">
+          <Card className="transition-shadow hover:shadow-[var(--shadow-card)]">
             <p className="text-sm text-[var(--ink-secondary)]">{tNav("requests")}</p>
             <p className="mt-1 text-3xl font-semibold text-[var(--ink-primary)]">{requestCount}</p>
           </Card>
         </Link>
         <Link href="/bookings">
-          <Card className="transition-shadow hover:shadow-md">
+          <Card className="transition-shadow hover:shadow-[var(--shadow-card)]">
             <p className="text-sm text-[var(--ink-secondary)]">{tNav("bookings")}</p>
             <p className="mt-1 text-3xl font-semibold text-[var(--ink-primary)]">{bookingCount}</p>
           </Card>

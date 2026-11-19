@@ -49,7 +49,7 @@ export function Stepper({
   }
 
   return (
-    <div className="flex h-10 w-[136px] items-stretch overflow-hidden rounded-[8px] shadow-[inset_0_0_0_1px_var(--border-control)]">
+    <div className="flex h-10 w-[136px] items-stretch overflow-hidden rounded-control shadow-[inset_0_0_0_1px_var(--border-control)]">
       <button
         type="button"
         onClick={() => step(-1)}

@@ -16,7 +16,7 @@ export interface MultiSelectOption {
   dotColor?: string;
 }
 
-const ACCENT = "#2563EB";
+const ACCENT = "var(--action-bg)";
 
 // Shared multi-select filter trigger + menu — Status on Calendar,
 // Rezervacije, Vozni park and Vozači all render through this so the
@@ -104,7 +104,7 @@ export function MultiSelectFilter({
   return (
     <div ref={groupRef} className="relative inline-block">
       <div
-        className="flex h-10 items-center rounded-[8px] border transition-colors duration-[.12s] ease-out"
+        className="flex h-10 items-center rounded-control border transition-colors duration-[.12s] ease-out"
         style={
           hasSelection
             ? { background: "rgba(37,99,235,.08)", borderColor: "transparent" }
@@ -120,7 +120,7 @@ export function MultiSelectFilter({
             setOpen((v) => !v);
             setActiveIndex(0);
           }}
-          className={`flex h-full items-center gap-[6px] rounded-l-[8px] pl-[14px] text-[13.5px] font-medium ${
+          className={`flex h-full items-center gap-[6px] rounded-l-control pl-[14px] text-[14px] font-medium ${
             hasSelection ? "pr-[6px]" : "pr-[14px] text-[var(--ink-body)] hover:bg-[var(--border-soft)]"
           }`}
           style={hasSelection ? { color: ACCENT } : undefined}
@@ -136,7 +136,7 @@ export function MultiSelectFilter({
               e.stopPropagation();
               onChange([]);
             }}
-            className="flex h-full items-center rounded-r-[8px] pr-[10px] pl-[2px]"
+            className="flex h-full items-center rounded-r-control pr-[10px] pl-[2px]"
             style={{ color: ACCENT }}
           >
             <X size={13} strokeWidth={2.2} />
@@ -149,7 +149,7 @@ export function MultiSelectFilter({
           role="listbox"
           aria-multiselectable="true"
           style={{ minWidth: 240 }}
-          className={`absolute ${align === "right" ? "right-0" : "left-0"} z-[70] mt-1 rounded-[12px] bg-[var(--bg-panel)] p-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--border-hairline)]`}
+          className={`absolute ${align === "right" ? "right-0" : "left-0"} z-[70] mt-1 rounded-panel bg-[var(--bg-panel)] p-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--border-hairline)]`}
         >
           {options.map((opt, i) => {
             const isSelected = selected.includes(opt.value);
@@ -162,20 +162,20 @@ export function MultiSelectFilter({
                 tabIndex={-1}
                 onClick={() => toggle(opt.value)}
                 onMouseEnter={() => setActiveIndex(i)}
-                className={`group flex h-9 cursor-pointer items-center gap-[8px] rounded-[8px] px-[8px] ${
+                className={`group flex h-9 cursor-pointer items-center gap-[8px] rounded-control px-[8px] ${
                   i === activeIndex ? "bg-[var(--border-soft)]" : ""
                 }`}
               >
                 <span
                   aria-hidden
-                  className="flex h-[14px] w-[14px] shrink-0 items-center justify-center rounded-[4px] border"
+                  className="flex h-[14px] w-[14px] shrink-0 items-center justify-center rounded-chip border"
                   style={
                     isSelected
                       ? { background: ACCENT, borderColor: ACCENT }
                       : { borderColor: "var(--border-strong)" }
                   }
                 >
-                  {isSelected ? <Check size={10} strokeWidth={3} color="#fff" /> : null}
+                  {isSelected ? <Check size={10} strokeWidth={3} color="white" /> : null}
                 </span>
                 {opt.dotColor ? (
                   <span
@@ -185,7 +185,7 @@ export function MultiSelectFilter({
                   />
                 ) : null}
                 <span
-                  className={`min-w-0 flex-1 truncate text-[13.5px] text-[var(--ink-body)] ${isZero ? "opacity-50" : ""}`}
+                  className={`min-w-0 flex-1 truncate text-[14px] text-[var(--ink-body)] ${isZero ? "opacity-50" : ""}`}
                 >
                   {opt.label}
                 </span>
@@ -195,12 +195,12 @@ export function MultiSelectFilter({
                     e.stopPropagation();
                     onChange([opt.value]);
                   }}
-                  className="hidden shrink-0 text-[11.5px] font-semibold hover:underline group-hover:inline-block"
+                  className="hidden shrink-0 text-[12px] font-semibold hover:underline group-hover:inline-block"
                   style={{ color: ACCENT }}
                 >
                   {t("only")}
                 </button>
-                <span className={`shrink-0 text-[12.5px] text-[var(--ink-muted)] ${isZero ? "opacity-50" : ""}`}>
+                <span className={`shrink-0 text-[13px] text-[var(--ink-muted)] ${isZero ? "opacity-50" : ""}`}>
                   {opt.count}
                 </span>
               </div>
@@ -211,12 +211,12 @@ export function MultiSelectFilter({
               type="button"
               disabled={!hasSelection}
               onClick={() => onChange([])}
-              className="text-[12.5px] font-semibold disabled:cursor-not-allowed disabled:text-[var(--ink-disabled)]"
+              className="text-[13px] font-semibold disabled:cursor-not-allowed disabled:text-[var(--ink-disabled)]"
               style={hasSelection ? { color: ACCENT } : undefined}
             >
               {t("clear")}
             </button>
-            <span className="text-[12.5px] text-[var(--ink-muted)]">{selected.length}</span>
+            <span className="text-[13px] text-[var(--ink-muted)]">{selected.length}</span>
           </div>
         </div>
       ) : null}

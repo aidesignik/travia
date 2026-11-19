@@ -25,11 +25,11 @@ export function UnassignedQueue({
   return (
     <div className="flex border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)]">
       <div
-        className="shrink-0 border-r border-[#F1F1EE] px-5 py-4"
+        className="shrink-0 border-r border-[var(--border-hairline)] px-5 py-4"
         style={{ width: CALENDAR_RESOURCE_COLUMN_WIDTH }}
       >
         <h2 className="text-[14px] font-bold text-[var(--ink-primary)]">{t("unassignedTitle")}</h2>
-        <p className="text-[12.5px] text-[var(--ink-muted)]">{t("unassignedHint")}</p>
+        <p className="text-[12px] text-[var(--ink-muted)] [text-wrap:pretty]">{t("unassignedHint")}</p>
       </div>
       <div className="flex min-w-0 flex-1 flex-wrap content-start gap-[14px] p-4">
         {rides.map((ride) => (
@@ -50,14 +50,14 @@ export function UnassignedQueue({
                 onRideClick(ride.id);
               }
             }}
-            className="flex min-w-[190px] flex-1 basis-[210px] cursor-grab flex-col gap-[3px] rounded-[11px] border border-[var(--border-hairline)] bg-[var(--bg-panel)] px-[11px] pb-[10px] pt-[9px] transition-shadow duration-[.12s] ease-out hover:shadow-[0_2px_10px_rgba(24,24,27,.16)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] active:cursor-grabbing"
+            className="flex min-w-[190px] flex-1 basis-[210px] cursor-grab flex-col gap-[3px] rounded-control border border-[var(--border-hairline)] bg-[var(--bg-panel)] px-[11px] pb-[10px] pt-[9px] transition-shadow duration-[.12s] ease-out hover:shadow-[var(--shadow-card)] focus-visible:outline-none focus-visible:shadow-[var(--focus-ring)] active:cursor-grabbing"
           >
             <span className="h-1 w-7 shrink-0 rounded-full bg-[var(--accent-due-soon)]" />
             <p className="truncate text-[13px] font-semibold text-[var(--ink-primary)]">
               {ride.pickupCity} → {ride.destinationCity}
             </p>
-            <p className="truncate text-[11.5px] font-semibold text-[var(--ink-2)]">{clientDisplayName(ride.client)}</p>
-            <p className="truncate text-[11.5px] text-[var(--ink-muted)]">
+            <p className="truncate text-[12px] font-semibold text-[var(--ink-2)]">{clientDisplayName(ride.client)}</p>
+            <p className="truncate text-[12px] text-[var(--ink-muted)]">
               {formatShortDateTime(new Date(ride.departureAt))} · {ride.passengerCount} {t("pax")}
             </p>
           </div>

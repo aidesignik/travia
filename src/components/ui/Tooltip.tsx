@@ -12,7 +12,7 @@ import { toZoomedPosition } from "@/lib/cssZoom";
 // Portaled to document.body and positioned from the trigger's own
 // getBoundingClientRect() (fixed coords) rather than absolutely within the
 // trigger itself — the trigger often sits inside a panel with
-// overflow-hidden (for its rounded corners), which would otherwise clip a
+// overflow-hidden (for its rounded-chip corners), which would otherwise clip a
 // tooltip wider than the icon it's attached to.
 export function Tooltip({ label, children }: { label: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -44,7 +44,7 @@ export function Tooltip({ label, children }: { label: string; children: ReactNod
         ? createPortal(
             <span
               role="tooltip"
-              className="pointer-events-none fixed z-[80] -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-[6px] bg-[#18181B] px-2 py-1 text-[12px] font-medium text-white shadow-[var(--shadow-panel)]"
+              className="pointer-events-none fixed z-[80] -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-chip bg-[var(--ink-primary)] px-2 py-1 text-[12px] font-medium text-white shadow-[var(--shadow-panel)]"
               style={{ top: position.top, left: position.left }}
             >
               {label}

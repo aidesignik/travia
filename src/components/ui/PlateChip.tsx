@@ -6,7 +6,7 @@ import { formatPlate } from "@/lib/plateDisplay";
 export function PlateChip({ plate, className }: { plate: string; className?: string }) {
   return (
     <span
-      className={`inline-block whitespace-nowrap rounded-[5px] px-[6px] py-[1px] font-mono text-[11.5px] ${className ?? ""}`}
+      className={`inline-block whitespace-nowrap rounded-chip px-[6px] py-[1px] font-mono text-[12px] ${className ?? ""}`}
       style={{ background: "var(--plate-bg)", color: "var(--plate-ink)" }}
     >
       {formatPlate(plate)}

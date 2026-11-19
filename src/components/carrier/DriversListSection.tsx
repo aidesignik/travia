@@ -15,7 +15,7 @@ const UNASSIGNED = "__unassigned__";
 // Driver has no explicit "status" field like a ride or a vehicle does —
 // isAvailable is the closest equivalent, so Status here filters on that.
 const STATUSES = ["AVAILABLE", "UNAVAILABLE"];
-const STATUS_DOT: Record<string, string> = { AVAILABLE: "#2F8A57", UNAVAILABLE: "#A3A39C" };
+const STATUS_DOT: Record<string, string> = { AVAILABLE: "var(--status-completed-dot)", UNAVAILABLE: "var(--status-cancelled-dot)" };
 
 function driverStatus(driver: DriversTableDriver): string {
   return driver.isAvailable ? "AVAILABLE" : "UNAVAILABLE";
@@ -116,7 +116,7 @@ export function DriversListSection({
         />
       </div>
       {filtered.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("carrier.table.noFilterResults")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("carrier.table.noFilterResults")}</p>
       ) : (
         <DriversTable drivers={filtered} vehicles={vehicles} initialEditingId={initialEditingId} />
       )}

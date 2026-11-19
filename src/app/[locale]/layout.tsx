@@ -49,7 +49,7 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${plusJakartaSans.variable} ${ibmPlexMono.variable} ${sora.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50">
+      <body className="min-h-full flex flex-col bg-[var(--bg-subtle)]">
         <NextIntlClientProvider>
           <AuthProvider>
             <div className="flex-1">{children}</div>

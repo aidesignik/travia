@@ -86,7 +86,7 @@ export function EmailDocumentsPopover({
           type="button"
           onClick={onClose}
           aria-label={t("common.close")}
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
         >
           <X size={15} strokeWidth={1.9} />
         </button>
