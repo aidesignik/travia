@@ -23,7 +23,7 @@ export function NotificationsButton({ unreadCount = 0 }: { unreadCount?: number 
         aria-label={hasUnread ? t("notificationsUnread", { count: unreadCount }) : t("notifications")}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className={`relative flex h-10 w-10 items-center justify-center rounded-[10px] bg-white text-[var(--topbar-icon)] transition-colors duration-[.12s] ease-out hover:bg-[var(--topbar-hover)] hover:text-[var(--ink)] ${
+        className={`relative flex h-10 w-10 items-center justify-center rounded-control bg-white text-[var(--topbar-icon)] transition-colors duration-[.12s] ease-out hover:bg-[var(--topbar-hover)] hover:text-[var(--ink)] ${
           open ? "bg-[var(--topbar-hover)] text-[var(--ink)]" : ""
         }`}
       >
@@ -37,14 +37,14 @@ export function NotificationsButton({ unreadCount = 0 }: { unreadCount?: number 
               width: 8,
               height: 8,
               background: "var(--notif-dot)",
-              boxShadow: "0 0 0 2px #fff",
+              boxShadow: "0 0 0 2px white",
             }}
           />
         ) : null}
       </button>
       {open ? (
         <Popover onClose={() => setOpen(false)} align="end" width={320}>
-          <p className="px-4 py-5 text-center text-[13.5px] text-[var(--ink-muted)]">{t("noNotifications")}</p>
+          <p className="px-4 py-5 text-center text-[14px] text-[var(--ink-muted)]">{t("noNotifications")}</p>
         </Popover>
       ) : null}
     </div>

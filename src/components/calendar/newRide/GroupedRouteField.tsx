@@ -250,7 +250,7 @@ export const GroupedRouteField = forwardRef<
   return (
     <div className="relative min-w-0 flex-1">
       <div
-        className={`flex h-10 min-w-0 items-center rounded-[8px] border pl-3 transition-shadow duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[0_0_0_3px_var(--action-100)] ${
+        className={`flex h-10 min-w-0 items-center rounded-control border pl-3 transition-shadow duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[0_0_0_3px_var(--action-100)] ${
           error ? "border-[var(--ink-destructive-ring)]" : "border-[var(--border-control)]"
         }`}
         style={{ paddingRight: removable ? 0 : 12 }}
@@ -295,7 +295,7 @@ export const GroupedRouteField = forwardRef<
             title={removeLabel}
             aria-label={removeLabel}
             onMouseDown={(e) => e.preventDefault()}
-            className="mr-[6px] flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px] text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)] hover:text-[var(--ink-secondary)]"
+            className="mr-[6px] flex h-7 w-7 shrink-0 items-center justify-center rounded-chip text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)] hover:text-[var(--ink-secondary)]"
           >
             <X size={14} strokeWidth={1.9} aria-hidden="true" />
           </button>
@@ -303,7 +303,7 @@ export const GroupedRouteField = forwardRef<
       </div>
 
       {showList ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-20 overflow-hidden rounded-[10px] bg-white text-[14px] shadow-[0_1px_2px_rgba(24,24,27,.04),0_8px_24px_rgba(24,24,27,.10)] ring-1 ring-[var(--border-soft)]">
+        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-20 overflow-hidden rounded-control bg-white text-[14px] shadow-[var(--shadow-card)] ring-1 ring-[var(--border-soft)]">
           <ul id={listboxId} role="listbox" className="max-h-72 overflow-auto py-1">
             {options.map((option, index) => {
               const Icon = option.kind === "place" ? MapPin : option.kind === "city" ? Building2 : PencilLine;
@@ -342,7 +342,7 @@ export const GroupedRouteField = forwardRef<
                     <span className="min-w-0">
                       <span className="block truncate font-medium text-[var(--ink-primary)]">{title}</span>
                       {subtitle ? (
-                        <span className="block truncate text-[12.5px] text-[var(--ink-muted)]">{subtitle}</span>
+                        <span className="block truncate text-[13px] text-[var(--ink-muted)]">{subtitle}</span>
                       ) : null}
                     </span>
                   </button>

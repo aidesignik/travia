@@ -22,7 +22,7 @@ function normalizePhone(raw: string): string | undefined {
 }
 
 // The app's unassigned vehicle/driver tile colours (see RideDetailDrawer).
-const UNASSIGNED_TILE_STYLE = { borderColor: "#C9B48A", background: "#FFF8EC", color: "#8A5A12" };
+const UNASSIGNED_TILE_STYLE = { borderColor: "var(--warning-border)", background: "var(--warning-surface)", color: "var(--warning-ink)" };
 
 function toInitialValues(p: RideProposal): NewRideInitialValues {
   return {
@@ -119,7 +119,7 @@ export function AssistantProposalCard({
   // Date / Departure / Return: label on top, value below (times in mono).
   const cell = (label: string, value: ReactNode, sub?: string | null) => (
     <div className="min-w-0">
-      <p className="text-[12.5px] font-medium text-[var(--ink-secondary)]">{label}</p>
+      <p className="text-[13px] font-medium text-[var(--ink-secondary)]">{label}</p>
       <p className="mt-[2px] truncate text-[14px] font-medium text-[var(--ink-primary)]">{value}</p>
       {sub ? <p className="truncate text-[12px] font-medium text-[var(--ink-secondary)]">{sub}</p> : null}
     </div>
@@ -138,7 +138,7 @@ export function AssistantProposalCard({
   const assignment = (Icon: LucideIcon, assigned: string | null, emptyLabel: string, round: boolean) => (
     <div className="flex min-w-0 items-center gap-[10px]">
       <span
-        className={`flex h-8 w-8 shrink-0 items-center justify-center border ${round ? "rounded-full" : "rounded-[8px]"} ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center border ${round ? "rounded-full" : "rounded-control"} ${
           assigned ? "border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--ink-secondary)]" : "border-dashed"
         }`}
         style={assigned ? undefined : UNASSIGNED_TILE_STYLE}
@@ -155,10 +155,10 @@ export function AssistantProposalCard({
   );
 
   return (
-    <div className="mt-3 overflow-hidden rounded-[12px] border border-[var(--border-hairline)] bg-white shadow-[var(--shadow-card)]">
+    <div className="mt-3 overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-white shadow-[var(--shadow-card)]">
       <div className="flex flex-col gap-3 p-4">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-[13.5px] font-semibold text-[var(--ink-primary)]">{t("draftTitle")}</p>
+          <p className="text-[14px] font-semibold text-[var(--ink-primary)]">{t("draftTitle")}</p>
           <span
             className={`rounded-pill px-2 py-[2px] text-[12px] font-medium ${
               created
@@ -171,7 +171,7 @@ export function AssistantProposalCard({
         </div>
 
         <div>
-          <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{route}</p>
+          <p className="text-[16px] font-semibold text-[var(--ink-primary)]">{route}</p>
           <p className="mt-[2px] text-[13px] font-medium text-[var(--ink-secondary)]">{client || missingValue}</p>
         </div>
 
@@ -202,8 +202,8 @@ export function AssistantProposalCard({
           {assignment(User, proposal.driver?.name ?? null, t("noDriver"), true)}
         </div>
 
-        {!created && !complete ? <p className="text-[12.5px] font-medium text-[var(--ink-secondary)]">{t("missingHint")}</p> : null}
-        {!created && error ? <p className="text-[12.5px] font-medium text-[var(--ink-destructive)]">{error}</p> : null}
+        {!created && !complete ? <p className="text-[13px] font-medium text-[var(--ink-secondary)]">{t("missingHint")}</p> : null}
+        {!created && error ? <p className="text-[13px] font-medium text-[var(--ink-destructive)]">{error}</p> : null}
       </div>
 
       {created ? null : (

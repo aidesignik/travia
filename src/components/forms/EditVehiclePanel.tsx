@@ -88,9 +88,9 @@ export function EditVehiclePanel({
       />
       <div className="flex-1 overflow-y-auto px-5 py-[18px]">
         {loading ? (
-          <p className="text-[13.5px] text-[var(--ink-disabled)]">{t("common.loading")}</p>
+          <p className="text-[14px] text-[var(--ink-disabled)]">{t("common.loading")}</p>
         ) : loadFailed || !vehicle ? (
-          <p className="text-[13.5px] text-[var(--ink-destructive)]">{t("common.loadFailed")}</p>
+          <p className="text-[14px] text-[var(--ink-destructive)]">{t("common.loadFailed")}</p>
         ) : (
           <VehicleForm
             vehicleId={vehicle.id}

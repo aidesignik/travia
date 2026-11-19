@@ -94,7 +94,7 @@ export function CompanyMenu({
         aria-label={companyName}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-white transition-colors duration-[.12s] ease-out hover:bg-[var(--topbar-hover)] xl:w-auto xl:justify-start xl:gap-[10px] xl:pl-1 xl:pr-[10px]"
+        className="flex h-10 w-10 items-center justify-center rounded-control bg-white transition-colors duration-[.12s] ease-out hover:bg-[var(--topbar-hover)] xl:w-auto xl:justify-start xl:gap-[10px] xl:pl-1 xl:pr-[10px]"
       >
         <CompanyMark companyName={companyName} logoUrl={logoUrl} size={32} />
         <span
@@ -110,7 +110,7 @@ export function CompanyMenu({
         <div
           role="menu"
           aria-label={companyName}
-          className="absolute right-0 top-full z-30 mt-2 w-[280px] rounded-[12px] bg-white p-2 shadow-[var(--shadow-panel)]"
+          className="absolute right-0 top-full z-30 mt-2 w-[280px] rounded-panel bg-white p-2 shadow-[var(--shadow-panel)]"
         >
           <div className="flex items-center gap-[10px] px-2 py-2">
             <CompanyMark companyName={companyName} logoUrl={logoUrl} size={36} />
@@ -128,7 +128,7 @@ export function CompanyMenu({
             role="menuitem"
             onClick={() => setOpen(false)}
             onKeyDown={(event) => onItemKeyDown(event, true)}
-            className="flex h-9 items-center gap-[10px] rounded-[8px] px-2 text-[14px] font-medium text-[var(--ink-2)] hover:bg-[var(--menu-item-hover)]"
+            className="flex h-9 items-center gap-[10px] rounded-control px-2 text-[14px] font-medium text-[var(--ink-2)] hover:bg-[var(--menu-item-hover)]"
           >
             <Settings size={16} className="shrink-0 text-[var(--ink-muted)]" aria-hidden="true" />
             {t("companySettings")}
@@ -148,7 +148,7 @@ export function CompanyMenu({
             role="menuitem"
             onKeyDown={(event) => onItemKeyDown(event, false)}
             label={t("logout")}
-            className="flex h-9 w-full items-center rounded-[8px] px-2 text-left text-[14px] font-medium text-[var(--ink-2)] hover:bg-[var(--menu-item-hover)]"
+            className="flex h-9 w-full items-center rounded-control px-2 text-left text-[14px] font-medium text-[var(--ink-2)] hover:bg-[var(--menu-item-hover)]"
           />
         </div>
       ) : null}

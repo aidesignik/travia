@@ -77,7 +77,7 @@ export function ConfirmDialog({
         <h2 id="confirm-dialog-title" className="text-[16px] font-semibold text-[var(--ink-primary)]">
           {title}
         </h2>
-        {body ? <p className="mt-[6px] text-[13.5px] text-[var(--ink-secondary)]">{body}</p> : null}
+        {body ? <p className="mt-[6px] text-[14px] text-[var(--ink-secondary)]">{body}</p> : null}
         <div className="mt-5 flex justify-end gap-2">
           <Button ref={cancelRef} type="button" variant="secondary" onClick={onCancel}>
             {cancelLabel}

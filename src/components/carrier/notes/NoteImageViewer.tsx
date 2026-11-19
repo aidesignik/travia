@@ -75,7 +75,7 @@ export function NoteImageViewer({
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={image.url} alt={image.fileName} className="max-h-full max-w-full rounded-[6px] object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)]" />
+        <img src={image.url} alt={image.fileName} className="max-h-full max-w-full rounded-chip object-contain shadow-[var(--shadow-panel)]" />
         {many ? (
           <>
             <button type="button" onClick={() => step(-1)} aria-label={t("previousImage")} title={t("previousImage")} className={`${BUTTON_CLASS} absolute left-5 top-1/2 -translate-y-1/2`}>

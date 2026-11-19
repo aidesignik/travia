@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 // as a normal, positive piece of data, not a warning.
 export function AssignmentChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 py-1 pl-1 pr-2.5 text-xs font-medium text-zinc-700">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--border-soft)] py-1 pl-1 pr-2.5 text-xs font-medium text-[var(--ink-body)]">
       {children}
     </span>
   );
@@ -15,7 +15,7 @@ export function AssignmentChip({ children }: { children: ReactNode }) {
 // warning or error.
 export function EmptyAssignmentChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-dashed border-zinc-300 px-2.5 py-1 text-xs text-[var(--ink-muted)]">
+    <span className="inline-flex items-center rounded-full border border-dashed border-[var(--border-strong)] px-2.5 py-1 text-xs text-[var(--ink-muted)]">
       {children}
     </span>
   );

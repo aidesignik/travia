@@ -297,7 +297,7 @@ export function TopBarSearch() {
         aria-controls={listId}
         aria-activedescendant={showList && flat.length > 0 ? `${listId}-${activeIndex}` : undefined}
         autoComplete="off"
-        className="h-10 w-full rounded-[9px] border-0 bg-[var(--surface-card-bg)] pl-9 pr-16 text-[14px] text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] shadow-[var(--shadow-search)] outline-none transition-shadow duration-[.12s] ease-out focus:shadow-[var(--focus-ring)] [&::-webkit-search-cancel-button]:hidden"
+        className="h-10 w-full rounded-control border-0 bg-[var(--surface-card-bg)] pl-9 pr-16 text-[14px] text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] shadow-[var(--shadow-search)] outline-none transition-shadow duration-[.12s] ease-out focus:shadow-[var(--focus-ring)] [&::-webkit-search-cancel-button]:hidden"
       />
       {query ? (
         <button
@@ -308,22 +308,22 @@ export function TopBarSearch() {
           }}
           aria-label={t("clear")}
           title={t("clear")}
-          className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-[7px] text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--menu-item-hover)] hover:text-[var(--ink-secondary)]"
+          className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-chip text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--menu-item-hover)] hover:text-[var(--ink-secondary)]"
         >
           <X size={15} strokeWidth={2} />
         </button>
       ) : (
-        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-[6px] bg-white px-[6px] py-[2px] text-[11px] font-medium text-[var(--ink-muted)] shadow-[var(--shadow-pill)]">
+        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-chip bg-white px-[6px] py-[2px] text-[11px] font-medium text-[var(--ink-muted)] shadow-[var(--shadow-pill)]">
           {shortcut}
         </span>
       )}
 
       {showList ? (
-        <div className="absolute left-0 top-full z-[60] mt-2 w-[min(560px,calc(100vw-32px))] overflow-hidden rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] shadow-[var(--shadow-panel)]">
+        <div className="absolute left-0 top-full z-[60] mt-2 w-[min(560px,calc(100vw-32px))] overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] shadow-[var(--shadow-panel)]">
           <div id={listId} role="listbox" aria-label={t("label")} className="max-h-[min(480px,65vh)] overflow-y-auto py-[6px]">
             {groups.map((group) => (
               <div key={group.id} role="group" aria-label={group.label} className="pb-[4px]">
-                <p className="px-4 pb-[4px] pt-[8px] text-[11.5px] font-semibold uppercase tracking-[0.04em] text-[var(--ink-muted)]">
+                <p className="px-4 pb-[4px] pt-[8px] text-[12px] font-semibold uppercase tracking-[0.04em] text-[var(--ink-muted)]">
                   {group.label}
                 </p>
                 {group.items.map((item) => {
@@ -339,21 +339,21 @@ export function TopBarSearch() {
                       onMouseDown={(event) => event.preventDefault()}
                       onMouseMove={() => setActive(i)}
                       onClick={() => go(item)}
-                      className={`mx-[6px] flex cursor-pointer items-center gap-3 rounded-[8px] px-[10px] py-[7px] ${
+                      className={`mx-[6px] flex cursor-pointer items-center gap-3 rounded-control px-[10px] py-[7px] ${
                         selected ? "bg-[var(--select-tint)]" : ""
                       }`}
                     >
                       <span
-                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] ${
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-chip ${
                           selected ? "bg-white text-[var(--action-bg)]" : "bg-[var(--bg-subtle)] text-[var(--ink-secondary)]"
                         }`}
                       >
                         {item.icon}
                       </span>
                       <span className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate text-[13.5px] font-medium text-[var(--ink-primary)]">{item.title}</span>
+                        <span className="truncate text-[14px] font-medium text-[var(--ink-primary)]">{item.title}</span>
                         {item.subtitle ? (
-                          <span className="truncate text-[12.5px] text-[var(--ink-secondary)]">{item.subtitle}</span>
+                          <span className="truncate text-[13px] text-[var(--ink-secondary)]">{item.subtitle}</span>
                         ) : null}
                       </span>
                     </div>
@@ -362,12 +362,12 @@ export function TopBarSearch() {
               </div>
             ))}
             {flat.length === 0 ? (
-              <p className="px-4 py-5 text-center text-[13.5px] text-[var(--ink-secondary)]">
+              <p className="px-4 py-5 text-center text-[14px] text-[var(--ink-secondary)]">
                 {loading ? t("searching") : failed ? t("failed") : t("noResults", { query: trimmed })}
               </p>
             ) : null}
           </div>
-          <div className="flex items-center gap-4 border-t border-[var(--border-hairline)] px-4 py-[8px] text-[11.5px] text-[var(--ink-muted)]">
+          <div className="flex items-center gap-4 border-t border-[var(--border-hairline)] px-4 py-[8px] text-[12px] text-[var(--ink-muted)]">
             <span>{t("hintMove")}</span>
             <span>{t("hintOpen")}</span>
             <span>{t("hintClose")}</span>

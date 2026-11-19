@@ -21,7 +21,7 @@ export function Switch({
       }`}
     >
       <span
-        className={`flex h-[18px] w-[18px] transform items-center justify-center rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,.15)] transition-transform duration-[.15s] ease-out ${
+        className={`flex h-[18px] w-[18px] transform items-center justify-center rounded-full bg-white shadow-[var(--shadow-pill)] transition-transform duration-[.15s] ease-out ${
           checked ? "translate-x-[19px]" : "translate-x-[3px]"
         }`}
       >

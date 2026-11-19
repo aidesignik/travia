@@ -107,7 +107,7 @@ function windowsOverlap(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
 const WEEK_ARROW_CLASS =
   "flex h-full w-10 shrink-0 items-center justify-center text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]";
 const TODAY_BUTTON_CLASS =
-  "flex h-10 shrink-0 items-center rounded-[10px] bg-[var(--border-soft)] px-3 text-[13.5px] font-semibold text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-control)]";
+  "flex h-10 shrink-0 items-center rounded-control bg-[var(--border-soft)] px-3 text-[14px] font-semibold text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-control)]";
 
 export function RidesCalendar() {
   const t = useTranslations("carrier.calendar");
@@ -333,11 +333,11 @@ export function RidesCalendar() {
   }
 
   if (loading && !data) {
-    return <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("loading")}</p>;
+    return <p className="text-[14px] text-[var(--ink-secondary)]">{t("loading")}</p>;
   }
   if (!data) {
     return (
-      <p className="flex items-center gap-2 text-[13.5px] text-[var(--ink-destructive)]">
+      <p className="flex items-center gap-2 text-[14px] text-[var(--ink-destructive)]">
         {t("loadError")}
         <button type="button" onClick={load} className="font-semibold underline underline-offset-2">
           {tCommon("retry")}
@@ -358,10 +358,10 @@ export function RidesCalendar() {
   const nextLabel = view === "day" ? t("nextDay") : view === "week" ? t("nextWeek") : t("nextMonth");
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[14px] bg-[var(--surface-card-bg)] shadow-[var(--shadow-surface-card)]">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-panel bg-[var(--surface-card-bg)] shadow-[var(--shadow-surface-card)]">
       <div className="flex shrink-0 items-center gap-2 p-4">
         <div
-          className="flex h-10 shrink-0 items-center overflow-hidden rounded-[10px]"
+          className="flex h-10 shrink-0 items-center overflow-hidden rounded-control"
           style={{ boxShadow: "inset 0 0 0 1px var(--border-control)" }}
         >
           <button
@@ -397,7 +397,7 @@ export function RidesCalendar() {
         <div
           role="radiogroup"
           aria-label={t("viewLabel")}
-          className="ml-1 flex h-10 shrink-0 items-center gap-[3px] rounded-[10px] bg-[var(--border-soft)] p-[3px]"
+          className="ml-1 flex h-10 shrink-0 items-center gap-[3px] rounded-control bg-[var(--border-soft)] p-[3px]"
         >
           {VIEWS.map((v) => (
             <button
@@ -406,7 +406,7 @@ export function RidesCalendar() {
               role="radio"
               aria-checked={view === v}
               onClick={() => changeView(v)}
-              className={`flex h-[34px] items-center rounded-[8px] px-[12px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
+              className={`flex h-[34px] items-center rounded-control px-[12px] text-[14px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
                 view === v
                   ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
                   : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
@@ -431,11 +431,11 @@ export function RidesCalendar() {
           {/* Vehicles/Drivers only splits the day and week timelines into
               rows; the month grid isn't per resource. */}
           {view !== "month" ? (
-            <div className="flex h-10 shrink-0 items-center gap-[3px] rounded-[10px] bg-[var(--border-soft)] p-[3px]">
+            <div className="flex h-10 shrink-0 items-center gap-[3px] rounded-control bg-[var(--border-soft)] p-[3px]">
               <button
                 type="button"
                 onClick={() => setGrouping("vehicle")}
-                className={`flex h-[34px] items-center gap-[6px] rounded-[8px] px-[10px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
+                className={`flex h-[34px] items-center gap-[6px] rounded-control px-[10px] text-[14px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
                   grouping === "vehicle"
                     ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
                     : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
@@ -447,7 +447,7 @@ export function RidesCalendar() {
               <button
                 type="button"
                 onClick={() => setGrouping("driver")}
-                className={`flex h-[34px] items-center gap-[6px] rounded-[8px] px-[10px] text-[13.5px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
+                className={`flex h-[34px] items-center gap-[6px] rounded-control px-[10px] text-[14px] font-medium transition-[background-color,box-shadow,color] duration-[.12s] ease-out ${
                   grouping === "driver"
                     ? "bg-white text-[var(--ink-primary)] shadow-[var(--shadow-pill)]"
                     : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"

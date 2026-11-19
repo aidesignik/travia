@@ -23,7 +23,7 @@ export default async function ClientRequestsPage() {
         <div className="space-y-3">
           {requests.map((req) => (
             <Link key={req.id} href={`/requests/${req.id}`}>
-              <Card className="flex items-center justify-between transition-shadow hover:shadow-md">
+              <Card className="flex items-center justify-between transition-shadow hover:shadow-[var(--shadow-card)]">
                 <div>
                   <p className="font-medium text-[var(--ink-primary)]">{formatRoute(req)}</p>
                   <p className="text-sm text-[var(--ink-secondary)]">

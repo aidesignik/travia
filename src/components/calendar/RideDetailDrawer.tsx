@@ -35,38 +35,38 @@ const AVERAGE_TRIP_DURATION_MS = 4 * 60 * 60 * 1000;
 // this file's buttons — matches the Assignment section's own text-color
 // spec, which deliberately sits a step quieter than form buttons).
 const SECONDARY_BTN_CLASS =
-  "flex h-8 shrink-0 items-center whitespace-nowrap rounded-[8px] border border-[var(--border-control)] bg-white px-3 text-[13px] font-medium text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]";
+  "flex h-8 shrink-0 items-center whitespace-nowrap rounded-control border border-[var(--border-control)] bg-white px-3 text-[13px] font-medium text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]";
 // Assignment section's "Assign" button (unassigned state only) — same
 // 32px/13px sizing as Change, filled with the app's primary action color.
 const PRIMARY_SM_BTN_CLASS =
-  "flex h-8 shrink-0 items-center whitespace-nowrap rounded-[8px] bg-[var(--action-bg)] px-3 text-[13px] font-medium text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)]";
+  "flex h-8 shrink-0 items-center whitespace-nowrap rounded-control bg-[var(--action-bg)] px-3 text-[13px] font-medium text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)]";
 // Footer actions (§3): icon-only ghost buttons for Duplicate/Cancel/Remove
 // from calendar — no border/background at rest, 36×36 so their hit target
 // matches a normal button despite having no visible label (a Tooltip +
 // aria-label carry that instead).
 const FOOTER_ICON_GHOST_BTN_CLASS =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)] focus-visible:bg-[var(--border-soft)] focus-visible:outline-none";
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)] focus-visible:bg-[var(--border-soft)] focus-visible:outline-none";
 // Cancel ride and Remove from calendar's icons only turn danger-red on
 // hover/focus, not at rest — muted ghost buttons like Duplicate until
 // actively engaged.
 const FOOTER_ICON_GHOST_DANGER_BTN_CLASS =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[#FEF2F2] hover:text-[var(--ink-destructive)] focus-visible:bg-[#FEF2F2] focus-visible:text-[var(--ink-destructive)] focus-visible:outline-none";
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--danger-surface)] hover:text-[var(--ink-destructive)] focus-visible:bg-[var(--danger-surface)] focus-visible:text-[var(--ink-destructive)] focus-visible:outline-none";
 const FOOTER_EDIT_BTN_CLASS =
-  "flex h-9 shrink-0 items-center gap-[6px] whitespace-nowrap rounded-[8px] border border-[var(--border-control)] px-[14px] text-[14px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[#FAFAFA]";
+  "flex h-9 shrink-0 items-center gap-[6px] whitespace-nowrap rounded-control border border-[var(--border-control)] px-[14px] text-[14px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)]";
 // Assignment section's unassigned-vehicle/driver placeholder — warm amber
 // "needs attention" treatment, distinct from the app's red destructive
 // color since nothing has gone wrong yet, it's just an open task.
 const UNASSIGNED_TILE_CLASS = "flex h-9 w-9 shrink-0 items-center justify-center border-[1.5px] border-dashed";
-const UNASSIGNED_TILE_STYLE = { borderColor: "#C9B48A", background: "#FFF8EC" };
-const UNASSIGNED_ICON_COLOR = "#8A5A12";
-const UNASSIGNED_TITLE_STYLE = { color: "#9A5B0F" };
+const UNASSIGNED_TILE_STYLE = { borderColor: "var(--warning-border)", background: "var(--warning-surface)" };
+const UNASSIGNED_ICON_COLOR = "var(--warning-ink)";
+const UNASSIGNED_TITLE_STYLE = { color: "var(--warning-ink)" };
 // The Trip section's own row title/subtitle classes (stop name / stop
 // address) — reused as-is for the Assignment section's vehicle/driver
 // name and meta lines so the two sections share one typographic scale
 // instead of drifting apart. Single source of truth: change the Trip
 // section's look here and Assignment follows.
-const ROW_TITLE_CLASS = "truncate text-[14px] font-medium leading-5 text-[#18181B]";
-const ROW_SUBTITLE_CLASS = "truncate text-[13px] text-[#71717A]";
+const ROW_TITLE_CLASS = "truncate text-[14px] font-medium leading-5 text-[var(--ink-primary)]";
+const ROW_SUBTITLE_CLASS = "truncate text-[13px] text-[var(--ink-muted)]";
 
 function toDateTimeInputValue(iso: string): string {
   const d = new Date(iso);
@@ -478,7 +478,7 @@ export function RideDetailDrawer({
       <SidePanel onClose={onClose} label={routeTitle}>
         <div className="shrink-0 border-b border-[var(--border-hairline)] px-6 py-5">
           <div className="flex items-start justify-between gap-3">
-            <h2 className="min-w-0 truncate text-[19px] font-semibold tracking-[-0.015em] text-[var(--ink-primary)]">
+            <h2 className="min-w-0 truncate text-[20px] font-semibold tracking-[-0.015em] text-[var(--ink-primary)]">
               {routeTitle}
             </h2>
             <div className="flex shrink-0 items-center gap-1">
@@ -486,7 +486,7 @@ export function RideDetailDrawer({
                 type="button"
                 onClick={onClose}
                 aria-label={t("common.close")}
-                className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+                className="flex h-8 w-8 items-center justify-center rounded-control text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
               >
                 <X size={17} strokeWidth={1.9} />
               </button>
@@ -497,12 +497,12 @@ export function RideDetailDrawer({
             {clientDisplayName(ride.client)} · #{ride.id.slice(-6).toUpperCase()}
           </p>
 
-          <div className="mt-2 flex items-center gap-[6px] text-[13.5px]">
+          <div className="mt-2 flex items-center gap-[6px] text-[14px]">
             <span className="h-[7px] w-[7px] shrink-0 rounded-full" style={{ background: RIDE_STATUS_ACCENT[status] }} />
-            <span className="text-[#27272B]">{t(`rideStatus.${status}`)}</span>
+            <span className="text-[var(--ink-strong)]">{t(`rideStatus.${status}`)}</span>
             {blocking ? (
               <>
-                <span className="text-[#D4D4D8]">·</span>
+                <span className="text-[var(--border-strong)]">·</span>
                 <span className="flex items-center gap-[4px] text-[var(--ink-destructive)]">
                   <CircleAlert size={14} strokeWidth={1.9} />
                   {blockingText}
@@ -510,12 +510,12 @@ export function RideDetailDrawer({
               </>
             ) : null}
             {totalKm !== null ? (
-              <span className="inline-flex items-center rounded-full bg-[#F4F4F5] px-2 py-[3px] text-[12px] font-medium tabular-nums text-[#3F3F46]">
+              <span className="inline-flex items-center rounded-full bg-[var(--border-soft)] px-2 py-[3px] text-[12px] font-medium tabular-nums text-[var(--ink-body)]">
                 {Math.round(totalKm)} km
               </span>
             ) : null}
             {multiDay ? (
-              <span className="inline-flex items-center rounded-full bg-[#F4F4F5] px-2 py-[3px] text-[12px] font-medium tabular-nums text-[#3F3F46]">
+              <span className="inline-flex items-center rounded-full bg-[var(--border-soft)] px-2 py-[3px] text-[12px] font-medium tabular-nums text-[var(--ink-body)]">
                 {tDetail("daysChip", { days: dayCount })}
               </span>
             ) : null}
@@ -525,7 +525,7 @@ export function RideDetailDrawer({
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="border-b border-[var(--border-hairline)] px-6 py-5">
             <div className="mb-3 flex items-baseline justify-between gap-2">
-              <h3 className="text-[13.5px] font-semibold text-[var(--ink-primary)]">{tDetail("trip")}</h3>
+              <h3 className="text-[14px] font-semibold text-[var(--ink-primary)]">{tDetail("trip")}</h3>
               {!editable ? null : !editingDistanceOnly ? (
                 <button
                   type="button"
@@ -533,7 +533,7 @@ export function RideDetailDrawer({
                     setDistanceOverrideInput(ride.estimatedDistanceKm ? String(Math.round(ride.estimatedDistanceKm)) : "");
                     setEditingDistanceOnly(true);
                   }}
-                  className="text-[12.5px] text-[#71717A] underline-offset-2 hover:text-[var(--ink-secondary)] hover:underline"
+                  className="text-[13px] text-[var(--ink-muted)] underline-offset-2 hover:text-[var(--ink-secondary)] hover:underline"
                 >
                   {totalKm !== null ? tDetail("editDistance") : tDetail("addDistance")}
                 </button>
@@ -546,7 +546,7 @@ export function RideDetailDrawer({
                     autoFocus
                     value={distanceOverrideInput}
                     onChange={(e) => setDistanceOverrideInput(e.target.value)}
-                    className="h-7 w-20 rounded-[6px] border border-[var(--border-control)] px-2 text-[13px] text-[var(--ink-primary)] focus:outline-none focus:border-[#2563EB]"
+                    className="h-7 w-20 rounded-chip border border-[var(--border-control)] px-2 text-[13px] text-[var(--ink-primary)] focus:outline-none focus:border-[var(--action-bg)]"
                   />
                   <span className="text-[13px] text-[var(--ink-muted)]">km</span>
                   <button
@@ -572,20 +572,20 @@ export function RideDetailDrawer({
                   <div key={leg.key}>
                     <div className="flex items-center gap-[10px]">
                       <span
-                        className="inline-flex h-[26px] shrink-0 items-center gap-[6px] whitespace-nowrap rounded-full bg-[#F4F4F5] text-[12.5px] font-medium tabular-nums text-[#27272B]"
+                        className="inline-flex h-[26px] shrink-0 items-center gap-[6px] whitespace-nowrap rounded-full bg-[var(--border-soft)] text-[13px] font-medium tabular-nums text-[var(--ink-strong)]"
                         style={{ padding: "0 10px 0 8px" }}
                       >
                         {leg.key === "outbound" ? (
-                          <ArrowRight size={14} strokeWidth={2} color="#3F3F46" />
+                          <ArrowRight size={14} strokeWidth={2} color="var(--ink-body)" />
                         ) : (
-                          <ArrowLeft size={14} strokeWidth={2} color="#3F3F46" />
+                          <ArrowLeft size={14} strokeWidth={2} color="var(--ink-body)" />
                         )}
                         {leg.label} · {formatPickerDate(leg.date, locale)}
                       </span>
-                      <span className="h-px flex-1 bg-[#F0F0F2]" />
+                      <span className="h-px flex-1 bg-[var(--border-hairline)]" />
                     </div>
                     {leg.sameRouteReversed ? (
-                      <p className="mt-[6px] text-[12.5px] text-[var(--ink-muted)]">{tDetail("sameRouteReversed")}</p>
+                      <p className="mt-[6px] text-[13px] text-[var(--ink-muted)]">{tDetail("sameRouteReversed")}</p>
                     ) : null}
                     <div className="mt-[12px] flex flex-col gap-[2px]">
                       {leg.rows.map((row, i) => (
@@ -602,7 +602,7 @@ export function RideDetailDrawer({
                               {row.time ? (
                                 <span
                                   className={`shrink-0 pt-[1px] text-[13px] tabular-nums ${
-                                    row.muted ? "text-[var(--ink-muted)]" : "text-[#3F3F46]"
+                                    row.muted ? "text-[var(--ink-muted)]" : "text-[var(--ink-body)]"
                                   }`}
                                 >
                                   {row.time}
@@ -633,10 +633,10 @@ export function RideDetailDrawer({
                 {vehicle ? (
                   <>
                     <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px]"
-                      style={{ background: "#EEF0F2" }}
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control"
+                      style={{ background: "var(--border-soft)" }}
                     >
-                      <Bus size={18} strokeWidth={1.9} color="#3C4A5C" />
+                      <Bus size={18} strokeWidth={1.9} color="var(--topbar-icon)" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className={ROW_TITLE_CLASS}>
@@ -659,11 +659,11 @@ export function RideDetailDrawer({
                   </>
                 ) : (
                   <>
-                    <div className={`${UNASSIGNED_TILE_CLASS} rounded-[10px]`} style={UNASSIGNED_TILE_STYLE}>
+                    <div className={`${UNASSIGNED_TILE_CLASS} rounded-control`} style={UNASSIGNED_TILE_STYLE}>
                       <Bus size={18} strokeWidth={1.9} color={UNASSIGNED_ICON_COLOR} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[15px] font-medium" style={UNASSIGNED_TITLE_STYLE}>
+                      <p className="truncate text-[16px] font-medium" style={UNASSIGNED_TITLE_STYLE}>
                         {tDetail("vehicleMissing")}
                       </p>
                       <p className="mt-[2px] truncate text-[13px] text-[var(--ink-muted)]">{tDetail("assignPrompt")}</p>
@@ -728,7 +728,7 @@ export function RideDetailDrawer({
                       <User size={18} strokeWidth={1.9} color={UNASSIGNED_ICON_COLOR} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[15px] font-medium" style={UNASSIGNED_TITLE_STYLE}>
+                      <p className="truncate text-[16px] font-medium" style={UNASSIGNED_TITLE_STYLE}>
                         {tDetail("driverMissing")}
                       </p>
                       <p className="mt-[2px] truncate text-[13px] text-[var(--ink-muted)]">{tDetail("assignPrompt")}</p>
@@ -796,7 +796,7 @@ export function RideDetailDrawer({
             <RideDocumentsSection rideId={ride.id} clientEmail={ride.client.email} />
           ) : null}
 
-          {error ? <p className="border-b border-[var(--border-hairline)] px-6 py-3 text-[13.5px] text-[var(--ink-destructive)]">{error}</p> : null}
+          {error ? <p className="border-b border-[var(--border-hairline)] px-6 py-3 text-[14px] text-[var(--ink-destructive)]">{error}</p> : null}
         </div>
 
         <div

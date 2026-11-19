@@ -70,6 +70,30 @@
   --plate-bg: #f4f4f1;
   --plate-ink: #4a4a46;
 
+  /* Warning and danger families — expiring/expired documents, an
+     unassigned vehicle or driver, over-capacity rides. Fill (-bg) with its
+     readable text (-text); -surface is a lighter wash for larger areas,
+     -border its outline, -strong a saturated mark (dot, bar, icon). */
+  --warning-bg: #fbebc2;
+  --warning-text: #5c3b06;
+  --warning-surface: #fff8ec;
+  --warning-border: #c9b48a;
+  --warning-ink: #8a5a12;
+  --warning-strong: #f59e0b;
+  --danger-bg: #fbdadb;
+  --danger-text: #7f1d1d;
+  --danger-surface: #fef2f2;
+  --danger-ink: #b4232f;
+  --danger-strong: #e5484d;
+
+  /* Login/register pages (the marketing side, see --ink below). */
+  --auth-surface: #f3f1ea;
+  --auth-border: #e2e0dc;
+  --auth-input-border: #d0d3d8;
+  --auth-ink-secondary: #6b6f76;
+  --auth-deep: #15317f;
+  --focus-ring-ink: 0 0 0 3px rgba(11, 27, 51, 0.2);
+
   /* TopBar notifications/company-switcher pass. */
   --topbar-icon: #3c4a5c;
   --topbar-hover: #e9ecef;
@@ -122,6 +146,11 @@
      action-blue's hue (desaturated/darkened so it reads as a shadow, not
      a blue glow) so the panel's elevation echoes the brand accent. */
   --shadow-panel: 0 2px 4px rgba(29, 38, 74, 0.07), 0 16px 40px rgba(29, 38, 74, 0.16);
+  /* A sticky footer's lift off the content scrolling under it (New ride
+     sheet). */
+  --shadow-footer: 0 -1px 0 var(--border-hairline), 0 -8px 16px -8px rgba(24, 24, 27, 0.06);
+  /* The login/register card floating over its artwork. */
+  --shadow-auth-card: 0 24px 64px rgba(16, 30, 80, 0.18);
 
   /* Surface depth pass — background fills + barely-there corner-tint
      gradients for the app's background layers (shell, panel, card), so
@@ -217,12 +246,15 @@
   --color-chip-neutral: var(--chip-neutral);
   --color-chip-ink: var(--chip-ink);
 
-  /* A small, named radius scale replacing the 11 one-off rounded-[Npx]
-     values previously scattered across components — control for inputs/
-     buttons/chips, panel for cards/dialogs/side panels, pill for fully
-     rounded pills/avatars. */
+  /* The radius scale — every corner in the app uses one of these:
+     chip (6) for small things inside a surface (chips, icon buttons, list
+     rows), control (10) for inputs and buttons, panel (12) for cards,
+     popovers and side panels, window (20) for the large floating surfaces
+     (assistant window, auth card), pill for fully rounded pills/avatars. */
+  --radius-chip: 6px;
   --radius-control: 10px;
   --radius-panel: 12px;
+  --radius-window: 20px;
   --radius-pill: 999px;
 }
 

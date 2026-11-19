@@ -23,8 +23,8 @@ import { useShortcutLabel } from "@/lib/useShortcutLabel";
 import { toggleAssistant, useAssistantOpen } from "@/components/carrier/assistant/assistantDock";
 
 const ICON_SIZE_CLASS = "h-[17px] w-[17px] shrink-0";
-const INACTIVE_COLOR = "#6E6E76";
-const ACTIVE_COLOR = "#0D0D0D";
+const INACTIVE_COLOR = "var(--ink-eyebrow)";
+const ACTIVE_COLOR = "var(--ink-primary)";
 
 // Each item renders its own icon so inactive/active can come from two
 // genuinely different glyphs (Heroicons ships matched outline/solid pairs)
@@ -49,7 +49,7 @@ export interface SidebarExpiringItem {
 }
 
 const NAV_ITEM_CLASS =
-  "flex h-[34px] items-center gap-3 rounded-[8px] px-[10px] text-[13.5px] transition-colors duration-[.12s] ease-out";
+  "flex h-[34px] items-center gap-3 rounded-control px-[10px] text-[14px] transition-colors duration-[.12s] ease-out";
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -82,8 +82,8 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
       href={item.href}
       className={`${NAV_ITEM_CLASS} ${
         active
-          ? "bg-[var(--surface-card-bg)] font-semibold text-[#0D0D0D] shadow-[var(--shadow-surface-card)]"
-          : "font-medium text-[#3F3F46] hover:bg-[#EBEBEB]"
+          ? "bg-[var(--surface-card-bg)] font-semibold text-[var(--ink-primary)] shadow-[var(--shadow-surface-card)]"
+          : "font-medium text-[var(--ink-body)] hover:bg-[var(--bg-nav-active)]"
       }`}
     >
       {item.renderIcon(active)}
@@ -94,7 +94,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
             {item.count}
           </span>
         ) : (
-          <span className="shrink-0 font-mono text-[11.5px] text-[var(--ink-secondary)]">{item.count}</span>
+          <span className="shrink-0 font-mono text-[12px] text-[var(--ink-secondary)]">{item.count}</span>
         )
       ) : null}
     </Link>
@@ -227,10 +227,10 @@ export function CarrierSidebar({
               <div className="flex items-center justify-between px-[10px]">
                 <span className="text-[12px] font-normal text-[var(--ink-secondary)]">{t("expiry.bannerTitle")}</span>
                 <span
-                  className="rounded-[6px] px-[6px] py-[2px] font-mono text-[11px] font-medium"
+                  className="rounded-chip px-[6px] py-[2px] font-mono text-[11px] font-medium"
                   style={{
-                    background: hasCritical ? "#FBDADB" : "#FBEBC2",
-                    color: hasCritical ? "#7F1D1D" : "#5C3B06",
+                    background: hasCritical ? "var(--danger-bg)" : "var(--warning-bg)",
+                    color: hasCritical ? "var(--danger-text)" : "var(--warning-text)",
                   }}
                 >
                   {expiringItems.length}
@@ -240,27 +240,27 @@ export function CarrierSidebar({
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="flex flex-col rounded-[8px] px-[10px] py-[6px] transition-colors duration-[.12s] ease-out hover:bg-[#EBEBEB]"
+                  className="flex flex-col rounded-control px-[10px] py-[6px] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-nav-active)]"
                 >
                   <span className="flex min-w-0 items-center gap-3">
                     <span className="flex w-[17px] shrink-0 items-center justify-center">
                       <span
                         className="h-[7px] w-[7px] rounded-full"
-                        style={{ background: item.status === "expired" ? "#E5484D" : "#F59E0B" }}
+                        style={{ background: item.status === "expired" ? "var(--danger-strong)" : "var(--warning-strong)" }}
                       />
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-[#18181B]">
+                    <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-[var(--ink-primary)]">
                       {item.subject}
                     </span>
                   </span>
-                  <span className="truncate pl-[29px] text-[12px] text-[#6B6B72]">{item.issue}</span>
+                  <span className="truncate pl-[29px] text-[12px] text-[var(--ink-secondary)]">{item.issue}</span>
                 </Link>
               ))}
             </div>
           ) : null}
         </div>
 
-        <div className="mt-auto flex shrink-0 flex-col gap-[2px] border-t border-[#E6E6E6] pt-[10px]">
+        <div className="mt-auto flex shrink-0 flex-col gap-[2px] border-t border-[var(--bg-nav-active)] pt-[10px]">
           {/* Opens the assistant chat window (AssistantWindow, in the layout).
               Looks like the active nav item while the chat is open. */}
           <button
@@ -269,13 +269,13 @@ export function CarrierSidebar({
             aria-expanded={assistantOpen}
             className={`${NAV_ITEM_CLASS} ${
               assistantOpen
-                ? "bg-[var(--surface-card-bg)] font-semibold text-[#0D0D0D] shadow-[var(--shadow-surface-card)]"
-                : "font-medium text-[#3F3F46] hover:bg-[#EBEBEB]"
+                ? "bg-[var(--surface-card-bg)] font-semibold text-[var(--ink-primary)] shadow-[var(--shadow-surface-card)]"
+                : "font-medium text-[var(--ink-body)] hover:bg-[var(--bg-nav-active)]"
             }`}
           >
             <AssistantIcon size={17} strokeWidth={2.2} />
             <span className="min-w-0 flex-1 truncate text-left">{tAssistant("title")}</span>
-            <span className="shrink-0 rounded-[5px] bg-white px-[5px] py-px text-[10.5px] font-medium text-[var(--ink-secondary)] shadow-[var(--shadow-pill)]">
+            <span className="shrink-0 rounded-chip bg-white px-[5px] py-px text-[11px] font-medium text-[var(--ink-secondary)] shadow-[var(--shadow-pill)]">
               {assistantShortcut}
             </span>
           </button>

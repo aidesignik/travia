@@ -41,9 +41,9 @@ export function HelpCenter() {
 
         <div className="flex min-w-0 flex-col gap-6 lg:order-1">
           {visible.length === 0 ? (
-            <div className="rounded-[12px] border border-dashed border-[var(--border-strong)] bg-[var(--surface-card-bg)] px-6 py-10 text-center">
-              <p className="text-[15px] font-semibold text-[var(--ink-primary)]">{t("noResults", { query })}</p>
-              <p className="mt-1 text-[13.5px] text-[var(--ink-secondary)]">{t("noResultsHint")}</p>
+            <div className="rounded-panel border border-dashed border-[var(--border-strong)] bg-[var(--surface-card-bg)] px-6 py-10 text-center">
+              <p className="text-[16px] font-semibold text-[var(--ink-primary)]">{t("noResults", { query })}</p>
+              <p className="mt-1 text-[14px] text-[var(--ink-secondary)]">{t("noResultsHint")}</p>
             </div>
           ) : (
             visible.map((section) => (
@@ -54,7 +54,7 @@ export function HelpCenter() {
                 >
                   {section.title}
                 </h2>
-                <div className="overflow-hidden rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] shadow-[var(--shadow-surface-card)]">
+                <div className="overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] shadow-[var(--shadow-surface-card)]">
                   {section.items.map((item, index) => {
                     // A search opens every match; otherwise each question
                     // opens on click.
@@ -104,7 +104,7 @@ function Question({
           aria-controls={`${id}-a`}
           onClick={onToggle}
           disabled={disabled}
-          className="flex w-full items-center gap-4 px-5 py-4 text-left text-[14.5px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)] disabled:cursor-default disabled:hover:bg-transparent"
+          className="flex w-full items-center gap-4 px-5 py-4 text-left text-[14px] font-medium text-[var(--ink-primary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)] disabled:cursor-default disabled:hover:bg-transparent"
         >
           <span className="min-w-0 flex-1">{item.q}</span>
           <ChevronDown
@@ -164,15 +164,15 @@ function SupportCard() {
   }
 
   return (
-    <div className="rounded-[14px] border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] p-5 shadow-[var(--shadow-surface-card)]">
-      <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--select-tint)] text-[var(--action-bg)]">
+    <div className="rounded-panel border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] p-5 shadow-[var(--shadow-surface-card)]">
+      <span className="flex h-10 w-10 items-center justify-center rounded-control bg-[var(--select-tint)] text-[var(--action-bg)]">
         <Mail size={19} strokeWidth={1.9} aria-hidden />
       </span>
       <h2 className="mt-4 text-[16px] font-semibold text-[var(--ink-primary)]">{t("contactTitle")}</h2>
-      <p className="mt-1 text-[13.5px] leading-[1.55] text-[var(--ink-secondary)]">{t("contactBody")}</p>
+      <p className="mt-1 text-[14px] leading-[1.55] text-[var(--ink-secondary)]">{t("contactBody")}</p>
 
-      <p className="mt-4 text-[12.5px] font-medium text-[var(--ink-secondary)]">{t("emailLabel")}</p>
-      <div className="mt-[6px] flex h-[42px] items-center gap-2 rounded-[10px] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] pl-3 pr-[5px]">
+      <p className="mt-4 text-[13px] font-medium text-[var(--ink-secondary)]">{t("emailLabel")}</p>
+      <div className="mt-[6px] flex h-[42px] items-center gap-2 rounded-control border border-[var(--border-hairline)] bg-[var(--bg-subtle)] pl-3 pr-[5px]">
         <a
           href={`mailto:${SUPPORT_EMAIL}`}
           className="min-w-0 flex-1 truncate text-[14px] font-medium text-[var(--ink-primary)] hover:text-[var(--action-bg)] hover:underline"
@@ -182,7 +182,7 @@ function SupportCard() {
         <button
           type="button"
           onClick={copy}
-          className={`flex h-8 shrink-0 items-center gap-[6px] rounded-[7px] px-[10px] text-[13px] font-medium transition-colors duration-[.12s] ease-out ${
+          className={`flex h-8 shrink-0 items-center gap-[6px] rounded-chip px-[10px] text-[13px] font-medium transition-colors duration-[.12s] ease-out ${
             state === "copied"
               ? "bg-[var(--status-completed-bg)] text-[var(--status-completed-text)]"
               : "bg-[var(--surface-card-bg)] text-[var(--ink-primary)] shadow-[var(--shadow-pill)] hover:bg-[var(--menu-item-hover)]"
@@ -195,7 +195,7 @@ function SupportCard() {
       <p role="status" aria-live="polite" className="sr-only">
         {state === "copied" ? t("copied") : ""}
       </p>
-      {state === "failed" ? <p className="mt-2 text-[12.5px] text-[var(--ink-destructive)]">{t("copyFailed")}</p> : null}
+      {state === "failed" ? <p className="mt-2 text-[13px] text-[var(--ink-destructive)]">{t("copyFailed")}</p> : null}
 
       <a
         href={`mailto:${SUPPORT_EMAIL}`}
@@ -204,7 +204,7 @@ function SupportCard() {
         <Mail size={16} strokeWidth={1.9} aria-hidden />
         {t("writeEmail")}
       </a>
-      <p className="mt-3 text-[12.5px] leading-[1.5] text-[var(--ink-muted)]">{t("contactTip")}</p>
+      <p className="mt-3 text-[13px] leading-[1.5] text-[var(--ink-muted)]">{t("contactTip")}</p>
     </div>
   );
 }

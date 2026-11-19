@@ -42,11 +42,11 @@ export function CompanyMark({
 
   return (
     <span
-      className="flex shrink-0 items-center justify-center overflow-hidden rounded-[8px]"
+      className="flex shrink-0 items-center justify-center overflow-hidden rounded-control"
       style={{
         width: size,
         height: size,
-        background: showLogo ? "#fff" : "var(--company-mark-bg)",
+        background: showLogo ? "white" : "var(--company-mark-bg)",
         border: showLogo ? "1px solid rgba(11,27,51,0.08)" : undefined,
         boxSizing: "border-box",
       }}

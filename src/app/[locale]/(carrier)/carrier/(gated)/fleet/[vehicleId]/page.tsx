@@ -21,7 +21,7 @@ export default async function EditVehiclePage({
   return (
     <div className="h-full space-y-6 overflow-y-auto bg-[var(--bg-canvas)] px-5 py-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-zinc-900">
+        <h1 className="text-2xl font-semibold text-[var(--ink-primary)]">
           {tType(vehicle.type)} {vehicle.model}
         </h1>
         <DeleteButton url={`/api/carrier/vehicles/${vehicle.id}`} redirectTo="/carrier/fleet" />

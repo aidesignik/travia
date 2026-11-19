@@ -63,10 +63,10 @@ export function DriversTable({
   }
 
   return (
-    <div role="table" className="flex flex-col overflow-hidden rounded-[12px] border border-[#EDEDED] bg-white">
+    <div role="table" className="flex flex-col overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-white">
       <div
         role="row"
-        className="grid items-center gap-3 border-b border-[#EDEDED] px-4 py-[10px]"
+        className="grid items-center gap-3 border-b border-[var(--border-hairline)] px-4 py-[10px]"
         style={{ gridTemplateColumns: DRIVERS_GRID_TEMPLATE }}
       >
         <span role="columnheader" className={HEADER_CLASS}>{t("carrier.driversTable.driver")}</span>
@@ -89,8 +89,8 @@ export function DriversTable({
               key={driver.id}
               onClick={() => setEditingDriverId(driver.id)}
               selected={editingDriverId === driver.id}
-              className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[#FAFAFA] ${
-                isLast ? "" : "border-b border-[#F3F3F3]"
+              className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)] ${
+                isLast ? "" : "border-b border-[var(--border-soft)]"
               }`}
               style={{ gridTemplateColumns: DRIVERS_GRID_TEMPLATE }}
             >
@@ -98,13 +98,13 @@ export function DriversTable({
                 <DriverAvatar driver={driver} size={40} decorative />
                 <div className="min-w-0">
                   <p className="truncate text-[14px] font-semibold text-[var(--ink-primary)]">{driver.name}</p>
-                  <p className="truncate text-[12px] text-[#6B6B72]">
+                  <p className="truncate text-[12px] text-[var(--ink-secondary)]">
                     {t("carrier.driversTable.phoneLabel")}{" "}
-                    <span className="font-mono text-[11.5px]">{formatPhone(driver.phone)}</span>
+                    <span className="font-mono text-[12px]">{formatPhone(driver.phone)}</span>
                   </p>
                 </div>
               </div>
-              <div role="cell" className="min-w-0 truncate font-mono text-[12.5px] text-[#3F3F46]">
+              <div role="cell" className="min-w-0 truncate font-mono text-[13px] text-[var(--ink-body)]">
                 {driver.licenseNumber || "—"}
               </div>
               <div role="cell" className="min-w-0" title={vehicleTitle || undefined}>
@@ -116,13 +116,13 @@ export function DriversTable({
                       photoUrl={firstVehicle.photos[0] ?? null}
                       size="xs"
                     />
-                    <span className="truncate text-[13px] text-[#27272B]">
+                    <span className="truncate text-[13px] text-[var(--ink-strong)]">
                       {t(`vehicleType.${firstVehicle.type}`)} {firstVehicle.model}
                     </span>
                     {extraCount > 0 ? (
                       <span
-                        className="shrink-0 rounded-[6px] px-[6px] py-[2px] font-mono text-[11px] font-medium"
-                        style={{ background: "#F3F3F3", color: "#55555C" }}
+                        className="shrink-0 rounded-chip px-[6px] py-[2px] font-mono text-[11px] font-medium"
+                        style={{ background: "var(--plate-bg)", color: "var(--plate-ink)" }}
                       >
                         +{extraCount}
                       </span>

@@ -44,11 +44,15 @@ export function RideMonthBar({
       title={`${route} · ${client} · ${time}`}
       aria-label={t("monthBarAriaLabel", { route, client, time })}
       className={`relative flex h-full w-full min-w-0 cursor-pointer items-center overflow-hidden px-[10px] text-left transition-[box-shadow,translate] duration-[.12s] ease-out ${
-        hovered ? "-translate-y-px shadow-[0_1px_2px_rgba(20,20,19,.06),0_4px_12px_rgba(20,20,19,.06)]" : ""
+        hovered ? "-translate-y-px shadow-[var(--shadow-card)]" : ""
       }`}
       style={{
         background: RIDE_STATUS_BG[status],
-        borderRadius: `${continuesBefore ? 0 : 8}px ${continuesAfter ? 0 : 8}px ${continuesAfter ? 0 : 8}px ${continuesBefore ? 0 : 8}px`,
+        // Square on the side(s) where the ride carries on into the next or
+        // previous week, so the bar reads as one piece across the rows.
+        borderRadius: [continuesBefore, continuesAfter, continuesAfter, continuesBefore]
+          .map((square) => (square ? "0" : "var(--radius-control)"))
+          .join(" "),
       }}
     >
       <span
@@ -57,7 +61,7 @@ export function RideMonthBar({
       />
       {/* One line: destination, then the client — the client gives way
           (ellipsis) first when the bar is narrow. */}
-      <span className="relative flex min-w-0 items-baseline gap-[5px] text-[12.5px] leading-[16px]">
+      <span className="relative flex min-w-0 items-baseline gap-[5px] text-[13px] leading-[16px]">
         <span
           className="max-w-full shrink-0 truncate font-semibold"
           style={{ color: status === "CANCELLED" ? "var(--ink-muted)" : "var(--ink-primary)" }}

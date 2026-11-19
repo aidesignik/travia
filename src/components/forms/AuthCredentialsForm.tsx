@@ -15,9 +15,9 @@ import { SUPPORT_EMAIL } from "@/lib/support";
 // Inputs, the submit button and the Google button all share one control
 // size (52px tall, 12px radius), so the card reads as a single column.
 const FIELD_CLASS =
-  "h-[52px] w-full rounded-[12px] border border-[#D0D3D8] bg-white px-4 text-[16px] text-zinc-900 outline-none placeholder:text-[var(--ink-muted)] focus:border-[var(--ink)] focus:shadow-[0_0_0_3px_rgba(11,27,51,0.2)]";
+  "h-[52px] w-full rounded-panel border border-[var(--auth-input-border)] bg-white px-4 text-[16px] text-[var(--ink-primary)] outline-none placeholder:text-[var(--ink-muted)] focus:border-[var(--ink)] focus:shadow-[var(--focus-ring-ink)]";
 const PRIMARY_CLASS =
-  "flex h-[52px] w-full items-center justify-center rounded-[12px] bg-[var(--ink)] text-[16px] font-semibold text-white transition-colors hover:bg-[var(--ink-hover)] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2";
+  "flex h-[52px] w-full items-center justify-center rounded-panel bg-[var(--ink)] text-[16px] font-semibold text-white transition-colors hover:bg-[var(--ink-hover)] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2";
 
 // One screen for both login and carrier registration — the user never
 // picks a mode. Step 1 is just an email; submitting it asks
@@ -173,27 +173,27 @@ export function AuthCredentialsForm({ variant = "login" }: { variant?: "login" |
               {loading ? t("common.loading") : t("auth.continueWithEmail")}
             </button>
           </form>
-          <div className="my-6 flex items-center gap-4 text-[15px] text-[#6B6F76]">
-            <span className="h-px flex-1 bg-[#E2E0DC]" />
+          <div className="my-6 flex items-center gap-4 text-[16px] text-[var(--auth-ink-secondary)]">
+            <span className="h-px flex-1 bg-[var(--auth-border)]" />
             {t("auth.orDivider")}
-            <span className="h-px flex-1 bg-[#E2E0DC]" />
+            <span className="h-px flex-1 bg-[var(--auth-border)]" />
           </div>
           <GoogleSignInButton />
         </>
       ) : (
         <form onSubmit={onSubmitPassword} className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-3 text-sm">
-            <span className="truncate text-zinc-700">{email}</span>
+            <span className="truncate text-[var(--ink-body)]">{email}</span>
             <button
               type="button"
               onClick={onChangeEmail}
-              className="shrink-0 font-medium text-zinc-900 underline"
+              className="shrink-0 font-medium text-[var(--ink-primary)] underline"
             >
               {t("auth.changeEmail")}
             </button>
           </div>
           {mismatchHint ? (
-            <p className="m-0 rounded-[10px] bg-[#F3F1EA] px-3.5 py-2.5 text-sm text-zinc-700">{mismatchHint}</p>
+            <p className="m-0 rounded-control bg-[var(--auth-surface)] px-3.5 py-2.5 text-sm text-[var(--ink-body)]">{mismatchHint}</p>
           ) : null}
           <div>
             <div className="mb-1.5 flex items-center justify-between gap-3">
@@ -219,7 +219,7 @@ export function AuthCredentialsForm({ variant = "login" }: { variant?: "login" |
             />
           </div>
           {!accountExists ? (
-            <p className="m-0 text-sm text-zinc-600">{t("auth.registerCarrierSubtitle")}</p>
+            <p className="m-0 text-sm text-[var(--ink-secondary)]">{t("auth.registerCarrierSubtitle")}</p>
           ) : null}
           {error ? <p className="m-0 text-sm text-[var(--ink-destructive)]">{error}</p> : null}
           <button type="submit" disabled={loading} className={PRIMARY_CLASS}>

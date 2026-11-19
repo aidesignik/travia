@@ -61,10 +61,10 @@ export function FleetTable({
   }
 
   return (
-    <div role="table" className="flex flex-col overflow-hidden rounded-[12px] border border-[#EDEDED] bg-white">
+    <div role="table" className="flex flex-col overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-white">
       <div
         role="row"
-        className="grid items-center gap-3 border-b border-[#EDEDED] px-4 py-[10px]"
+        className="grid items-center gap-3 border-b border-[var(--border-hairline)] px-4 py-[10px]"
         style={{ gridTemplateColumns: FLEET_GRID_TEMPLATE }}
       >
         <span role="columnheader" className={HEADER_CLASS}>{t("carrier.fleetTable.vehicle")}</span>
@@ -84,8 +84,8 @@ export function FleetTable({
               key={vehicle.id}
               onClick={() => setEditingVehicleId(vehicle.id)}
               selected={editingVehicleId === vehicle.id}
-              className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[#FAFAFA] ${
-                isLast ? "" : "border-b border-[#F3F3F3]"
+              className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)] ${
+                isLast ? "" : "border-b border-[var(--border-soft)]"
               }`}
               style={{ gridTemplateColumns: FLEET_GRID_TEMPLATE }}
             >
@@ -98,8 +98,8 @@ export function FleetTable({
                     </span>
                     {vehicle.status !== "ACTIVE" ? (
                       <span
-                        className="shrink-0 rounded-full px-[8px] py-[2px] text-[11.5px] font-semibold"
-                        style={{ background: "#F3F3F3", color: "#55555C" }}
+                        className="shrink-0 rounded-full px-[8px] py-[2px] text-[12px] font-semibold"
+                        style={{ background: "var(--plate-bg)", color: "var(--plate-ink)" }}
                       >
                         {t(`vehicleStatus.${vehicle.status}`)}
                       </span>
@@ -109,12 +109,12 @@ export function FleetTable({
                     {vehicle.licensePlate ? (
                       <PlateChip plate={vehicle.licensePlate} />
                     ) : (
-                      <span className="text-[11.5px] text-[#6B6B72]">—</span>
+                      <span className="text-[12px] text-[var(--ink-secondary)]">—</span>
                     )}
                   </p>
                 </div>
               </div>
-              <div role="cell" className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] text-[#55555C]">
+              <div role="cell" className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] text-[var(--ink-body)]">
                 {vehicle.year ? `${vehicle.year} · ` : ""}
                 {vehicle.seats} {t("carrier.fleetTable.seatsShort")}
               </div>
@@ -125,7 +125,7 @@ export function FleetTable({
                 {driver ? (
                   <>
                     <DriverAvatar driver={driver} size={20} decorative />
-                    <span className="truncate text-[13px] text-[#27272B]">{driver.name}</span>
+                    <span className="truncate text-[13px] text-[var(--ink-strong)]">{driver.name}</span>
                   </>
                 ) : (
                   <>

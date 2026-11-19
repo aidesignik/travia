@@ -30,7 +30,7 @@ export function FieldExpiryChip({ chip, t }: { chip: DocumentChipData; t: Return
     return (
       <span
         className="inline-flex max-w-full items-center rounded-full px-[8px] py-[2px] text-[11px] font-semibold"
-        style={{ background: "#FBEBC2", color: "#5C3B06" }}
+        style={{ background: "var(--warning-bg)", color: "var(--warning-text)" }}
       >
         {t("carrier.docChip.expiringSoonFull", { label, days: chip.daysLeft })}
       </span>
@@ -39,7 +39,7 @@ export function FieldExpiryChip({ chip, t }: { chip: DocumentChipData; t: Return
   return (
     <span
       className="inline-flex max-w-full items-center rounded-full px-[8px] py-[2px] text-[11px] font-semibold"
-      style={{ background: "#FBDADB", color: "#7F1D1D" }}
+      style={{ background: "var(--danger-bg)", color: "var(--danger-text)" }}
     >
       {t(expiredDocMessageKey(chip.docKind), { label })} · {t("carrier.docChip.daysAgo", { days: chip.daysAgo })}
     </span>
@@ -416,12 +416,12 @@ export function VehicleForm({
                 <img
                   src={url}
                   alt=""
-                  className="h-20 w-full rounded-[10px] border border-[var(--border-hairline)] object-cover"
+                  className="h-20 w-full rounded-control border border-[var(--border-hairline)] object-cover"
                 />
                 <button
                   type="button"
                   onClick={() => removePhoto(url)}
-                  className="text-[12.5px] font-semibold text-[var(--ink-destructive)] hover:underline"
+                  className="text-[13px] font-semibold text-[var(--ink-destructive)] hover:underline"
                 >
                   {t("common.remove")}
                 </button>
@@ -430,7 +430,7 @@ export function VehicleForm({
           </div>
         ) : null}
         {form.photos.length < 10 ? (
-          <label className="flex cursor-pointer items-center justify-center rounded-[10px] border-[1.5px] border-dashed border-[var(--border-strong)] p-[11px] text-center text-[12.5px] font-semibold text-[var(--action-bg)]">
+          <label className="flex cursor-pointer items-center justify-center rounded-control border-[1.5px] border-dashed border-[var(--border-strong)] p-[11px] text-center text-[13px] font-semibold text-[var(--action-bg)]">
             {t("common.chooseFiles")}
             <input
               type="file"
@@ -442,10 +442,10 @@ export function VehicleForm({
             />
           </label>
         ) : null}
-        <p className="text-[12.5px] text-[var(--ink-muted)]">
+        <p className="text-[13px] text-[var(--ink-muted)]">
           {photoUploading ? t("common.loading") : t("carrier.vehicleForm.photosUploadHint")}
         </p>
-        {photoError ? <p className="text-[12.5px] text-[var(--ink-destructive)]">{photoError}</p> : null}
+        {photoError ? <p className="text-[13px] text-[var(--ink-destructive)]">{photoError}</p> : null}
       </div>
 
       <div className="space-y-2">
@@ -455,7 +455,7 @@ export function VehicleForm({
             {form.documentUrls.map((url) => (
               <li
                 key={url}
-                className="flex items-center justify-between gap-3 rounded-[10px] border border-[var(--border-hairline)] px-3 py-2 text-[13.5px]"
+                className="flex items-center justify-between gap-3 rounded-control border border-[var(--border-hairline)] px-3 py-2 text-[14px]"
               >
                 <a href={url} target="_blank" rel="noreferrer" className="truncate text-[var(--ink-2)] underline">
                   {docNameFromUrl(url)}
@@ -463,7 +463,7 @@ export function VehicleForm({
                 <button
                   type="button"
                   onClick={() => removeDocument(url)}
-                  className="shrink-0 text-[12.5px] font-semibold text-[var(--ink-destructive)] hover:underline"
+                  className="shrink-0 text-[13px] font-semibold text-[var(--ink-destructive)] hover:underline"
                 >
                   {t("common.remove")}
                 </button>
@@ -472,7 +472,7 @@ export function VehicleForm({
           </ul>
         ) : null}
         {form.documentUrls.length < 10 ? (
-          <label className="flex cursor-pointer items-center justify-center rounded-[10px] border-[1.5px] border-dashed border-[var(--border-strong)] p-[11px] text-center text-[12.5px] font-semibold text-[var(--action-bg)]">
+          <label className="flex cursor-pointer items-center justify-center rounded-control border-[1.5px] border-dashed border-[var(--border-strong)] p-[11px] text-center text-[13px] font-semibold text-[var(--action-bg)]">
             {t("common.chooseFiles")}
             <input
               type="file"
@@ -484,13 +484,13 @@ export function VehicleForm({
             />
           </label>
         ) : null}
-        <p className="text-[12.5px] text-[var(--ink-muted)]">
+        <p className="text-[13px] text-[var(--ink-muted)]">
           {docUploading ? t("common.loading") : t("carrier.vehicleForm.documentsUploadHint")}
         </p>
-        {docError ? <p className="text-[12.5px] text-[var(--ink-destructive)]">{docError}</p> : null}
+        {docError ? <p className="text-[13px] text-[var(--ink-destructive)]">{docError}</p> : null}
       </div>
 
-      {error ? <p className="text-[13.5px] text-[var(--ink-destructive)]">{error}</p> : null}
+      {error ? <p className="text-[14px] text-[var(--ink-destructive)]">{error}</p> : null}
 
       <div className="flex items-center gap-[10px]">
         <Button type="submit" disabled={loading || !isDirty}>

@@ -2,10 +2,10 @@ import type { RideStatus } from "./types";
 
 // One accent colour per ride status — used for the toolbar legend dot.
 export const RIDE_STATUS_ACCENT: Record<RideStatus, string> = {
-  PENDING: "#F97316",
-  CONFIRMED: "#2563EB",
-  COMPLETED: "#16A34A",
-  CANCELLED: "#A1A1AA",
+  PENDING: "var(--accent-pending)",
+  CONFIRMED: "var(--action-bg)",
+  COMPLETED: "var(--accent-completed)",
+  CANCELLED: "var(--status-cancelled-dot)",
 };
 
 // Ride card fill per status — the card's whole background carries its

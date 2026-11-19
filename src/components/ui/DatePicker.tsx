@@ -78,7 +78,7 @@ export const DatePicker = forwardRef<
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`flex h-10 w-full items-center gap-2 rounded-[8px] px-3 text-left text-[14px] transition-shadow duration-[.12s] ease-out focus:outline-none focus-visible:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)] ${
+        className={`flex h-10 w-full items-center gap-2 rounded-control px-3 text-left text-[14px] transition-shadow duration-[.12s] ease-out focus:outline-none focus-visible:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)] ${
           error ? "shadow-[inset_0_0_0_1px_var(--ink-destructive-ring)]" : "shadow-[inset_0_0_0_1px_var(--border-control)]"
         }`}
       >
@@ -88,24 +88,24 @@ export const DatePicker = forwardRef<
         </span>
       </button>
       {open ? (
-        <div className="absolute z-20 mt-1 w-[280px] rounded-panel bg-white p-3 shadow-[0_1px_2px_rgba(24,24,27,.04),0_4px_14px_rgba(24,24,27,.06)] ring-1 ring-[var(--border-soft)]">
+        <div className="absolute z-20 mt-1 w-[280px] rounded-panel bg-white p-3 shadow-[var(--shadow-card)] ring-1 ring-[var(--border-soft)]">
           <div className="mb-2 flex items-center justify-between">
             <button
               type="button"
               onClick={() => setViewDate(new Date(year, month - 1, 1))}
               aria-label={t("previousMonth")}
-              className="flex h-7 w-7 items-center justify-center rounded-[6px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)]"
+              className="flex h-7 w-7 items-center justify-center rounded-chip text-[var(--ink-secondary)] hover:bg-[var(--border-soft)]"
             >
               <ChevronLeft size={16} aria-hidden="true" />
             </button>
-            <span className="text-[13.5px] font-semibold text-[var(--ink-primary)]">
+            <span className="text-[14px] font-semibold text-[var(--ink-primary)]">
               {formatPickerMonthYear(viewDate, locale)}
             </span>
             <button
               type="button"
               onClick={() => setViewDate(new Date(year, month + 1, 1))}
               aria-label={t("nextMonth")}
-              className="flex h-7 w-7 items-center justify-center rounded-[6px] text-[var(--ink-secondary)] hover:bg-[var(--border-soft)]"
+              className="flex h-7 w-7 items-center justify-center rounded-chip text-[var(--ink-secondary)] hover:bg-[var(--border-soft)]"
             >
               <ChevronRight size={16} aria-hidden="true" />
             </button>

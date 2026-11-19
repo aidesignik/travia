@@ -48,7 +48,7 @@ export function DocumentDownloads({
         const doc = documents.find((d) => d.type === type);
         const isGenerated = doc?.status === "GENERATED";
         return (
-          <div key={type} className="flex items-center justify-between rounded-md border border-[var(--border-hairline)] px-3 py-2">
+          <div key={type} className="flex items-center justify-between rounded-chip border border-[var(--border-hairline)] px-3 py-2">
             <span className="text-sm font-medium text-[var(--ink-primary)]">{t(`documents.${type}`)}</span>
             {isGenerated ? (
               <div className="flex items-center gap-3">

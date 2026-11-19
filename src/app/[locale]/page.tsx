@@ -76,10 +76,10 @@ export default async function HomePage({
       <Navbar />
       <main className="mx-auto max-w-3xl space-y-10 px-4 py-16">
       <div className="space-y-4 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-[var(--ink-primary)] sm:text-5xl">
           {tHome("title")}
         </h1>
-        <p className="mx-auto max-w-xl text-lg text-zinc-600">{tHome("subtitle")}</p>
+        <p className="mx-auto max-w-xl text-lg text-[var(--ink-secondary)]">{tHome("subtitle")}</p>
       </div>
 
       <Card>
@@ -89,12 +89,12 @@ export default async function HomePage({
       {trip ? (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-medium text-zinc-900">{t("client.availableOptions.title")}</h2>
-            <p className="text-sm text-zinc-600">{t("client.availableOptions.disclaimer")}</p>
+            <h2 className="text-lg font-medium text-[var(--ink-primary)]">{t("client.availableOptions.title")}</h2>
+            <p className="text-sm text-[var(--ink-secondary)]">{t("client.availableOptions.disclaimer")}</p>
           </div>
 
           {results.length === 0 ? (
-            <p className="text-sm text-zinc-600">{t("client.availableOptions.none")}</p>
+            <p className="text-sm text-[var(--ink-secondary)]">{t("client.availableOptions.none")}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {results.map((option) => (
@@ -111,8 +111,8 @@ export default async function HomePage({
         </div>
       ) : null}
 
-      <div className="space-y-3 border-t border-zinc-200 pt-8 text-center">
-        <p className="text-sm text-zinc-600">{tHome("carrierPrompt")}</p>
+      <div className="space-y-3 border-t border-[var(--border-control)] pt-8 text-center">
+        <p className="text-sm text-[var(--ink-secondary)]">{tHome("carrierPrompt")}</p>
         <Link href="/register/carrier">
           <Button variant="secondary">{tHome("ctaCarrier")}</Button>
         </Link>

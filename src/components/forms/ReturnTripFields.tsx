@@ -119,14 +119,14 @@ export function ReturnTripFields({
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-zinc-500">{t("differentReturnRouteHint")}</p>
+      <p className="text-xs text-[var(--ink-muted)]">{t("differentReturnRouteHint")}</p>
 
       <div className="space-y-2">
-        <span className="text-xs font-medium text-zinc-500">{t("returnStopsTitle")}</span>
+        <span className="text-xs font-medium text-[var(--ink-muted)]">{t("returnStopsTitle")}</span>
         {value.returnStops.map((stop, index) => (
-          <div key={index} className="space-y-2 rounded-md border border-dashed border-zinc-300 p-3">
+          <div key={index} className="space-y-2 rounded-chip border border-dashed border-[var(--border-strong)] p-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-zinc-500">
+              <span className="text-xs font-medium text-[var(--ink-muted)]">
                 {t("stop")} {index + 1}
               </span>
               <button
@@ -148,7 +148,7 @@ export function ReturnTripFields({
           </div>
         ))}
         {value.returnStops.length < 5 ? (
-          <button type="button" onClick={addStop} className="text-sm font-medium text-zinc-700 underline">
+          <button type="button" onClick={addStop} className="text-sm font-medium text-[var(--ink-body)] underline">
             + {t("addStop")}
           </button>
         ) : null}
@@ -164,7 +164,7 @@ export function ReturnTripFields({
       </label>
 
       {value.differentReturnRoute ? (
-        <div className="space-y-3 rounded-md border border-zinc-200 p-3">
+        <div className="space-y-3 rounded-chip border border-[var(--border-control)] p-3">
           <CityLocationFields
             cityLabel={t("returnPickupCity")}
             locationLabel={t("returnPickupLocation")}

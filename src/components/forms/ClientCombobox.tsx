@@ -110,11 +110,11 @@ export function ClientCombobox({
                   setOpen(false);
                 }}
               >
-                <span className={`block truncate font-medium ${sheet ? "text-[var(--ink-primary)]" : "text-zinc-900"}`}>
+                <span className={`block truncate font-medium ${sheet ? "text-[var(--ink-primary)]" : "text-[var(--ink-primary)]"}`}>
                   {client.companyName || client.name || client.email}
                 </span>
                 {client.companyName && client.name ? (
-                  <span className={`block truncate text-xs ${sheet ? "text-[var(--ink-muted)]" : "text-zinc-500"}`}>
+                  <span className={`block truncate text-xs ${sheet ? "text-[var(--ink-muted)]" : "text-[var(--ink-muted)]"}`}>
                     {client.name}
                   </span>
                 ) : null}

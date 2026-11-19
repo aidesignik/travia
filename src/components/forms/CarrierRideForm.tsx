@@ -173,7 +173,7 @@ export function CarrierRideForm({
 
   if (vehicles.length === 0 || drivers.length === 0) {
     return (
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-[var(--ink-secondary)]">
         {t("carrier.noVehicles")} / {t("carrier.noDrivers")}
       </p>
     );
@@ -183,7 +183,7 @@ export function CarrierRideForm({
     <>
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-4">
-        <h2 className="text-sm font-semibold text-zinc-900">{t("carrier.rideForm.clientSection")}</h2>
+        <h2 className="text-sm font-semibold text-[var(--ink-primary)]">{t("carrier.rideForm.clientSection")}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Field label={t("carrier.rideForm.client")}>
             <Input
@@ -217,7 +217,7 @@ export function CarrierRideForm({
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-sm font-semibold text-zinc-900">{t("carrier.rideForm.tripSection")}</h2>
+        <h2 className="text-sm font-semibold text-[var(--ink-primary)]">{t("carrier.rideForm.tripSection")}</h2>
 
         <CityLocationFields
           cityLabel={t("client.requestForm.pickupCity")}
@@ -229,9 +229,9 @@ export function CarrierRideForm({
         />
 
         {form.stops.map((stop, index) => (
-          <div key={index} className="space-y-2 rounded-md border border-dashed border-zinc-300 p-3">
+          <div key={index} className="space-y-2 rounded-chip border border-dashed border-[var(--border-strong)] p-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-zinc-500">
+              <span className="text-xs font-medium text-[var(--ink-muted)]">
                 {t("client.requestForm.stop")} {index + 1}
               </span>
               <button
@@ -254,7 +254,7 @@ export function CarrierRideForm({
         ))}
 
         {form.stops.length < 5 ? (
-          <button type="button" onClick={addStop} className="text-sm font-medium text-zinc-700 underline">
+          <button type="button" onClick={addStop} className="text-sm font-medium text-[var(--ink-body)] underline">
             + {t("client.requestForm.addStop")}
           </button>
         ) : null}
@@ -328,11 +328,11 @@ export function CarrierRideForm({
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-sm font-semibold text-zinc-900">{t("carrier.rideForm.assignmentSection")}</h2>
+        <h2 className="text-sm font-semibold text-[var(--ink-primary)]">{t("carrier.rideForm.assignmentSection")}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("carrier.offerForm.vehicle")}>
             <select
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-chip border border-[var(--border-strong)] px-3 py-2 text-sm"
               value={form.vehicleId}
               onChange={(e) => setForm({ ...form, vehicleId: e.target.value })}
             >
@@ -345,7 +345,7 @@ export function CarrierRideForm({
           </Field>
           <Field label={t("carrier.offerForm.driver")}>
             <select
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-chip border border-[var(--border-strong)] px-3 py-2 text-sm"
               value={form.driverId}
               onChange={(e) => setForm({ ...form, driverId: e.target.value })}
             >
@@ -398,12 +398,12 @@ export function CarrierRideForm({
           />
         </Field>
         {calculatingDistance ? (
-          <p className="text-xs text-zinc-500">{t("carrier.rideForm.calculatingDistance")}</p>
+          <p className="text-xs text-[var(--ink-muted)]">{t("carrier.rideForm.calculatingDistance")}</p>
         ) : null}
 
         {suggested !== null ? (
-          <p className="text-sm text-zinc-600">
-            {t("carrier.offerForm.suggestedPrice")}: <span className="font-medium text-zinc-900">{suggested} RSD</span>
+          <p className="text-sm text-[var(--ink-secondary)]">
+            {t("carrier.offerForm.suggestedPrice")}: <span className="font-medium text-[var(--ink-primary)]">{suggested} RSD</span>
           </p>
         ) : null}
 

@@ -30,7 +30,7 @@ export default async function EditDriverPage({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <DriverAvatar driver={driver} size={40} decorative />
-          <h1 className="text-2xl font-semibold text-zinc-900">{driver.name}</h1>
+          <h1 className="text-2xl font-semibold text-[var(--ink-primary)]">{driver.name}</h1>
         </div>
         <DeleteButton url={`/api/carrier/drivers/${driver.id}`} redirectTo="/carrier/drivers" />
       </div>

@@ -40,7 +40,7 @@ function StatusTag({ status, compact }: { status: RideStatus; compact?: boolean 
           style={{ background: "rgba(255,255,255,.7)" }}
         >
           <span aria-hidden className="h-[6px] w-[6px] shrink-0 rounded-full" style={{ background: dot }} />
-          <span className="text-[11.5px] font-semibold" style={{ color: RIDE_STATUS_TEXT[status] }}>
+          <span className="text-[12px] font-semibold" style={{ color: RIDE_STATUS_TEXT[status] }}>
             {label}
           </span>
         </span>
@@ -85,7 +85,7 @@ export function RideBlockCard({
   const passengerLabel = seats ? `${ride.passengerCount}/${seats}` : `${ride.passengerCount}`;
 
   const bottomRow = (
-    <div className="mt-auto flex min-w-0 items-center gap-[8px] text-[12.5px]" style={{ color: "#55555C" }}>
+    <div className="mt-auto flex min-w-0 items-center gap-[8px] text-[13px]" style={{ color: "var(--ink-body)" }}>
       <span className="flex min-w-0 flex-1 items-center overflow-hidden">
         <span className="shrink-0 font-medium">{time}</span>
         {/* Separator + count hide together below ~170px container width —
@@ -110,7 +110,7 @@ export function RideBlockCard({
       type="button"
       onClick={onClick}
       style={{ ...style, background, containerType: "inline-size" }}
-      className="group relative flex w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-[12px] text-left transition-[background-color,box-shadow,scale,translate] duration-[.12s] ease-out hover:-translate-y-px hover:shadow-[0_1px_2px_rgba(20,20,19,.06),0_4px_12px_rgba(20,20,19,.06)] active:scale-[0.99] active:translate-y-0 active:shadow-none"
+      className="group relative flex w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-panel text-left transition-[background-color,box-shadow,scale,translate] duration-[.12s] ease-out hover:-translate-y-px hover:shadow-[var(--shadow-card)] active:scale-[0.99] active:translate-y-0 active:shadow-none"
       title={`${clientLabel} · ${route}`}
       aria-label={ariaLabel}
     >
@@ -127,7 +127,7 @@ export function RideBlockCard({
       <div className="relative flex flex-1 flex-col gap-[6px] px-[14px] py-[12px] @max-[160px]:hidden">
         <div className="flex min-w-0 flex-col gap-[2px]">
           <div className="flex items-start justify-between gap-[6px]">
-            <p className="flex min-w-0 items-center gap-[5px] text-[14.5px] font-semibold" style={{ color: titleColor }}>
+            <p className="flex min-w-0 items-center gap-[5px] text-[14px] font-semibold" style={{ color: titleColor }}>
               <span className="min-w-0 truncate">{ride.pickupCity}</span>
               {ride.isRoundTrip ? (
                 <ArrowLeftRight size={14} strokeWidth={1.75} className="shrink-0" />
@@ -138,7 +138,7 @@ export function RideBlockCard({
             </p>
             <StatusTag status={status} />
           </div>
-          <span className="truncate text-[12.5px]" style={{ color: clientColor }}>
+          <span className="truncate text-[13px]" style={{ color: clientColor }}>
             {clientLabel}
           </span>
         </div>
@@ -150,12 +150,12 @@ export function RideBlockCard({
       <div className="relative hidden flex-1 flex-col gap-[6px] p-[12px] @max-[160px]:flex">
         <div className="flex min-w-0 flex-col gap-[2px]">
           <div className="flex items-start justify-between gap-[6px]">
-            <p className="min-w-0 truncate text-[14.5px] font-semibold" style={{ color: titleColor }}>
+            <p className="min-w-0 truncate text-[14px] font-semibold" style={{ color: titleColor }}>
               {cityCode(ride.pickupCity)} {routeArrow} {cityCode(ride.destinationCity)}
             </p>
             <StatusTag status={status} />
           </div>
-          <span className="truncate text-[12.5px]" style={{ color: clientColor }}>
+          <span className="truncate text-[13px]" style={{ color: clientColor }}>
             {clientLabel}
           </span>
         </div>

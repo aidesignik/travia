@@ -43,11 +43,11 @@ export function NoteCard({
       onKeyDown={onKeyDown}
       onDragStart={(event) => event.preventDefault()}
       aria-describedby="notes-reorder-hint"
-      className={`group flex h-[248px] min-w-0 flex-col overflow-hidden rounded-[12px] border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] text-left transition-[box-shadow,translate,scale] duration-[.12s] ease-out ${
+      className={`group flex h-[248px] min-w-0 flex-col overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-[var(--surface-card-bg)] text-left transition-[box-shadow,translate,scale] duration-[.12s] ease-out ${
         lifted ? "relative z-20" : ""
       } ${
         dragging
-          ? "scale-[1.02] cursor-grabbing shadow-[0_18px_40px_rgba(16,24,40,0.18)]"
+          ? "scale-[1.02] cursor-grabbing shadow-[var(--shadow-panel)]"
           : "shadow-[var(--shadow-surface-card)] hover:-translate-y-px hover:shadow-[var(--shadow-card)]"
       }`}
     >
@@ -57,18 +57,18 @@ export function NoteCard({
       ) : null}
       <span className="flex min-h-0 flex-1 flex-col px-4 pb-3 pt-[14px]">
         <span
-          className={`truncate text-[15px] font-semibold ${note.title ? "text-[var(--ink-primary)]" : "text-[var(--ink-muted)]"}`}
+          className={`truncate text-[16px] font-semibold ${note.title ? "text-[var(--ink-primary)]" : "text-[var(--ink-muted)]"}`}
         >
           {note.title || t("untitled")}
         </span>
         {note.body ? (
           <span
-            className={`mt-[6px] whitespace-pre-line text-[13.5px] leading-[1.5] text-[var(--ink-secondary)] ${cover ? "line-clamp-2" : "line-clamp-6"}`}
+            className={`mt-[6px] whitespace-pre-line text-[14px] leading-[1.5] text-[var(--ink-secondary)] ${cover ? "line-clamp-2" : "line-clamp-6"}`}
           >
             {note.body}
           </span>
         ) : null}
-        <span className="mt-auto flex items-center gap-3 pt-2 text-[12.5px] text-[var(--ink-muted)]">
+        <span className="mt-auto flex items-center gap-3 pt-2 text-[13px] text-[var(--ink-muted)]">
           <span>{edited}</span>
           {note.attachments.length > 0 ? (
             <span className="flex items-center gap-1">

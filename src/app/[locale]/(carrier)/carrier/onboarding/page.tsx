@@ -32,10 +32,10 @@ export default async function CarrierOnboardingPage() {
       <Navbar />
       <div className="mx-auto max-w-5xl space-y-6 px-4 py-10">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">
+          <h1 className="text-2xl font-semibold text-[var(--ink-primary)]">
             {isNew ? t("completeProfileTitle") : t("onboardingTitle")}
           </h1>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-[var(--ink-secondary)]">
             {isNew ? t("completeProfileSubtitle") : t("onboardingSubtitle")}
           </p>
         </div>

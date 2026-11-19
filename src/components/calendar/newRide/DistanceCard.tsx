@@ -31,32 +31,32 @@ export function DistanceCard({
   const showWarning = Boolean(warning) && !calculating && !failed && totalKm !== null;
 
   return (
-    <div className="rounded-[12px] bg-[#F8FAFF] px-4 py-[14px] shadow-[inset_0_0_0_1px_#DBEAFE]">
+    <div className="rounded-panel bg-[var(--bg-today)] px-4 py-[14px] shadow-[inset_0_0_0_1px_var(--action-100)]">
       <div className="flex items-center gap-[14px]">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-white shadow-[inset_0_0_0_1px_#DBEAFE]">
-          <Route size={17} strokeWidth={1.9} className="text-[#2563EB]" />
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-white shadow-[inset_0_0_0_1px_var(--action-100)]">
+          <Route size={17} strokeWidth={1.9} className="text-[var(--action-bg)]" />
         </div>
         <div className="min-w-0 flex-1">
           {calculating ? (
             <>
-              <div className="h-5 w-16 animate-pulse rounded-[4px] bg-[#E4E4E7]" />
-              <p className="mt-1 text-[13px] text-[#71717A]">{calculatingLabel}</p>
+              <div className="h-5 w-16 animate-pulse rounded-chip bg-[var(--border-control)]" />
+              <p className="mt-1 text-[13px] text-[var(--ink-muted)]">{calculatingLabel}</p>
             </>
           ) : failed || totalKm === null ? (
-            <p className="text-[13px] text-[#71717A]">{failedLabel}</p>
+            <p className="text-[13px] text-[var(--ink-muted)]">{failedLabel}</p>
           ) : (
             <div className="flex flex-wrap items-baseline gap-x-[6px]">
-              <span className="text-[20px] font-semibold tracking-[-0.02em] text-[#18181B]">
+              <span className="text-[20px] font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
                 {Math.round(totalKm)} km
               </span>
-              <span className="text-[13px] text-[#71717A]">{breakdownText}</span>
+              <span className="text-[13px] text-[var(--ink-muted)]">{breakdownText}</span>
             </div>
           )}
         </div>
         <span className="shrink-0 self-start text-[12px] text-[var(--ink-muted)]">{estimateLabel}</span>
       </div>
       {showWarning ? (
-        <p className="m-0 mt-3 flex items-start gap-2 rounded-[9px] bg-[#FEF7E6] px-3 py-2 text-[12.5px] leading-[1.4] text-[#8A5512]">
+        <p className="m-0 mt-3 flex items-start gap-2 rounded-control bg-[var(--warning-surface)] px-3 py-2 text-[13px] leading-[1.4] text-[var(--warning-ink)]">
           <AlertTriangle size={14} strokeWidth={2} className="mt-[1px] shrink-0" aria-hidden="true" />
           {warning}
         </p>

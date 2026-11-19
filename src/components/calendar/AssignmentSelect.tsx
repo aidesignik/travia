@@ -173,11 +173,11 @@ export function AssignmentSelect({
                 }}
                 className={`w-full ${opt.busy ? "opacity-50" : ""} ${sheet ? SHEET_OPTION_CLASS : DEFAULT_OPTION_CLASS}`}
               >
-                <span className={`block truncate ${sheet ? "text-[var(--ink-primary)]" : "text-zinc-900"}`}>
+                <span className={`block truncate ${sheet ? "text-[var(--ink-primary)]" : "text-[var(--ink-primary)]"}`}>
                   {opt.label}
                 </span>
                 {opt.busy ? (
-                  <span className={`block truncate text-xs ${sheet ? "text-[var(--ink-muted)]" : "text-zinc-500"}`}>
+                  <span className={`block truncate text-xs ${sheet ? "text-[var(--ink-muted)]" : "text-[var(--ink-muted)]"}`}>
                     {busyLabel}
                   </span>
                 ) : null}

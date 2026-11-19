@@ -56,7 +56,7 @@ export function TimePicker({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`flex h-10 w-full items-center gap-2 rounded-[8px] px-3 text-left text-[14px] transition-shadow duration-[.12s] ease-out focus:outline-none focus-visible:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)] ${
+        className={`flex h-10 w-full items-center gap-2 rounded-control px-3 text-left text-[14px] transition-shadow duration-[.12s] ease-out focus:outline-none focus-visible:shadow-[inset_0_0_0_1px_var(--action-bg),0_0_0_3px_var(--action-100)] ${
           error ? "shadow-[inset_0_0_0_1px_var(--ink-destructive-ring)]" : "shadow-[inset_0_0_0_1px_var(--border-control)]"
         }`}
       >
@@ -64,7 +64,7 @@ export function TimePicker({
         <span className={value ? "tabular-nums text-[var(--ink-primary)]" : "text-[var(--ink-muted)]"}>{value || placeholder}</span>
       </button>
       {open ? (
-        <div className="absolute z-20 mt-1 w-[160px] rounded-panel bg-white p-2 shadow-[0_1px_2px_rgba(24,24,27,.04),0_4px_14px_rgba(24,24,27,.06)] ring-1 ring-[var(--border-soft)]">
+        <div className="absolute z-20 mt-1 w-[160px] rounded-panel bg-white p-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--border-soft)]">
           <input
             type="text"
             inputMode="numeric"
@@ -76,7 +76,7 @@ export function TimePicker({
               if (e.key === "Enter") commit(draft);
             }}
             onBlur={() => commit(draft)}
-            className="mb-2 h-8 w-full rounded-[6px] px-2 text-[13px] tabular-nums text-[var(--ink-primary)] shadow-[inset_0_0_0_1px_var(--border-control)] focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--action-bg)]"
+            className="mb-2 h-8 w-full rounded-chip px-2 text-[13px] tabular-nums text-[var(--ink-primary)] shadow-[inset_0_0_0_1px_var(--border-control)] focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--action-bg)]"
           />
           <div className="max-h-[200px] overflow-y-auto">
             {OPTIONS.map((t) => (
@@ -88,7 +88,7 @@ export function TimePicker({
                   onChange(t);
                   setOpen(false);
                 }}
-                className={`block w-full rounded-[6px] px-2 py-1 text-left text-[13px] tabular-nums hover:bg-[var(--border-soft)] ${
+                className={`block w-full rounded-chip px-2 py-1 text-left text-[13px] tabular-nums hover:bg-[var(--border-soft)] ${
                   t === value ? "bg-[var(--select-tint)] font-medium text-[var(--action-bg)]" : "text-[var(--ink-2)]"
                 }`}
               >

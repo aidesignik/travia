@@ -49,7 +49,7 @@ const SIDEBAR_WIDTH = 252;
 // behind the header row and (when empty) the greeting.
 const HEADER_ZONE_BACKGROUND = "linear-gradient(180deg, var(--select-tint) 0%, var(--bg-panel) 100%)";
 const HEADER_BUTTON_CLASS =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-transparent text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[rgba(255,255,255,0.7)] hover:text-[var(--ink-primary)]";
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-transparent text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[rgba(255,255,255,0.7)] hover:text-[var(--ink-primary)]";
 
 interface ChatItem {
   id: number;
@@ -377,8 +377,8 @@ export function AssistantWindow() {
                   aria-hidden
                 />
               )}
-              <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
-              <span className="inline-flex h-5 items-center rounded-pill bg-[var(--action-100)] px-2 text-[11.5px] font-medium leading-none text-[var(--action-800)]">
+              <h2 className="text-[16px] font-semibold tracking-[-0.01em] text-[var(--ink-primary)]">{t("title")}</h2>
+              <span className="inline-flex h-5 items-center rounded-pill bg-[var(--action-100)] px-2 text-[12px] font-medium leading-none text-[var(--action-800)]">
                 {/* Nudged up half a pixel: the font's metrics sit capitals slightly low. */}
                 <span className="-translate-y-[0.5px]">{t("beta")}</span>
               </span>
@@ -433,10 +433,10 @@ export function AssistantWindow() {
 
             {empty && !minimized ? (
               <div className="flex flex-col gap-[6px] px-5 pb-2 pt-4">
-                <h2 className="text-[19px] font-semibold leading-[1.3] tracking-[-0.015em] text-[var(--ink-primary)]">
+                <h2 className="text-[20px] font-semibold leading-[1.3] tracking-[-0.015em] text-[var(--ink-primary)]">
                   {t("emptyTitle")}
                 </h2>
-                <p className="text-[13.5px] font-medium leading-[1.5] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
+                <p className="text-[14px] font-medium leading-[1.5] text-[var(--ink-secondary)]">{t("emptyBody")}</p>
               </div>
             ) : null}
           </div>
@@ -467,7 +467,7 @@ export function AssistantWindow() {
                       item.role === "user" ? (
                         <p
                           key={item.id}
-                          className="max-w-[300px] self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-[var(--select-tint)] px-[14px] py-[10px] text-[14px] font-medium text-[var(--ink-primary)]"
+                          className="max-w-[300px] self-end whitespace-pre-wrap rounded-panel rounded-br-chip bg-[var(--select-tint)] px-[14px] py-[10px] text-[14px] font-medium text-[var(--ink-primary)]"
                         >
                           {item.text}
                         </p>
@@ -492,7 +492,7 @@ export function AssistantWindow() {
               </div>
 
               <form onSubmit={onSubmit} className="flex shrink-0 flex-col gap-[10px] px-4 pb-4 pt-3">
-                <div className="flex items-end gap-2 rounded-[12px] border border-[var(--border-control)] bg-white pb-[10px] pl-[14px] pr-3 pt-3 transition-[border-color,box-shadow] duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[var(--focus-ring)]">
+                <div className="flex items-end gap-2 rounded-panel border border-[var(--border-control)] bg-white pb-[10px] pl-[14px] pr-3 pt-3 transition-[border-color,box-shadow] duration-[.12s] ease-out focus-within:border-[var(--action-bg)] focus-within:shadow-[var(--focus-ring)]">
                   <label htmlFor="assistant-message" className="sr-only">
                     {t("inputLabel")}
                   </label>
@@ -517,7 +517,7 @@ export function AssistantWindow() {
                     type="submit"
                     disabled={!draft.trim() || sending}
                     aria-label={t("send")}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[var(--action-bg)] text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)] disabled:bg-[var(--border-soft)] disabled:text-[var(--ink-muted)]"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-control bg-[var(--action-bg)] text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)] disabled:bg-[var(--border-soft)] disabled:text-[var(--ink-muted)]"
                   >
                     <ArrowUp size={16} strokeWidth={2.2} />
                   </button>

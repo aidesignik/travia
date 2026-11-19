@@ -9,9 +9,9 @@ const GLYPH_BY_TYPE: Record<string, typeof Bus> = {
 };
 
 const SIZE = {
-  md: { box: "h-[34px] w-[34px]", icon: 19, radius: "rounded-[9px]" },
-  sm: { box: "h-8 w-8", icon: 19, radius: "rounded-[10px]" },
-  xs: { box: "h-7 w-7", icon: 16, radius: "rounded-[8px]" },
+  md: { box: "h-[34px] w-[34px]", icon: 19, radius: "rounded-control" },
+  sm: { box: "h-8 w-8", icon: 19, radius: "rounded-control" },
+  xs: { box: "h-7 w-7", icon: 16, radius: "rounded-control" },
 } as const;
 
 // Rounded-square identity treatment for vehicles — the opposite shape from

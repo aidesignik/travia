@@ -247,7 +247,7 @@ export function ResourceTimelineGrid({
         <div className="sticky top-0 z-20 grid" style={{ gridTemplateColumns: gridTemplate }}>
             <div
               className="sticky left-0 z-30 flex items-center border-r bg-white px-[14px] py-4 text-[13px] text-[var(--ink-secondary)]"
-              style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
+              style={{ borderRightColor: "var(--border-hairline)", borderBottomColor: "var(--border-hairline)", borderBottomWidth: 1 }}
             >
               {resources.length > 0 ? resourceCountLabel : ""}
             </div>
@@ -257,11 +257,11 @@ export function ResourceTimelineGrid({
                     key={hour}
                     data-hour={hour}
                     className="flex items-center border-r bg-white px-[10px] py-4 last:border-r-0"
-                    style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
+                    style={{ borderRightColor: "var(--border-hairline)", borderBottomColor: "var(--border-hairline)", borderBottomWidth: 1 }}
                   >
                     <span
                       className={`text-[13px] tabular-nums ${showNowLine && now.getHours() === hour ? "font-semibold" : ""}`}
-                      style={{ color: showNowLine && now.getHours() === hour ? "var(--action-bg)" : "#6E6E68" }}
+                      style={{ color: showNowLine && now.getHours() === hour ? "var(--action-bg)" : "var(--ink-eyebrow)" }}
                     >
                       {pad2(hour)}:00
                     </span>
@@ -274,16 +274,16 @@ export function ResourceTimelineGrid({
                     <div
                       key={i}
                       className="flex items-center gap-[6px] border-r bg-white px-[14px] py-4 last:border-r-0"
-                      style={{ borderRightColor: "#F1F1EE", borderBottomColor: "#EFEFEC", borderBottomWidth: 1 }}
+                      style={{ borderRightColor: "var(--border-hairline)", borderBottomColor: "var(--border-hairline)", borderBottomWidth: 1 }}
                     >
-                      <span className="text-[14px]" style={{ color: "#6E6E68" }}>
+                      <span className="text-[14px]" style={{ color: "var(--ink-eyebrow)" }}>
                         {weekday}
                       </span>
                       <span
                         className={`text-[14px] font-semibold ${
                           isToday ? "flex h-[24px] min-w-[24px] items-center justify-center rounded-full px-[5px]" : ""
                         }`}
-                        style={isToday ? { background: "var(--action-bg)", color: "#fff" } : { color: "#1B1B19" }}
+                        style={isToday ? { background: "var(--action-bg)", color: "white" } : { color: "var(--ink-primary)" }}
                       >
                         {day.getDate()}
                       </span>
@@ -293,7 +293,7 @@ export function ResourceTimelineGrid({
           </div>
 
           {resources.length === 0 ? (
-            <p className="p-6 text-center text-[13.5px] text-[var(--ink-secondary)]">
+            <p className="p-6 text-center text-[14px] text-[var(--ink-secondary)]">
               {grouping === "vehicle" ? t("noVehicles") : t("noDrivers")}
             </p>
           ) : (
@@ -329,12 +329,12 @@ export function ResourceTimelineGrid({
                   className="grid"
                   style={{
                     gridTemplateColumns: gridTemplate,
-                    borderBottom: isLastResource ? undefined : "1px solid #EFEFEC",
+                    borderBottom: isLastResource ? undefined : "1px solid var(--border-hairline)",
                   }}
                 >
                   <div
                     className="sticky left-0 z-[25] flex items-center gap-[10px] border-r bg-white px-5 py-[18px]"
-                    style={{ borderRightColor: "#F1F1EE", minHeight: LANE_MIN_HEIGHT[view] }}
+                    style={{ borderRightColor: "var(--border-hairline)", minHeight: LANE_MIN_HEIGHT[view] }}
                   >
                     {grouping === "driver" ? (
                       <DriverAvatar
@@ -345,13 +345,13 @@ export function ResourceTimelineGrid({
                     ) : null}
                     <div className="min-w-0 flex-1">
                       <p
-                        className="line-clamp-2 text-[14.5px] font-semibold"
-                        style={{ color: "#141413", lineHeight: 1.3 }}
+                        className="line-clamp-2 text-[14px] font-semibold"
+                        style={{ color: "var(--ink-primary)", lineHeight: 1.3 }}
                       >
                         {resource.name}
                       </p>
                       {resource.plate || resource.seats ? (
-                        <p className="truncate text-[12.5px]" style={{ color: "#6E6E68" }}>
+                        <p className="truncate text-[13px]" style={{ color: "var(--ink-eyebrow)" }}>
                           {resource.plate ? <span className="font-mono text-[12px]">{formatPlate(resource.plate)}</span> : null}
                           {resource.plate && resource.seats ? " · " : ""}
                           {resource.seats ? `${resource.seats} ${tCarrier("fleetTable.seatsShort")}` : ""}
@@ -418,7 +418,7 @@ export function ResourceTimelineGrid({
                           style={{
                             gridRow: "1 / -1",
                             gridColumn: isDayView ? `${i * SLOTS_PER_HOUR + 1} / span ${SLOTS_PER_HOUR}` : i + 1,
-                            borderRightColor: "#F1F1EE",
+                            borderRightColor: "var(--border-hairline)",
                           }}
                         />
                       );
@@ -441,7 +441,7 @@ export function ResourceTimelineGrid({
                     {resourceBlocks.map(({ block, startIdx, endIdx }) => (
                       <div
                         key={block.id}
-                        className="z-0 flex h-10 items-center gap-[6px] truncate rounded-[9px] px-[10px] text-[13.5px] font-medium"
+                        className="z-0 flex h-10 items-center gap-[6px] truncate rounded-control px-[10px] text-[14px] font-medium"
                         style={{
                           gridRow: (laneOf.get(block.id) ?? 0) + 1,
                           gridColumn: `${startIdx + 1} / ${endIdx + 2}`,
@@ -450,7 +450,7 @@ export function ResourceTimelineGrid({
                           // underneath (see the ride cards below).
                           pointerEvents: cellSelection ? "none" : undefined,
                           background: "var(--status-blocked-bg)",
-                          color: "#3B1F87",
+                          color: "var(--status-blocked-text)",
                           alignSelf: "start",
                         }}
                         title={block.note ?? undefined}
@@ -486,7 +486,7 @@ export function ResourceTimelineGrid({
 
                     {isDragTarget && dragOverTarget?.conflict && dragOverTarget.message ? (
                       <div
-                        className="z-20 flex items-center rounded-[10px] px-2 py-1 text-[12.5px] font-semibold text-white"
+                        className="z-20 flex items-center rounded-control px-2 py-1 text-[13px] font-semibold text-white"
                         style={{
                           gridRow: 1,
                           gridColumn: "1 / -1",
@@ -507,8 +507,8 @@ export function ResourceTimelineGrid({
           <button
             type="button"
             onClick={() => setAddingResource(true)}
-            className="sticky left-0 flex h-12 w-[100cqw] items-center gap-[6px] border-t px-5 text-[13.5px] font-medium text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
-            style={{ borderTopColor: "#EFEFEC" }}
+            className="sticky left-0 flex h-12 w-[100cqw] items-center gap-[6px] border-t px-5 text-[14px] font-medium text-[var(--ink-secondary)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+            style={{ borderTopColor: "var(--border-hairline)" }}
           >
             <Plus size={14} strokeWidth={1.9} />
             {grouping === "vehicle" ? tCarrier("addVehicle") : tCarrier("addDriver")}

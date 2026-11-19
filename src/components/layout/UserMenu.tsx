@@ -7,7 +7,7 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { SignOutButton } from "./SignOutButton";
 
 const MENU_ITEM_CLASS =
-  "block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--bg-subtle)]";
+  "block w-full rounded-chip px-3 py-2 text-left text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--bg-subtle)]";
 
 function initialsFor(name: string) {
   const initials = name
@@ -118,7 +118,7 @@ export function UserMenu({
         <div
           role="menu"
           aria-label={t("accountMenu")}
-          className="absolute right-0 top-full z-30 mt-2 w-64 rounded-lg border border-[var(--border-control)] bg-white p-2 shadow-lg"
+          className="absolute right-0 top-full z-30 mt-2 w-64 rounded-control border border-[var(--border-control)] bg-white p-2 shadow-[var(--shadow-card)]"
         >
           <div className="border-b border-[var(--border-soft)] px-3 py-2">
             <p className="truncate text-sm font-medium text-[var(--ink-primary)]">{name}</p>

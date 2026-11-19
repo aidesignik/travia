@@ -156,10 +156,10 @@ export function ReturnLegCard({
     <LegCard direction="return" title={t("povratak")} km={kmText}>
       {mode === "mirror" ? (
         outboundPickupCity || outboundDestinationCity ? (
-          <div className="truncate rounded-[8px] bg-[#FAFAFA] px-3 py-[10px] text-[14px]">
-            <span className="font-medium text-[#18181B]">{outboundDestinationCity || "—"}</span>
+          <div className="truncate rounded-control bg-[var(--bg-subtle)] px-3 py-[10px] text-[14px]">
+            <span className="font-medium text-[var(--ink-primary)]">{outboundDestinationCity || "—"}</span>
             <span className="mx-[6px] text-[var(--ink-muted)]">→</span>
-            <span className="font-medium text-[#18181B]">{outboundPickupCity || "—"}</span>
+            <span className="font-medium text-[var(--ink-primary)]">{outboundPickupCity || "—"}</span>
             <span className="text-[var(--ink-muted)]"> · {t("mirrorSuffix")}</span>
           </div>
         ) : null
@@ -170,7 +170,7 @@ export function ReturnLegCard({
               <RingMarker />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[14px] font-medium text-[#18181B]">{outboundDestinationCity || "—"}</p>
+              <p className="truncate text-[14px] font-medium text-[var(--ink-primary)]">{outboundDestinationCity || "—"}</p>
               <p className="truncate text-[13px] text-[var(--ink-muted)]">
                 {outboundDestinationLocation ? `${outboundDestinationLocation} · ` : ""}
                 {t("fromOutbound")}
@@ -216,7 +216,7 @@ export function ReturnLegCard({
               <PinMarker />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[14px] font-medium text-[#18181B]">{outboundPickupCity || "—"}</p>
+              <p className="truncate text-[14px] font-medium text-[var(--ink-primary)]">{outboundPickupCity || "—"}</p>
               <p className="truncate text-[13px] text-[var(--ink-muted)]">
                 {outboundPickupLocation ? `${outboundPickupLocation} · ` : ""}
                 {t("fromOutbound")}
@@ -260,7 +260,7 @@ export function ReturnLegCard({
         dateError={Boolean(returnDateError)}
       />
       {returnDateError ? (
-        <p className="field-error pl-[28px] text-[12.5px] text-[var(--ink-destructive)]">{returnDateError}</p>
+        <p className="field-error pl-[28px] text-[13px] text-[var(--ink-destructive)]">{returnDateError}</p>
       ) : null}
 
       <div className="flex items-center gap-1">
@@ -277,7 +277,7 @@ export function ReturnLegCard({
           <button
             type="button"
             onClick={backToMirror}
-            className="-ml-2 flex h-7 items-center gap-[6px] rounded-[7px] px-2 text-[13px] font-medium text-[#71717A] transition-colors duration-[.12s] ease-out hover:bg-[#F4F4F5]"
+            className="-ml-2 flex h-7 items-center gap-[6px] rounded-chip px-2 text-[13px] font-medium text-[var(--ink-muted)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
           >
             <RotateCcw size={14} strokeWidth={2} />
             {t("backToSameRoute")}

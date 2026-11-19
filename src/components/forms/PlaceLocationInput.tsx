@@ -176,8 +176,8 @@ export function PlaceLocationInput({
         <div
           className={
             grouped
-              ? "absolute right-0 top-[calc(100%+6px)] z-20 w-[min(420px,calc(100vw-48px))] overflow-hidden rounded-[10px] bg-white text-[14px] shadow-[0_1px_2px_rgba(24,24,27,.04),0_8px_24px_rgba(24,24,27,.10)] ring-1 ring-[var(--border-soft)]"
-              : "absolute left-0 top-full z-20 mt-1 w-full min-w-[280px] overflow-hidden rounded-md border border-zinc-200 bg-white text-sm shadow-lg"
+              ? "absolute right-0 top-[calc(100%+6px)] z-20 w-[min(420px,calc(100vw-48px))] overflow-hidden rounded-control bg-white text-[14px] shadow-[var(--shadow-card)] ring-1 ring-[var(--border-soft)]"
+              : "absolute left-0 top-full z-20 mt-1 w-full min-w-[280px] overflow-hidden rounded-chip border border-[var(--border-control)] bg-white text-sm shadow-[var(--shadow-card)]"
           }
         >
           <ul id={listboxId} role="listbox" className="max-h-64 overflow-auto py-1">
@@ -187,7 +187,7 @@ export function PlaceLocationInput({
                   type="button"
                   tabIndex={-1}
                   className={`${grouped ? SHEET_OPTION_CLASS : DEFAULT_OPTION_CLASS} flex items-start gap-2.5 ${
-                    index === activeIndex ? (grouped ? "bg-[var(--border-soft)]" : "bg-zinc-100") : ""
+                    index === activeIndex ? (grouped ? "bg-[var(--border-soft)]" : "bg-[var(--border-soft)]") : ""
                   }`}
                   onMouseEnter={() => setActiveIndex(index)}
                   onMouseDown={(e) => {
@@ -199,7 +199,7 @@ export function PlaceLocationInput({
                   <span className="min-w-0">
                     <span className="block truncate font-medium text-[var(--ink-primary)]">{s.main}</span>
                     {s.secondary ? (
-                      <span className="block truncate text-[12.5px] text-[var(--ink-muted)]">{s.secondary}</span>
+                      <span className="block truncate text-[13px] text-[var(--ink-muted)]">{s.secondary}</span>
                     ) : null}
                   </span>
                 </button>

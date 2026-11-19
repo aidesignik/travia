@@ -15,7 +15,7 @@ const STATUSES = ["ACTIVE", "INACTIVE"];
 // match the "boolean-ish" green/gray pairing used for Vozači's
 // availability filter below, kept local to each since neither is a ride
 // status.
-const STATUS_DOT: Record<string, string> = { ACTIVE: "#2F8A57", INACTIVE: "#A3A39C" };
+const STATUS_DOT: Record<string, string> = { ACTIVE: "var(--status-completed-dot)", INACTIVE: "var(--status-cancelled-dot)" };
 
 export function FleetListSection({
   vehicles,
@@ -88,7 +88,7 @@ export function FleetListSection({
         />
       </div>
       {filtered.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("carrier.table.noFilterResults")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("carrier.table.noFilterResults")}</p>
       ) : (
         <FleetTable vehicles={filtered} initialEditingId={initialEditingId} />
       )}

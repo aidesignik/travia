@@ -92,7 +92,7 @@ function BookingRowActionsMenu({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-[9px] p-2 text-[#A9A9B2] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+        className="rounded-control p-2 text-[var(--ink-disabled)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
         aria-label={t("actions")}
       >
         <MoreVertical size={16} strokeWidth={1.9} />
@@ -103,7 +103,7 @@ function BookingRowActionsMenu({
               ref={menuRef}
               role="menu"
               style={{ top: position.top, left: position.left, width: MENU_WIDTH }}
-              className="fixed z-[70] rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]"
+              className="fixed z-[70] rounded-panel border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]"
             >
               {editable ? (
                 <>
@@ -198,10 +198,10 @@ export function BookingsTable({
   }
 
   return (
-    <div role="table" className="flex flex-col overflow-hidden rounded-[12px] border border-[#EDEDED] bg-white">
+    <div role="table" className="flex flex-col overflow-hidden rounded-panel border border-[var(--border-hairline)] bg-white">
       <div
         role="row"
-        className="grid items-center gap-3 border-b border-[#EDEDED] px-4 py-[10px]"
+        className="grid items-center gap-3 border-b border-[var(--border-hairline)] px-4 py-[10px]"
         style={{ gridTemplateColumns: BOOKINGS_GRID_TEMPLATE }}
       >
         <span role="columnheader" className={HEADER_CLASS}>{t("carrier.bookingsTable.route")}</span>
@@ -242,14 +242,14 @@ export function BookingsTable({
                 setPendingAction(null);
                 setSelectedId(booking.id);
               }}
-              className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[#FAFAFA] ${
-                isLast ? "" : "border-b border-[#F3F3F3]"
+              className={`grid items-center gap-3 px-4 py-3 transition-colors duration-[.12s] ease-out hover:bg-[var(--bg-subtle)] ${
+                isLast ? "" : "border-b border-[var(--border-soft)]"
               }`}
               style={{ gridTemplateColumns: BOOKINGS_GRID_TEMPLATE }}
             >
               <div role="cell" className="flex min-w-0 items-center gap-[10px]">
                 <div
-                  className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-[10px] bg-white"
+                  className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-control bg-white"
                   style={{ boxShadow: "inset 0 0 0 1px var(--border-control)" }}
                 >
                   <span className="text-[16px] font-semibold leading-none text-[var(--ink-primary)]">{dayNum}</span>
@@ -259,20 +259,20 @@ export function BookingsTable({
                   </span>
                 </div>
                 <div className="min-w-0">
-                  <p className="flex min-w-0 items-center gap-[6px] text-[14.5px] font-semibold text-[var(--ink-primary)]">
+                  <p className="flex min-w-0 items-center gap-[6px] text-[14px] font-semibold text-[var(--ink-primary)]">
                     <span className="truncate">
                       {booking.pickupCity} → {booking.destinationCity}
                     </span>
                     {booking.stops.length > 0 ? (
                       <span
-                        className="shrink-0 rounded-[6px] px-[6px] py-[2px] text-[11px] font-medium"
-                        style={{ background: "#F3F3F3", color: "#55555C" }}
+                        className="shrink-0 rounded-chip px-[6px] py-[2px] text-[11px] font-medium"
+                        style={{ background: "var(--plate-bg)", color: "var(--plate-ink)" }}
                       >
                         {t("carrier.bookingsTable.extraStops", { count: booking.stops.length })}
                       </span>
                     ) : null}
                   </p>
-                  <p className="truncate text-[12.5px] text-[var(--ink-secondary)]">
+                  <p className="truncate text-[13px] text-[var(--ink-secondary)]">
                     {clientDisplayName(booking.client)} · {formatLocation({ city: booking.pickupCity, location: booking.pickupLocation })} →{" "}
                     {formatLocation({ city: booking.destinationCity, location: booking.destinationLocation })}
                   </p>
@@ -280,8 +280,8 @@ export function BookingsTable({
               </div>
 
               <div role="cell" className="min-w-0">
-                <p className="truncate text-[14.5px] font-semibold text-[var(--ink-primary)]">{time}</p>
-                <p className="truncate text-[12.5px] text-[var(--ink-muted)]">{weekday}</p>
+                <p className="truncate text-[14px] font-semibold text-[var(--ink-primary)]">{time}</p>
+                <p className="truncate text-[13px] text-[var(--ink-muted)]">{weekday}</p>
               </div>
 
               <div role="cell" className="min-w-0">
@@ -293,7 +293,7 @@ export function BookingsTable({
                       photoUrl={vehicle.photos[0] ?? null}
                       size="xs"
                     />
-                    <span className="truncate text-[13px] text-[#27272B]">
+                    <span className="truncate text-[13px] text-[var(--ink-strong)]">
                       {t(`vehicleType.${vehicle.type}`)} {vehicle.model}
                     </span>
                   </div>
@@ -309,7 +309,7 @@ export function BookingsTable({
                 {driver ? (
                   <div className="flex min-w-0 items-center gap-[8px]">
                     <DriverAvatar driver={driver} size={24} decorative />
-                    <span className="truncate text-[13px] text-[#27272B]">{driver.name}</span>
+                    <span className="truncate text-[13px] text-[var(--ink-strong)]">{driver.name}</span>
                   </div>
                 ) : (
                   <div className="flex min-w-0 items-center gap-[8px]">
@@ -324,10 +324,10 @@ export function BookingsTable({
                 className="flex min-w-0 items-center gap-[6px]"
                 title={overCapacity ? t("carrier.bookingsTable.overCapacity") : undefined}
               >
-                <span className="shrink-0 text-[13.5px] font-medium" style={{ color: overCapacity ? "#B4232F" : "var(--ink-primary)" }}>
+                <span className="shrink-0 text-[14px] font-medium" style={{ color: overCapacity ? "var(--danger-ink)" : "var(--ink-primary)" }}>
                   {booking.passengerCount}
                   {seats ? (
-                    <span style={{ color: overCapacity ? "#B4232F" : "var(--ink-muted)" }}>/{seats}</span>
+                    <span style={{ color: overCapacity ? "var(--danger-ink)" : "var(--ink-muted)" }}>/{seats}</span>
                   ) : null}
                 </span>
                 {seats ? (
@@ -337,7 +337,7 @@ export function BookingsTable({
                   >
                     <span
                       className="block h-full rounded-full"
-                      style={{ width: `${capacityPct}%`, background: overCapacity ? "#B4232F" : "var(--ink-secondary)" }}
+                      style={{ width: `${capacityPct}%`, background: overCapacity ? "var(--danger-ink)" : "var(--ink-secondary)" }}
                     />
                   </span>
                 ) : null}

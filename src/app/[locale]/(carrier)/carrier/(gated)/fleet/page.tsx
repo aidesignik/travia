@@ -28,7 +28,7 @@ export default async function FleetPage({
         actions={<AddVehicleButton autoOpen={params.new === "1"} />}
       />
       {vehicles.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("carrier.noVehicles")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("carrier.noVehicles")}</p>
       ) : (
         <FleetListSection
           vehicles={vehicles.map((vehicle) => ({

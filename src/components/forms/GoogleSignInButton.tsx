@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable travia/design-tokens -- Google's logo colours */
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -23,7 +24,7 @@ export function GoogleSignInButton() {
       type="button"
       disabled={loading}
       onClick={onClick}
-      className="flex h-[52px] w-full items-center justify-center gap-3 rounded-[12px] border-[1.5px] border-[var(--ink)] bg-white text-[16px] font-semibold text-[var(--ink)] transition-colors duration-150 hover:bg-[var(--bg-subtle)] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2"
+      className="flex h-[52px] w-full items-center justify-center gap-3 rounded-panel border-[1.5px] border-[var(--ink)] bg-white text-[16px] font-semibold text-[var(--ink)] transition-colors duration-150 hover:bg-[var(--bg-subtle)] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2"
     >
       {/* Google's standard four-colour "G" mark. */}
       <svg viewBox="0 0 48 48" className="h-5 w-5 shrink-0" aria-hidden="true">

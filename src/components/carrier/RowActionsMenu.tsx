@@ -86,7 +86,7 @@ export function RowActionsMenu({ onEdit, deleteUrl }: { onEdit: () => void; dele
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="rounded-[9px] p-2 text-[var(--ink-disabled)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
+        className="rounded-control p-2 text-[var(--ink-disabled)] transition-colors duration-[.12s] ease-out hover:bg-[var(--border-soft)]"
         aria-label={t("actions")}
       >
         <MoreVertical size={16} strokeWidth={1.9} aria-hidden="true" />
@@ -97,7 +97,7 @@ export function RowActionsMenu({ onEdit, deleteUrl }: { onEdit: () => void; dele
               ref={menuRef}
               role="menu"
               style={{ top: position.top, left: position.left, width: MENU_WIDTH }}
-              className="fixed z-[70] rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]"
+              className="fixed z-[70] rounded-panel border border-[var(--border-hairline)] bg-[var(--bg-panel)] py-1 shadow-[var(--shadow-card)]"
             >
               <button
                 type="button"

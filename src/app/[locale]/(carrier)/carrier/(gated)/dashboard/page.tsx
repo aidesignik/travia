@@ -45,7 +45,7 @@ export default async function CarrierDashboardPage({
           <RidesCalendar />
         ) : (
           <Card className="space-y-4 text-center">
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-[var(--ink-secondary)]">
               {vehicleCount === 0 && driverCount === 0
                 ? t("setupBothPrompt")
                 : vehicleCount === 0

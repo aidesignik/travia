@@ -71,7 +71,7 @@ export default async function CarrierBookingsPage({
       </div>
 
       {bookings.length === 0 ? (
-        <p className="text-[13.5px] text-[var(--ink-secondary)]">{t("noBookings")}</p>
+        <p className="text-[14px] text-[var(--ink-secondary)]">{t("noBookings")}</p>
       ) : (
         <BookingsListSection
           bookings={bookings.map(splitLegs).map(
