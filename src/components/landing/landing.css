@@ -180,6 +180,12 @@
   outline: 2px solid var(--action-primary);
   outline-offset: 3px;
 }
+/* Every other focusable element on the page (header nav links, the logo)
+   gets the same navy ring instead of the app's blue one from globals.css. */
+.lp a:focus-visible,
+.lp button:focus-visible {
+  outline-color: var(--action-primary);
+}
 .lp-btn-md {
   height: 44px;
   padding: 0 20px;
@@ -219,6 +225,8 @@
 .lp-btn-inverse-outline:hover {
   border-color: var(--text-inverse-secondary);
 }
+.lp-inverse a:focus-visible,
+.lp-inverse button:focus-visible,
 .lp-inverse .lp-btn:focus-visible {
   outline-color: var(--action-inverse);
 }

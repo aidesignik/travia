@@ -116,7 +116,7 @@ export function CompanyMenu({
             <CompanyMark companyName={companyName} logoUrl={logoUrl} size={36} />
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold text-[var(--ink)]">{companyName}</p>
-              {email ? <p className="truncate text-[12px]" style={{ color: "var(--ink-subtle)" }}>{email}</p> : null}
+              {email ? <p className="truncate text-[12px]" style={{ color: "var(--ink-secondary)" }}>{email}</p> : null}
             </div>
           </div>
 

@@ -7,6 +7,7 @@ import { DocumentDownloads } from "@/components/forms/DocumentDownloads";
 import { DriverAvatar } from "@/components/ui/DriverAvatar";
 import { formatRoute } from "@/lib/location";
 import { clientDisplayName } from "@/lib/clientDisplay";
+import { formatShortDateTime } from "@/lib/rideDateFormat";
 
 export default async function CarrierBookingDetailPage({
   params,
@@ -33,7 +34,7 @@ export default async function CarrierBookingDetailPage({
       <div>
         <h1 className="text-2xl font-semibold text-[var(--ink-primary)]">{formatRoute(booking)}</h1>
         <p className="mt-1 text-sm text-[var(--ink-secondary)]">
-          {new Date(booking.departureAt).toLocaleString()} · {booking.passengerCount} pax
+          {formatShortDateTime(new Date(booking.departureAt))} · {booking.passengerCount} pax
         </p>
       </div>
 

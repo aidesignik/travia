@@ -195,7 +195,7 @@ export const CityCombobox = forwardRef<
             </li>
           ))}
           {loading && matches.length === 0 ? (
-            <li className={`px-3 py-1.5 ${sheet || grouped ? "text-[var(--ink-muted)]" : "text-zinc-400"}`}>
+            <li className={`px-3 py-1.5 ${sheet || grouped ? "text-[var(--ink-muted)]" : "text-[var(--ink-muted)]"}`}>
               {t("loading")}
             </li>
           ) : null}

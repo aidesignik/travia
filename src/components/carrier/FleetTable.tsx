@@ -28,7 +28,7 @@ export interface FleetTableVehicle {
   drivers: { id: string; name: string; avatarColor: string | null }[];
 }
 
-const HEADER_CLASS = "text-[12px] font-semibold text-[#8E8E93]";
+const HEADER_CLASS = "text-[12px] font-semibold text-[var(--ink-muted)]";
 
 export function FleetTable({
   vehicles,
@@ -130,7 +130,7 @@ export function FleetTable({
                 ) : (
                   <>
                     <DriverAvatar driver={null} size={20} />
-                    <span className="truncate text-[13px] text-[#8E8E93]">{t("carrier.fleetTable.noDriver")}</span>
+                    <span className="truncate text-[13px] text-[var(--ink-muted)]">{t("carrier.fleetTable.noDriver")}</span>
                   </>
                 )}
               </StopClickPropagation>

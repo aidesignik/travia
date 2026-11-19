@@ -15,7 +15,7 @@ import { SUPPORT_EMAIL } from "@/lib/support";
 // Inputs, the submit button and the Google button all share one control
 // size (52px tall, 12px radius), so the card reads as a single column.
 const FIELD_CLASS =
-  "h-[52px] w-full rounded-[12px] border border-[#D0D3D8] bg-white px-4 text-[16px] text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[var(--ink)] focus:shadow-[0_0_0_3px_rgba(11,27,51,0.2)]";
+  "h-[52px] w-full rounded-[12px] border border-[#D0D3D8] bg-white px-4 text-[16px] text-zinc-900 outline-none placeholder:text-[var(--ink-muted)] focus:border-[var(--ink)] focus:shadow-[0_0_0_3px_rgba(11,27,51,0.2)]";
 const PRIMARY_CLASS =
   "flex h-[52px] w-full items-center justify-center rounded-[12px] bg-[var(--ink)] text-[16px] font-semibold text-white transition-colors hover:bg-[var(--ink-hover)] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2";
 
@@ -232,7 +232,7 @@ export function AuthCredentialsForm({ variant = "login" }: { variant?: "login" |
         </form>
       )}
 
-      <p className="m-0 mt-4 text-[12px] text-zinc-400">
+      <p className="m-0 mt-4 text-[12px] text-[var(--ink-muted)]">
         {t("auth.needHelpPrefix")}{" "}
         <a href={`mailto:${SUPPORT_EMAIL}`} className="text-[var(--ink)] hover:underline">
           {t("auth.contactSupportLink")}

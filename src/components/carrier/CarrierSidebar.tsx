@@ -19,6 +19,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Link, usePathname } from "@/i18n/navigation";
 import { AssistantIcon } from "@/components/carrier/assistant/AssistantIcon";
+import { useShortcutLabel } from "@/lib/useShortcutLabel";
 import { toggleAssistant, useAssistantOpen } from "@/components/carrier/assistant/assistantDock";
 
 const ICON_SIZE_CLASS = "h-[17px] w-[17px] shrink-0";
@@ -89,11 +90,11 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
       <span className="min-w-0 flex-1 truncate">{t(item.labelKey)}</span>
       {showCount ? (
         item.badge ? (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F97316] text-[12px] font-semibold text-white">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--accent-pending-strong)] text-[12px] font-semibold text-white">
             {item.count}
           </span>
         ) : (
-          <span className="shrink-0 font-mono text-[11.5px] text-[#8E8E93]">{item.count}</span>
+          <span className="shrink-0 font-mono text-[11.5px] text-[var(--ink-secondary)]">{item.count}</span>
         )
       ) : null}
     </Link>
@@ -113,6 +114,7 @@ export function CarrierSidebar({
   bookingCount: number;
   expiringItems: SidebarExpiringItem[];
 }) {
+  const assistantShortcut = useShortcutLabel("J");
   const pathname = usePathname();
   const t = useTranslations("carrier");
   const tNav = useTranslations("nav");
@@ -223,7 +225,7 @@ export function CarrierSidebar({
           {expiringItems.length > 0 ? (
             <div className="flex flex-col gap-[8px] pt-[6px]">
               <div className="flex items-center justify-between px-[10px]">
-                <span className="text-[12px] font-normal text-[#8E8E93]">{t("expiry.bannerTitle")}</span>
+                <span className="text-[12px] font-normal text-[var(--ink-secondary)]">{t("expiry.bannerTitle")}</span>
                 <span
                   className="rounded-[6px] px-[6px] py-[2px] font-mono text-[11px] font-medium"
                   style={{
@@ -274,7 +276,7 @@ export function CarrierSidebar({
             <AssistantIcon size={17} strokeWidth={2.2} />
             <span className="min-w-0 flex-1 truncate text-left">{tAssistant("title")}</span>
             <span className="shrink-0 rounded-[5px] bg-white px-[5px] py-px text-[10.5px] font-medium text-[var(--ink-secondary)] shadow-[var(--shadow-pill)]">
-              {tAssistant("shortcut")}
+              {assistantShortcut}
             </span>
           </button>
           <NavLink item={HELP_ITEM} active={isActive(pathname, HELP_ITEM.href)} />

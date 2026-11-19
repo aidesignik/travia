@@ -71,7 +71,7 @@ export function AvailableOptionCard({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="shrink-0 text-zinc-400 hover:text-zinc-700"
+                className="shrink-0 text-[var(--ink-muted)] hover:text-zinc-700"
                 aria-label={t("common.close")}
               >
                 ✕

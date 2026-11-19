@@ -109,9 +109,12 @@ export async function LandingPage() {
               the 16:9 video stays whole and centred; the panel colour
               matches the video's own background, so the extra space at its
               sides reads as part of the scene. */}
-          <div className="mx-auto aspect-video max-h-[calc(100svh-140px)] w-full max-w-[1344px] overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-hero-video)]">
+          {/* On phones the frame is a little taller (3:2) and the video
+              fills it, trimming only the empty margin either side of the
+              scene, so the cards show about a fifth larger. */}
+          <div className="mx-auto aspect-[3/2] max-h-[calc(100svh-140px)] w-full max-w-[1344px] overflow-hidden rounded-[var(--radius-2xl)] bg-[var(--surface-hero-video)] sm:aspect-video">
             <video
-              className="block h-full w-full object-contain"
+              className="block h-full w-full object-cover sm:object-contain"
               src="/landing/hero.mp4"
               poster="/landing/hero-poster.jpg"
               autoPlay

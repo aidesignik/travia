@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Bus, CalendarDays, CircleHelp, Inbox, Search, StickyNote, User, X } from "lucide-react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { filterHelp, type HelpSection } from "@/lib/helpSearch";
+import { useShortcutLabel } from "@/lib/useShortcutLabel";
 import { setHelpQuery } from "@/components/carrier/help/helpQuery";
 import type { SearchResults, SearchRide } from "@/app/api/carrier/search/route";
 
@@ -62,7 +63,7 @@ export function TopBarSearch() {
   const [results, setResults] = useState<{ query: string; data: SearchResults } | null>(null);
   const [failed, setFailed] = useState(false);
   const [active, setActive] = useState(0);
-  const [shortcut, setShortcut] = useState("⌘K");
+  const shortcut = useShortcutLabel("K");
 
   // Moving to another page resets the field: on Help it starts from ?q=
   // (a help result links there pre-filtered), elsewhere it's emptied.
@@ -78,8 +79,6 @@ export function TopBarSearch() {
   }, [pathname]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!/Mac|iPhone|iPad/.test(navigator.platform)) setShortcut("Ctrl K");
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === "k") {
         event.preventDefault();
@@ -281,8 +280,7 @@ export function TopBarSearch() {
       <Search
         size={16}
         strokeWidth={1.9}
-        color="#A1A1AA"
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--ink-muted)]"
       />
       <input
         ref={inputRef}

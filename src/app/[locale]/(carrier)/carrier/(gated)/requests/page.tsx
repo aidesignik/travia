@@ -6,6 +6,7 @@ import { clientDisplayName } from "@/lib/clientDisplay";
 import { PageHeader } from "@/components/carrier/PageHeader";
 import { PageContent } from "@/components/carrier/PageContent";
 import { StatusDot } from "@/components/carrier/StatusDot";
+import { formatShortDate } from "@/lib/rideDateFormat";
 
 export default async function CarrierRequestsPage() {
   const t = await getTranslations("carrier");
@@ -32,7 +33,7 @@ export default async function CarrierRequestsPage() {
                 <div className="min-w-0">
                   <p className="truncate text-[14px] font-medium text-[var(--ink-primary)]">{formatRoute(req)}</p>
                   <p className="truncate text-[12.5px] text-[var(--ink-secondary)]">
-                    {new Date(req.departureAt).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
+                    {formatShortDate(new Date(req.departureAt))}
                     {" · "}
                     {req.passengerCount} pax · {clientDisplayName(req.client)}
                   </p>

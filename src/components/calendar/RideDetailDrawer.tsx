@@ -22,7 +22,7 @@ import { buildDriverMessage } from "@/lib/driverMessage";
 import { clientDisplayName } from "@/lib/clientDisplay";
 import { formatPhone } from "@/lib/phoneDisplay";
 import { displayRideStatus } from "@/lib/rideStatus";
-import { formatTime24 } from "@/lib/rideDateFormat";
+import { formatShortDateTime, formatTime24 } from "@/lib/rideDateFormat";
 import { formatPickerDate } from "@/lib/pickerDateFormat";
 import { resolveReturnLeg } from "@/lib/rideReturnLeg";
 import type { CityLocation } from "@/lib/location";
@@ -381,8 +381,8 @@ export function RideDetailDrawer({
     const conflicts = changingField === "vehicle" ? vehicleConflicts : driverConflicts;
     const conflict = conflicts.get(id);
     if (conflict) {
-      const start = conflict.start ? new Date(conflict.start).toLocaleDateString() : "";
-      const end = conflict.end ? new Date(conflict.end).toLocaleDateString() : "";
+      const start = conflict.start ? formatShortDateTime(new Date(conflict.start)) : "";
+      const end = conflict.end ? formatShortDateTime(new Date(conflict.end)) : "";
       const ok = await confirmAvailability(t("carrier.calendar.availabilityWarning", { start, end }));
       if (!ok) return;
       setConfirmedPendingValue(id);
@@ -585,7 +585,7 @@ export function RideDetailDrawer({
                       <span className="h-px flex-1 bg-[#F0F0F2]" />
                     </div>
                     {leg.sameRouteReversed ? (
-                      <p className="mt-[6px] text-[12.5px] text-[#A1A1AA]">{tDetail("sameRouteReversed")}</p>
+                      <p className="mt-[6px] text-[12.5px] text-[var(--ink-muted)]">{tDetail("sameRouteReversed")}</p>
                     ) : null}
                     <div className="mt-[12px] flex flex-col gap-[2px]">
                       {leg.rows.map((row, i) => (
@@ -602,7 +602,7 @@ export function RideDetailDrawer({
                               {row.time ? (
                                 <span
                                   className={`shrink-0 pt-[1px] text-[13px] tabular-nums ${
-                                    row.muted ? "text-[#A1A1AA]" : "text-[#3F3F46]"
+                                    row.muted ? "text-[var(--ink-muted)]" : "text-[#3F3F46]"
                                   }`}
                                 >
                                   {row.time}
@@ -690,10 +690,10 @@ export function RideDetailDrawer({
                       }))}
                     />
                   </div>
-                  <Button type="button" compact disabled={busy === "vehicle"} onClick={saveAssignment}>
+                  <Button type="button" disabled={busy === "vehicle"} onClick={saveAssignment}>
                     {busy === "vehicle" ? t("common.loading") : t("common.save")}
                   </Button>
-                  <Button type="button" variant="ghost" compact onClick={() => setChangingField(null)}>
+                  <Button type="button" variant="ghost" onClick={() => setChangingField(null)}>
                     {t("common.cancel")}
                   </Button>
                 </div>
@@ -755,10 +755,10 @@ export function RideDetailDrawer({
                       options={drivers.map((d) => ({ id: d.id, label: d.name, busy: driverConflicts.has(d.id) }))}
                     />
                   </div>
-                  <Button type="button" compact disabled={busy === "driver"} onClick={saveAssignment}>
+                  <Button type="button" disabled={busy === "driver"} onClick={saveAssignment}>
                     {busy === "driver" ? t("common.loading") : t("common.save")}
                   </Button>
-                  <Button type="button" variant="ghost" compact onClick={() => setChangingField(null)}>
+                  <Button type="button" variant="ghost" onClick={() => setChangingField(null)}>
                     {t("common.cancel")}
                   </Button>
                 </div>

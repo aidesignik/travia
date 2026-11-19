@@ -53,7 +53,7 @@ export function DistanceCard({
             </div>
           )}
         </div>
-        <span className="shrink-0 self-start text-[12px] text-[#A1A1AA]">{estimateLabel}</span>
+        <span className="shrink-0 self-start text-[12px] text-[var(--ink-muted)]">{estimateLabel}</span>
       </div>
       {showWarning ? (
         <p className="m-0 mt-3 flex items-start gap-2 rounded-[9px] bg-[#FEF7E6] px-3 py-2 text-[12.5px] leading-[1.4] text-[#8A5512]">

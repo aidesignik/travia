@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { clientDisplayName } from "@/lib/clientDisplay";
+import { formatShortDateTime } from "@/lib/rideDateFormat";
 import { CALENDAR_RESOURCE_COLUMN_WIDTH } from "@/lib/tableLayout";
 import type { CalendarRide } from "./types";
 
@@ -56,8 +57,8 @@ export function UnassignedQueue({
               {ride.pickupCity} → {ride.destinationCity}
             </p>
             <p className="truncate text-[11.5px] font-semibold text-[var(--ink-2)]">{clientDisplayName(ride.client)}</p>
-            <p className="truncate font-mono text-[11.5px] text-[var(--ink-muted)]">
-              {new Date(ride.departureAt).toLocaleString()} · {ride.passengerCount} {t("pax")}
+            <p className="truncate text-[11.5px] text-[var(--ink-muted)]">
+              {formatShortDateTime(new Date(ride.departureAt))} · {ride.passengerCount} {t("pax")}
             </p>
           </div>
         ))}

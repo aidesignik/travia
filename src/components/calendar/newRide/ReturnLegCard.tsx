@@ -158,9 +158,9 @@ export function ReturnLegCard({
         outboundPickupCity || outboundDestinationCity ? (
           <div className="truncate rounded-[8px] bg-[#FAFAFA] px-3 py-[10px] text-[14px]">
             <span className="font-medium text-[#18181B]">{outboundDestinationCity || "—"}</span>
-            <span className="mx-[6px] text-[#A1A1AA]">→</span>
+            <span className="mx-[6px] text-[var(--ink-muted)]">→</span>
             <span className="font-medium text-[#18181B]">{outboundPickupCity || "—"}</span>
-            <span className="text-[#A1A1AA]"> · {t("mirrorSuffix")}</span>
+            <span className="text-[var(--ink-muted)]"> · {t("mirrorSuffix")}</span>
           </div>
         ) : null
       ) : mode === "stops" ? (
@@ -171,7 +171,7 @@ export function ReturnLegCard({
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[14px] font-medium text-[#18181B]">{outboundDestinationCity || "—"}</p>
-              <p className="truncate text-[13px] text-[#A1A1AA]">
+              <p className="truncate text-[13px] text-[var(--ink-muted)]">
                 {outboundDestinationLocation ? `${outboundDestinationLocation} · ` : ""}
                 {t("fromOutbound")}
               </p>
@@ -217,7 +217,7 @@ export function ReturnLegCard({
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[14px] font-medium text-[#18181B]">{outboundPickupCity || "—"}</p>
-              <p className="truncate text-[13px] text-[#A1A1AA]">
+              <p className="truncate text-[13px] text-[var(--ink-muted)]">
                 {outboundPickupLocation ? `${outboundPickupLocation} · ` : ""}
                 {t("fromOutbound")}
               </p>

@@ -28,7 +28,7 @@ export interface DriversTableDriver {
   vehicles: { id: string; type: string; model: string; licensePlate: string | null; photos: string[] }[];
 }
 
-const HEADER_CLASS = "text-[12px] font-semibold text-[#8E8E93]";
+const HEADER_CLASS = "text-[12px] font-semibold text-[var(--ink-muted)]";
 
 export function DriversTable({
   drivers,
@@ -129,7 +129,7 @@ export function DriversTable({
                     ) : null}
                   </div>
                 ) : (
-                  <span className="text-[13px] text-[#8E8E93]">{t("carrier.driversTable.noVehicle")}</span>
+                  <span className="text-[13px] text-[var(--ink-muted)]">{t("carrier.driversTable.noVehicle")}</span>
                 )}
               </div>
               <div role="cell" className="min-w-0">
