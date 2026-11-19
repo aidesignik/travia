@@ -79,14 +79,13 @@ export function ConfirmDialog({
         </h2>
         {body ? <p className="mt-[6px] text-[13.5px] text-[var(--ink-secondary)]">{body}</p> : null}
         <div className="mt-5 flex justify-end gap-2">
-          <Button ref={cancelRef} type="button" variant="secondary" compact onClick={onCancel}>
+          <Button ref={cancelRef} type="button" variant="secondary" onClick={onCancel}>
             {cancelLabel}
           </Button>
           <Button
             ref={confirmRef}
             type="button"
             variant="danger"
-            compact
             disabled={confirming}
             aria-busy={confirming || undefined}
             onClick={onConfirm}

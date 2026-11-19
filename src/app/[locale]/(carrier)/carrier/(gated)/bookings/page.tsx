@@ -51,7 +51,7 @@ export default async function CarrierBookingsPage({
 
   return (
     <PageContent>
-      <PageHeader title={t("bookingsTitle")} bold actions={<AddRideButton />} />
+      <PageHeader title={t("bookingsTitle")} actions={<AddRideButton />} />
 
       <div className="flex shrink-0 items-center gap-5">
         {tabs.map((tab) => (

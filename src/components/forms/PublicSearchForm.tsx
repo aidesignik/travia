@@ -57,9 +57,9 @@ export function PublicSearchForm({ defaults }: { defaults: TripSearchState }) {
           <span className="truncate font-medium text-zinc-900">
             {defaults.pickupCity} → {defaults.destinationCity}
           </span>
-          <span className="text-zinc-400">·</span>
+          <span className="text-[var(--ink-muted)]">·</span>
           <span className="text-zinc-600">{formatDepartureShort(defaults.departureAt)}</span>
-          <span className="text-zinc-400">·</span>
+          <span className="text-[var(--ink-muted)]">·</span>
           <span className="text-zinc-600">
             {defaults.passengerCount} {t("paxSuffix")}
           </span>

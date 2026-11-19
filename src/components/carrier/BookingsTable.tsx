@@ -19,7 +19,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { BOOKINGS_GRID_TEMPLATE } from "@/lib/tableLayout";
 import type { CalendarDriver, CalendarRide, CalendarVehicle } from "@/components/calendar/types";
 
-const HEADER_CLASS = "text-[12px] font-semibold text-[#8E8E93]";
+const HEADER_CLASS = "text-[12px] font-semibold text-[var(--ink-muted)]";
 
 const MENU_WIDTH = 144; // w-36
 
@@ -300,7 +300,7 @@ export function BookingsTable({
                 ) : (
                   <div className="flex min-w-0 items-center gap-[8px]">
                     <VehicleAvatar empty size="xs" />
-                    <span className="truncate text-[13px] text-[#8E8E93]">{t("carrier.bookingsTable.noneAssigned")}</span>
+                    <span className="truncate text-[13px] text-[var(--ink-muted)]">{t("carrier.bookingsTable.noneAssigned")}</span>
                   </div>
                 )}
               </div>
@@ -314,7 +314,7 @@ export function BookingsTable({
                 ) : (
                   <div className="flex min-w-0 items-center gap-[8px]">
                     <DriverAvatar driver={null} size={24} />
-                    <span className="truncate text-[13px] text-[#8E8E93]">{t("carrier.bookingsTable.noneAssigned")}</span>
+                    <span className="truncate text-[13px] text-[var(--ink-muted)]">{t("carrier.bookingsTable.noneAssigned")}</span>
                   </div>
                 )}
               </div>

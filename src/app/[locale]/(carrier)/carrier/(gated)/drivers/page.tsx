@@ -32,7 +32,6 @@ export default async function DriversPage({
     <PageContent>
       <PageHeader
         title={t("carrier.driversTitle")}
-        bold
         actions={<AddDriverButton vehicles={vehicles} autoOpen={params.new === "1"} />}
       />
       {drivers.length === 0 ? (

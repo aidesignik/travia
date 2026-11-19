@@ -15,7 +15,7 @@ export function AssignmentChip({ children }: { children: ReactNode }) {
 // warning or error.
 export function EmptyAssignmentChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-dashed border-zinc-300 px-2.5 py-1 text-xs text-zinc-400">
+    <span className="inline-flex items-center rounded-full border border-dashed border-zinc-300 px-2.5 py-1 text-xs text-[var(--ink-muted)]">
       {children}
     </span>
   );

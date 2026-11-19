@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/carrier/PageHeader";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { NotesGrid } from "./NotesGrid";
 import { NoteOverlay } from "./NoteOverlay";
+import { Button } from "@/components/ui/Button";
 
 // The Notes page: a grid of note cards in the order the carrier dragged them
 // into (new notes go first). A card, or "New note", opens the note in an
@@ -77,19 +78,18 @@ export function NotesBoard({ initialNotes }: { initialNotes: NoteDTO[] }) {
   };
 
   const newButton = (
-    <button
+    <Button
       type="button"
       onClick={() => openNote(null)}
-      className="flex h-[38px] shrink-0 items-center gap-[6px] whitespace-nowrap rounded-[9px] bg-[var(--action-bg)] px-[14px] text-[14px] font-medium text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)]"
     >
       <Plus size={16} strokeWidth={1.9} />
       {t("newNote")}
-    </button>
+    </Button>
   );
 
   return (
     <>
-      <PageHeader title={t("title")} bold actions={newButton} />
+      <PageHeader title={t("title")} actions={newButton} />
       {notes.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-[14px] border border-dashed border-[var(--border-strong)] bg-[var(--surface-card-bg)] px-6 py-16 text-center">
           <span className="flex h-12 w-12 items-center justify-center rounded-[12px] bg-[var(--select-tint)] text-[var(--action-bg)]">

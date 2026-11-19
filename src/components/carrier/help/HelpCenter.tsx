@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/carrier/PageHeader";
 import { SUPPORT_EMAIL } from "@/lib/support";
 import { filterHelp, type HelpItem, type HelpSection } from "@/lib/helpSearch";
 import { useHelpQuery } from "./helpQuery";
+import { buttonClassName } from "@/components/ui/Button";
 
 // The Help page: questions and answers grouped by topic, and a card with the
 // support email (copy or write). The top bar's search filters the questions
@@ -32,7 +33,7 @@ export function HelpCenter() {
 
   return (
     <>
-      <PageHeader title={t("title")} bold />
+      <PageHeader title={t("title")} />
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="lg:sticky lg:top-0 lg:order-2">
           <SupportCard />
@@ -198,7 +199,7 @@ function SupportCard() {
 
       <a
         href={`mailto:${SUPPORT_EMAIL}`}
-        className="mt-3 flex h-[38px] w-full items-center justify-center gap-[6px] rounded-[9px] bg-[var(--action-bg)] text-[14px] font-medium text-white transition-colors duration-[.12s] ease-out hover:bg-[var(--action-bg-hover)]"
+        className={buttonClassName("primary", "mt-3 w-full")}
       >
         <Mail size={16} strokeWidth={1.9} aria-hidden />
         {t("writeEmail")}

@@ -21,8 +21,10 @@ import { fetchWithAvailabilityConfirm } from "@/lib/availabilityConfirm";
 import { useAvailabilityConfirmDialog } from "@/lib/useAvailabilityConfirmDialog";
 import { resolveReturnLeg } from "@/lib/rideReturnLeg";
 import { combineDateTimeLocal, splitDateTimeLocal, localDateTimeToISOString } from "@/lib/pickerDateFormat";
+import { formatShortDateTime } from "@/lib/rideDateFormat";
 import type { CityLocation } from "@/lib/location";
 import type { CalendarDriver, CalendarVehicle } from "./types";
+import { Button } from "@/components/ui/Button";
 
 const DEPARTURE_JUMP_DEBOUNCE_MS = 400;
 const DISTANCE_CALC_DEBOUNCE_MS = 900;
@@ -516,8 +518,8 @@ export function NewRideModal({
   async function pickVehicle(id: string) {
     const picked = availableVehicles.find((v) => v.id === id);
     if (picked?.busy) {
-      const start = picked.busyStart ? new Date(picked.busyStart).toLocaleDateString() : "";
-      const end = picked.busyEnd ? new Date(picked.busyEnd).toLocaleDateString() : "";
+      const start = picked.busyStart ? formatShortDateTime(new Date(picked.busyStart)) : "";
+      const end = picked.busyEnd ? formatShortDateTime(new Date(picked.busyEnd)) : "";
       const ok = await confirmAvailability(t("carrier.calendar.availabilityWarning", { start, end }));
       if (!ok) return;
       setConfirmedVehicleId(id);
@@ -528,8 +530,8 @@ export function NewRideModal({
   async function pickDriver(id: string) {
     const picked = availableDrivers.find((d) => d.id === id);
     if (picked?.busy) {
-      const start = picked.busyStart ? new Date(picked.busyStart).toLocaleDateString() : "";
-      const end = picked.busyEnd ? new Date(picked.busyEnd).toLocaleDateString() : "";
+      const start = picked.busyStart ? formatShortDateTime(new Date(picked.busyStart)) : "";
+      const end = picked.busyEnd ? formatShortDateTime(new Date(picked.busyEnd)) : "";
       const ok = await confirmAvailability(t("carrier.calendar.availabilityWarning", { start, end }));
       if (!ok) return;
       setConfirmedDriverId(id);
@@ -831,7 +833,7 @@ export function NewRideModal({
             <div className="mb-4 flex items-baseline justify-between gap-2">
               <div className="flex items-baseline gap-2">
                 <h3 className="text-[13.5px] font-semibold text-[#18181B]">{tn("dodela")}</h3>
-                <span className="text-[12.5px] text-[#A1A1AA]">{tn("opciono")}</span>
+                <span className="text-[12.5px] text-[var(--ink-muted)]">{tn("opciono")}</span>
               </div>
               <span
                 className={`shrink-0 text-right text-[12.5px] ${
@@ -839,7 +841,7 @@ export function NewRideModal({
                     ? busyCount > 0
                       ? "text-[#9A5B0F]"
                       : "text-[#16A34A]"
-                    : "text-[#A1A1AA]"
+                    : "text-[var(--ink-muted)]"
                 }`}
               >
                 {form.departureAt && (!form.isRoundTrip || form.returnAt)
@@ -892,20 +894,12 @@ export function NewRideModal({
               </>
             ) : null}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-9 shrink-0 items-center whitespace-nowrap rounded-[9px] px-3 text-[13.5px] font-medium text-[#18181B] shadow-[inset_0_0_0_1px_#E4E4E7,0_1px_2px_rgba(24,24,27,.04)] transition-colors duration-[.12s] ease-out hover:bg-[#FAFAFA]"
-          >
+          <Button type="button" variant="secondary" onClick={onClose}>
             {tn("otkazi")}
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex h-9 shrink-0 items-center whitespace-nowrap rounded-[9px] bg-[#2563EB] px-4 text-[13.5px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,.14),0_1px_2px_rgba(37,99,235,.3)] transition-colors duration-[.12s] ease-out hover:bg-[#1D4ED8] disabled:opacity-50"
-          >
+          </Button>
+          <Button type="submit" disabled={loading}>
             {loading ? t("common.loading") : editValues ? tn("saveChanges") : tn("kreirajVoznju")}
-          </button>
+          </Button>
         </div>
       </form>
     </SidePanel>

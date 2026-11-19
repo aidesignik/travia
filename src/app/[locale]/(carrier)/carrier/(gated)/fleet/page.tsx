@@ -25,7 +25,6 @@ export default async function FleetPage({
     <PageContent>
       <PageHeader
         title={t("carrier.fleetTitle")}
-        bold
         actions={<AddVehicleButton autoOpen={params.new === "1"} />}
       />
       {vehicles.length === 0 ? (

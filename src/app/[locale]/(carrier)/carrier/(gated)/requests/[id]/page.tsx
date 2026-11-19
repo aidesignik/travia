@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { AssignRideForm } from "@/components/forms/AssignRideForm";
 import { formatLocation } from "@/lib/location";
 import { clientDisplayName } from "@/lib/clientDisplay";
+import { formatShortDateTime } from "@/lib/rideDateFormat";
 
 export default async function CarrierRequestDetailPage({
   params,
@@ -53,12 +54,12 @@ export default async function CarrierRequestDetailPage({
           })}
         </p>
         <p className="mt-1 text-sm text-[var(--ink-secondary)]">
-          {new Date(ride.departureAt).toLocaleString()} · {ride.passengerCount} pax
+          {formatShortDateTime(new Date(ride.departureAt))} · {ride.passengerCount} pax
         </p>
         {ride.isRoundTrip && ride.returnAt ? (
           <p className="text-sm font-medium text-[var(--status-pending-text)]">
             {t("client.requestForm.isRoundTrip")} — {t("client.requestForm.returnAt")}:{" "}
-            {new Date(ride.returnAt).toLocaleString()}
+            {formatShortDateTime(new Date(ride.returnAt))}
           </p>
         ) : null}
         <p className="text-sm text-[var(--ink-secondary)]">

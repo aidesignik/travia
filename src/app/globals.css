@@ -37,7 +37,9 @@
   --ink-2: #3f3f46;
   --ink-body: #3f3f46;
   --ink-secondary: #6b6b72;
-  --ink-muted: #a1a1aa;
+  /* Darkened from #a1a1aa (2.6:1) so muted text — timestamps, hints,
+     placeholders, table headers — meets WCAG AA (4.8:1 on white). */
+  --ink-muted: #717178;
   --ink-eyebrow: #6e6e76;
   --ink-disabled: #a9a9b2;
   --ink-destructive: #dc2626;
@@ -80,6 +82,9 @@
   --accent-scheduled: #2563eb;
   --accent-completed: #16a34a;
   --accent-pending: #f97316;
+  /* The pending orange dark enough to carry white text (5.2:1) — the
+     sidebar's Requests count badge. */
+  --accent-pending-strong: #c2410c;
   --accent-block: #a78bfa;
   --accent-expired: #f87171;
   --accent-due-soon: #fdba74;
@@ -302,7 +307,7 @@ a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible,
 [role="row"]:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--action-bg);
   outline-offset: 2px;
 }
 

@@ -208,10 +208,10 @@ export function AssistantProposalCard({
 
       {created ? null : (
         <div className="flex gap-2 border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-3">
-          <Button compact className="flex-1" onClick={() => void create()} disabled={!complete || saving}>
+          <Button className="flex-1" onClick={() => void create()} disabled={!complete || saving}>
             {saving ? t("creating") : t("create")}
           </Button>
-          <Button compact variant="secondary" onClick={() => setFormOpen(true)}>
+          <Button variant="secondary" onClick={() => setFormOpen(true)}>
             {t("openInForm")}
           </Button>
         </div>
