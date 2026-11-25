@@ -101,7 +101,8 @@ export function MonthGrid({
 
   // Full weeks: from the Monday on/before the 1st to the Sunday on/after
   // the last day. Days outside the month are shown muted and empty (the
-  // calendar only loads the month itself).
+  // calendar only loads the month itself), but still take part in
+  // click/drag-to-create and open their day like any other.
   const first = days[0];
   const gridStart = addDays(first, -((first.getDay() + 6) % 7));
   const last = days[days.length - 1];
@@ -211,23 +212,24 @@ export function MonthGrid({
                 return (
                   <div
                     key={col}
-                    title={inMonth ? t("createRideOnDay") : undefined}
+                    title={t("createRideOnDay")}
                     onMouseDown={(e) => {
                       // Left button, on the cell itself (not its date badge).
-                      if (!inMonth || e.button !== 0 || e.target !== e.currentTarget) return;
+                      if (e.button !== 0 || e.target !== e.currentTarget) return;
                       e.preventDefault();
                       setSelection({ start: idx, end: idx });
                     }}
                     onMouseEnter={() => {
-                      // Only days of this month join a drag.
-                      if (inMonth) setSelection((prev) => (prev ? { ...prev, end: idx } : prev));
+                      // The muted days of the previous/next month join a drag
+                      // too, so a ride can run from the 30th into the 2nd.
+                      setSelection((prev) => (prev ? { ...prev, end: idx } : prev));
                     }}
                     className={`min-w-0 select-none px-[10px] pt-[4px] ${col === 6 ? "" : "border-r border-[var(--border-hairline)]"} ${
-                      !inMonth
-                        ? "bg-[var(--bg-subtle)]"
-                        : inSelection
-                          ? "cursor-pointer bg-[var(--calendar-selection)]"
-                          : "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30"
+                      inSelection
+                        ? "cursor-pointer bg-[var(--calendar-selection)]"
+                        : inMonth
+                          ? "cursor-pointer bg-white transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30"
+                          : "cursor-pointer bg-[var(--bg-subtle)] transition-colors duration-[.1s] hover:bg-[var(--action-100)]/30"
                     }`}
                     // Spans the row's full height (past the last grid line, so
                     // it fills any spare space below the lanes too).
@@ -235,15 +237,14 @@ export function MonthGrid({
                   >
                     <button
                       type="button"
-                      disabled={!inMonth}
                       onClick={() => onOpenDay(day)}
-                      title={inMonth ? t("openDay") : undefined}
+                      title={t("openDay")}
                       className={`flex h-[22px] min-w-[22px] items-center justify-center rounded-full px-[6px] text-[13px] font-semibold tabular-nums transition-colors duration-[.1s] ${
                         isToday
                           ? "bg-[var(--action-bg)] text-white"
                           : inMonth
                             ? "text-[var(--ink-primary)] hover:bg-[var(--border-soft)]"
-                            : "cursor-default text-[var(--ink-disabled)]"
+                            : "text-[var(--ink-disabled)] hover:bg-[var(--border-soft)]"
                       }`}
                     >
                       {day.getDate()}
